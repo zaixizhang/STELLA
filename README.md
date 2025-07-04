@@ -8,13 +8,13 @@ Recent advancements in Large Language Models (LLMs) have demonstrated their pote
 
 ## Key Figures
 
-<img src="asset/stella.png" width="800"/>
+<img src="asset/stella_illustration.png" width="800"/>
 
 *Figure 1: Overview of the STELLA framework. The framework consists of four main components: a reasoning template, a manager agent, a dev agent, and a critic agent. The tool ocean provides a set of predefined and self-evolving tools for the agents to use.*
 
 <br>
 
-<img src="asset/stella_result.png" width="800"/>
+<img src="asset/Stella_result.png" width="800"/>
 
 *Figure 2: Performance of STELLA on various benchmarks. (A) Comparison of STELLA with other LLMs on Humanity's Last Exam (HLE) Biomedicine, LAB-Bench (DBQA), and LAB-Bench (LitQA). (B) Self-evolving performance of STELLA on the same benchmarks with increasing computation budget.*
 
