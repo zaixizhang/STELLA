@@ -164,8 +164,8 @@ STELLA/
 
 **Large Resource Files**: Due to the size of biomedical datasets (9.7GB), the resource folder has been compressed and made available via Google Drive:
 
-📥 **Download**: [STELLA Resources from Google Drive](https://drive.google.com/your-link-here)
-- **File**: `resource_backup_20250719_055729.zip` (2.0GB compressed)
+📥 **Download**: [STELLA Resources from Google Drive](https://drive.google.com/file/d/1n8I-gkM58wL1OZysdpYhr-Q9ZApd9yU4/view?usp=sharing)
+- **File**: `resource_backup_20250719_055729.zip` (2.0GB compressed)  
 - **Contents**: Biomedical databases, gene expression datasets, protein networks
 - **Extract to**: `agents/STELLA/resource/`
 
@@ -404,7 +404,7 @@ STELLA/
 
 **大型资源文件**: 由于生物医学数据集较大（9.7GB），资源文件夹已压缩并通过Google Drive提供：
 
-📥 **下载**: [STELLA资源Google Drive链接](https://drive.google.com/your-link-here)
+📥 **下载**: [STELLA资源Google Drive链接](https://drive.google.com/file/d/1n8I-gkM58wL1OZysdpYhr-Q9ZApd9yU4/view?usp=sharing)
 - **文件**: `resource_backup_20250719_055729.zip` (压缩后2.0GB)
 - **内容**: 生物医学数据库、基因表达数据集、蛋白质网络
 - **解压到**: `agents/STELLA/resource/`
