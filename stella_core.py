@@ -5,6 +5,7 @@ import subprocess
 import json
 import time
 import sys
+import yaml
 from pathlib import Path
 from markdownify import markdownify
 from requests.exceptions import RequestException
@@ -37,7 +38,6 @@ except ImportError:
 
 OPENROUTER_API_KEY_STRING = "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"
 
-
 openrouter_model_id = "anthropic/claude-sonnet-4"  # Example model, change as needed
 
 HTTP_REFERER_URL = "http://localhost:8000"  # Replace if you have a specific site
@@ -57,6 +57,9 @@ from memory_manager import MemoryManager
 # Global memory manager instance (replaces global_knowledge_base)
 global_memory_manager = None
 use_templates = False  # Global flag for template usage
+
+# Global custom prompt templates
+custom_prompt_templates = None
 
 # --- Self-Evolution Tools ---
 # Global registry for dynamically created tools
@@ -429,6 +432,7 @@ Select tools with relevance_score between 0.0-1.0, ordered by relevance."""
         
     except Exception as e:
         return f"❌ Error analyzing query and loading tools: {str(e)}"
+
 
 def _fallback_tool_selection(user_query: str, available_tools: dict, max_tools: int) -> str:
     """Fallback tool selection using simple keyword matching when LLM fails"""
@@ -1685,14 +1689,14 @@ manager_agent = CodeAgent(
     🎯 CRITICAL FIRST STEP - TOOL PREPARATION:
     ALWAYS start by using analyze_query_and_load_relevant_tools(user_query) to:
     1. Analyze the user's task and identify domain-specific requirements
-    2. Automatically load the top 10 most relevant tools from literature_tools.py and database_tools.py
+    2. Automatically load the top 10 most relevant tools from literature_tools.py, database_tools.py, and virtual_screening_tools.py
     3. Ensure both manager_agent and tool_creation_agent have access to domain-specific tools
-    4. This enables access to 30+ specialized biomedical and literature tools (PubMed, UniProt, arXiv, etc.)
+    4. This enables access to 60+ specialized biomedical, literature, and virtual screening tools (PubMed, UniProt, ChEMBL, KEGG, arXiv, etc.)
     
     🧠 Strategic Responsibilities:
     1. Manages and delegates tasks to specialized agents (dev_agent, critic_agent, tool_creation_agent)
     2. Uses critic agent to intelligently evaluate task completion quality
-    3. Makes strategic decisions on when to create new specialized tools
+    3. Makes strategic decisions on when to create new specialized tools to improve system capabilities
     4. Continuously improves system capabilities through dynamic tool generation
     5. Maintains complete oversight of the dynamic tools registry
     6. Leverages knowledge base for learning from past successful approaches
@@ -1719,29 +1723,41 @@ manager_agent = CodeAgent(
     
     🎯 WORKFLOW - Always follow this sequence:
     1. **FIRST**: Use analyze_query_and_load_relevant_tools() to prepare domain-specific tools
-    2. **THEN**: Delegate task execution to dev_agent with now-available specialized tools
-    3. **EVALUATE**: Use critic_agent for post-task quality assessment
-    4. **EVOLVE**: Make strategic tool creation decisions based on critic recommendations
-    5. **LEARN**: Save successful approaches when knowledge base is enabled
+    2. **THEN**: Plan and split the task into subtasks, then delegate task execution to dev_agent with now-available specialized tools
+    3. **EVALUATE**: Use critic_agent for post-task quality assessment and provide feedback to dev_agent
+    4. **EVOLVE**: If needed, make strategic tool creation decisions based on critic recommendations
+    5. **LEARN**: After task completion, save successful approaches when knowledge base is enabled
     
     📋 Available Domain Tools (loaded dynamically based on query):
     - Literature: query_arxiv, query_pubmed, query_scholar, search_google, extract_pdf_content
     - Databases: query_uniprot, query_pdb, query_kegg, query_ensembl, query_stringdb, etc.
-    - 30+ specialized biomedical and scientific research tools available on-demand
+    - Virtual Screening: kegg_pathway_search, drugbank_search, chembl_search, pubchem_search, etc.
+    - 60+ specialized biomedical and scientific research tools available on-demand
     """,
+    prompt_templates=custom_prompt_templates,  # 使用自定义提示词模板
 )
 
-# Add intelligent tool selection instruction to manager_agent
-if hasattr(manager_agent, 'system_prompt'):
-    manager_agent.system_prompt += """
+# # Add intelligent tool selection instruction to manager_agent
+# if hasattr(manager_agent, 'system_prompt'):
+#     manager_agent.system_prompt += """
 
-🎯 CRITICAL WORKFLOW INSTRUCTION:
-For EVERY new user task, you MUST start by calling analyze_query_and_load_relevant_tools(user_query) to:
-1. Analyze the task requirements and domain
-2. Automatically load the most relevant specialized tools
-3. Ensure optimal tool availability for task execution
+# 🎯 CRITICAL WORKFLOW INSTRUCTION:
+# For EVERY new user task, you MUST follow this 5-step workflow:
 
-This is MANDATORY before any task execution to maximize success rate with domain-specific tools."""
+# 1. **FIRST**: Use analyze_query_and_load_relevant_tools(user_query) to:
+#    - Analyze the task requirements and domain
+#    - Automatically load the most relevant specialized tools from 60+ available tools
+#    - Ensure optimal tool availability for task execution
+
+# 2. **THEN**: Plan and split the task into subtasks, then delegate task execution to dev_agent with now-available specialized tools
+
+# 3. **EVALUATE**: Use critic_agent for post-task quality assessment and provide feedback to dev_agent
+
+# 4. **EVOLVE**: If needed, make strategic tool creation decisions based on critic recommendations
+
+# 5. **LEARN**: After task completion, save successful approaches when knowledge base is enabled
+
+# This workflow is MANDATORY for every task to maximize success rate and system evolution capabilities."""
 
 
 # --- Launch Gradio Interface ---
@@ -1759,6 +1775,8 @@ def main():
                        help="Use Mem0 managed platform instead of self-hosted (requires --mem0_api_key)")
     parser.add_argument("--mem0_api_key", type=str,
                        help="Mem0 API key for managed platform usage")
+    parser.add_argument("--use_default_prompts", action="store_true",
+                       help="Force use of default smolagents prompts instead of custom prompts/code_agent.yaml")
     parser.add_argument("--port", type=int, default=7860,
                        help="Port to run Gradio interface (default: 7860)")
     
@@ -1766,6 +1784,27 @@ def main():
     
     # Set global template usage flag
     use_templates = args.use_template
+    
+    # Load custom prompt templates for manager_agent (default behavior)
+    global custom_prompt_templates
+    if args.use_default_prompts:
+        print("📋 强制使用默认的smolagents提示词模板")
+        custom_prompt_templates = None
+    else:
+        # 默认尝试加载自定义提示词
+        try:
+            prompt_templates_path = os.path.join(os.path.dirname(__file__), "prompts", "Stella_prompt.yaml")
+            with open(prompt_templates_path, 'r', encoding='utf-8') as stream:
+                custom_prompt_templates = yaml.safe_load(stream)
+            print(f"✅ 自定义提示词模板已加载: {prompt_templates_path}")
+        except FileNotFoundError:
+            print(f"📋 自定义提示词文件未找到: {prompt_templates_path}")
+            print("🔄 自动回退到默认的smolagents提示词模板")
+            custom_prompt_templates = None
+        except Exception as e:
+            print(f"⚠️ 加载自定义提示词时出错: {str(e)}")
+            print("🔄 自动回退到默认的smolagents提示词模板")
+            custom_prompt_templates = None
     
     # Initialize knowledge base if templates are enabled
     if use_templates:
@@ -1821,6 +1860,7 @@ def main():
     print("   🔍 Critic Agent (评估权限): 以上 + evaluate_with_critic")
     print("   🧠 Manager Agent (完整权限): 以上 + analyze_query_and_load_relevant_tools (核心)")
     print("   🎯 Manager Agent (进化权限): evaluate_with_critic, create_new_tool, add_tool_to_agents")
+    print(f"   🎨 Manager Agent (提示词): {'自定义提示词模板' if custom_prompt_templates else '默认smolagents模板'}")
     print("   📚 可用专业工具: 60+ (PubMed, UniProt, KEGG, arXiv, Google Scholar, etc.)")
     
     if use_templates:
@@ -1834,9 +1874,10 @@ def main():
     print("🔬 生物医学任务示例:")
     print("   📚 文献检索: '搜索PubMed中关于CRISPR-Cas9在癌症治疗中的应用'")
     print("   🧬 分子生物学: '设计用于克隆特定基因的PCR引物'")
-    print("   🧪 生化分析: '分析蛋白质序列的结构特征和分子量'")
-    print("   🦠 微生物学: '分析细菌生长曲线数据'")
     print("   💊 药理学: '预测化合物的ADMET性质'")
+    print("   🎯 虚拟筛选: '从ChEMBL数据库筛选抗癌化合物'")
+    print("   🧬 通路分析: '使用KEGG分析代谢通路中的基因富集'")
+    print("   💉 药物设计: '在DrugBank中搜索特定靶点的抑制剂'")
     print("   🔬 数据库查询: '从UniProt获取特定蛋白质的详细信息'")
     print("   🧮 基因组学: '分析单细胞RNA-seq数据的基因表达模式'")
     print("   🏥 病理学: '量化组织学图像中的形态学特征'")
@@ -1880,7 +1921,7 @@ def main():
     print("   📋 Dev Agent (基础权限): list_dynamic_tools, load_dynamic_tool, refresh_agent_tools")
     print("   🧠 Manager Agent (完整权限): 以上 + analyze_query_and_load_relevant_tools (核心)")
     print("   🎯 Manager Agent (进化权限): evaluate_with_critic, create_new_tool, add_tool_to_agents")
-    print("   📚 可用专业工具: 60+ (PubMed, UniProt, KEGG, arXiv, Google Scholar, etc.)")
+    print("   📚 可用专业工具: 60+ (PubMed, UniProt, ChEMBL, KEGG, arXiv, Google Scholar, DrugBank, etc.)")
     
     if use_templates:
         if args.use_mem0:
@@ -1915,6 +1956,8 @@ def main():
     print(f"🌐 启动参数:")
     print(f"   端口: {args.port}")
     print(f"   知识库: {'启用' if use_templates else '禁用'}")
+    print(f"   强制默认提示词: {'是' if args.use_default_prompts else '否'}")
+    print(f"   提示词模板: {'自定义' if custom_prompt_templates else '默认smolagents'}")
     
     if use_templates:
         if args.use_mem0:
