@@ -59,8 +59,9 @@ class BaseMemoryComponent:
             "embedder": {
                 "provider": "openai",
                 "config": {
-                    "model": "text-embedding-3-small",
-                    "api_key": self.mem0_config.get('openrouter_api_key')
+                    "model": "text-embedding-ada-002",
+                    "api_key": self.mem0_config.get('openrouter_api_key'),
+                    "openai_base_url": "https://openrouter.ai/api/v1"
                 }
             },
             "llm": {

@@ -54,12 +54,8 @@ Key Reasoning Summary:"""
         try:
             print("🧠 调用模型进行推理总结...")
             
-            # Use gemini model for summarization
-            response = self.gemini_model.generate(
-                messages=[
-                    ChatMessage(role=MessageRole.USER, content=summarization_prompt)
-                ]
-            )
+            # Use correct message format for smolagents
+            response = self.gemini_model([{"role": "user", "content": summarization_prompt}])
             
             # Handle different response formats
             if hasattr(response, 'content'):
@@ -171,9 +167,7 @@ Text: {text}
 
 Keywords:"""
                 
-                response = self.gemini_model.generate(
-                    messages=[ChatMessage(role=MessageRole.USER, content=keyword_prompt)]
-                )
+                response = self.gemini_model([{"role": "user", "content": keyword_prompt}])
                 
                 # 处理响应
                 if hasattr(response, 'content'):
