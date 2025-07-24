@@ -13,10 +13,8 @@ from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 from datetime import datetime
 
-# Import from agent_gradio_evo.py
-from stella_core import (
-    manager_agent,
-)
+# Import from stella_core_optimized.py
+import stella_core_optimized
 
 class StellaEnglishUI:
     def __init__(self):
@@ -905,7 +903,7 @@ class StellaEnglishUI:
                             sys.stdout = capture
                             start_time = time.time()
                             print(f"🚀 Processing request: {message}")
-                            response = manager_agent.run(message, reset=False)
+                            response = stella_core_optimized.manager_agent.run(message, reset=False)
                             execution_time = time.time() - start_time
                             output_queue.put(('response', response, execution_time))
                         except Exception as e:
@@ -1077,6 +1075,14 @@ def main():
     print("   - Professional bright UI design")
     print()
     
+    # Initialize Stella core without launching its Gradio interface
+    print("🔧 Initializing Stella core...")
+    success = stella_core_optimized.initialize_stella(use_template=True, use_mem0=True)
+    if not success:
+        print("❌ Failed to initialize Stella core!")
+        return
+    
+    print("✅ Stella core initialized successfully!")
     stella = StellaEnglishUI()
     stella.launch(
         server_name="0.0.0.0",

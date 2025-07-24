@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 🌟 Stella AI Assistant - Web Interface Launcher
-Simple launcher with multiple access options
+Simple launcher with multiple access options and enhanced error handling
 """
 
 import sys
@@ -9,6 +9,11 @@ import os
 import subprocess
 import time
 import socket
+import logging
+
+# 设置日志记录
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 def get_local_ip():
     """Get local IP address"""
@@ -19,7 +24,8 @@ def get_local_ip():
         local_ip = s.getsockname()[0]
         s.close()
         return local_ip
-    except:
+    except Exception as e:
+        logger.warning(f"无法获取本地 IP: {e}")
         return "localhost"
 
 def check_port(port):
@@ -29,16 +35,56 @@ def check_port(port):
     sock.close()
     return result == 0
 
+def check_dependencies():
+    """检查必要的依赖包"""
+    required_packages = [
+        'gradio', 'requests', 'markdownify', 'smolagents', 
+        'numpy', 'pandas', 'matplotlib', 'seaborn'
+    ]
+    
+    # 特殊处理的包名映射
+    package_mappings = {
+        'sklearn': 'scikit-learn'  # sklearn 是 scikit-learn 的导入名
+    }
+    
+    missing_packages = []
+    for package in required_packages:
+        try:
+            __import__(package)
+        except ImportError:
+            missing_packages.append(package)
+    
+    # 检查 scikit-learn (导入时使用 sklearn)
+    try:
+        import sklearn
+    except ImportError:
+        missing_packages.append('scikit-learn')
+    
+    if missing_packages:
+        logger.error(f"❌ 缺少必要的依赖包: {', '.join(missing_packages)}")
+        logger.info("💡 请运行以下命令安装:")
+        logger.info(f"   pip install {' '.join(missing_packages)}")
+        return False
+    
+    logger.info("✅ 所有必要依赖包已安装")
+    return True
+
 def main():
     print("🤖" + "=" * 60 + "🤖")
-    print("   🌟 Stella AI Assistant - English UI Launcher 🌟")
+    print("   🌟 Stella AI Assistant - Enhanced Web Launcher 🌟")
     print("🤖" + "=" * 60 + "🤖")
     print()
+    
+    # 检查依赖
+    if not check_dependencies():
+        sys.exit(1)
+    
     print("🎯 Enhanced Features Enabled:")
     print("   ✅ Template Learning: ENABLED")
-    print("   ✅ Mem0 Memory: ENABLED")
+    print("   ✅ Mem0 Memory: ENABLED (with fallback)")
     print("   ✅ English Interface: ENABLED")
     print("   ✅ Biomedical Tools: ENABLED")
+    print("   ✅ Error Handling: ENHANCED")
     print()
     
     # Check if port is already in use
@@ -48,8 +94,8 @@ def main():
         try:
             subprocess.run(["pkill", "-f", "launch_stella_english"], check=False)
             time.sleep(2)
-        except:
-            pass
+        except Exception as e:
+            logger.warning(f"无法停止现有进程: {e}")
     
     print("🚀 Starting Stella AI Assistant...")
     print("📡 Configuring network access...")
@@ -74,11 +120,12 @@ def main():
         sys.argv = [sys.argv[0], "--use_template", "--use_mem0"]
         
         # Import and start Stella UI with enhanced features
+        logger.info("正在导入 Stella UI 模块...")
         from stella_ui_english import main as stella_ui_main
         
         print("✅ Stella core initialized with enhanced memory!")
         print("🧠 Template Learning: Active")
-        print("🤖 Mem0 Memory System: Active")
+        print("🤖 Mem0 Memory System: Active (with graceful fallback)")
         print("🚀 Launching English UI interface...")
         print()
         
@@ -94,7 +141,7 @@ def main():
         # Restore original argv in case of interruption
         sys.argv = original_argv
     except ImportError as e:
-        print(f"❌ Import error: {e}")
+        logger.error(f"❌ Import error: {e}")
         print("💡 Please ensure all dependencies are installed:")
         print("   pip install gradio requests markdownify smolagents mem0ai")
         print("   pip install numpy pandas scikit-learn matplotlib seaborn")
@@ -104,9 +151,10 @@ def main():
         sys.argv = original_argv
         sys.exit(1)
     except Exception as e:
-        print(f"❌ Error starting Stella with enhanced features: {e}")
+        logger.error(f"❌ Error starting Stella: {e}")
         print("🔧 Please check the error details above")
-        print("💡 If memory initialization fails, ensure mem0ai is properly installed")
+        print("💡 If memory initialization fails, the system will use fallback mechanisms")
+        print("💡 If embedding model fails, try updating your OpenRouter API configuration")
         # Restore original argv
         sys.argv = original_argv
         sys.exit(1)

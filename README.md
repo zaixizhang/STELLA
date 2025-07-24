@@ -41,8 +41,9 @@ python3 start_stella_web.py
 ### ✨ Core Features
 
 #### 🤖 **LLM-Driven Intelligent Tool Selection**
-- **Smart Analysis**: Uses Gemini-2.5-Pro for deep understanding of research queries
+- **Smart Analysis**: Uses Grok-4 for deep understanding of research queries
 - **Dynamic Loading**: Automatically selects and loads the most relevant tools from **61+ professional biomedical tools**
+- **Parallel Execution**: `execute_tools_in_parallel()` for simultaneous tool operations
 - **Multi-language**: Perfect support for English and Chinese scientific literature
 - **Real-time Optimization**: Continuously improves tool selection based on usage patterns
 
@@ -56,12 +57,13 @@ python3 start_stella_web.py
 - **Mem0 Enhanced**: Semantic memory search and intelligent knowledge management
 - **Knowledge Templates**: Save and retrieve successful problem-solving patterns
 - **Collaborative Memory**: Shared memory spaces for multi-agent collaboration
+- **Auto-Memory**: Lightweight automatic tracking of agent activities and performance
 - **User Personalization**: Individual memory profiles and preference learning
 
 #### 🤝 **Multi-Agent Architecture**
-- **Manager Agent**: Strategic coordinator with full system permissions (Gemini-2.5-Pro)
-- **Dev Agent**: Development and execution specialist (Claude Sonnet-4)
-- **Critic Agent**: Quality evaluation and improvement recommendations (Gemini-2.5-Pro)
+- **Manager Agent**: Strategic coordinator with full system permissions (Grok-4)
+- **Dev Agent**: Development and execution specialist (Gemini-2.5-Pro)
+- **Critic Agent**: Quality evaluation and improvement recommendations (Claude Sonnet-4)
 - **Tool Creation Agent**: Dynamic tool development specialist (Claude Sonnet-4)
 
 ### 🛠️ Professional Tool Library (61+ Tools)
@@ -101,19 +103,19 @@ python3 start_stella_web.py
 
 ```
 STELLA Framework
-├── 🧠 Manager Agent (Gemini-2.5-Pro)
+├── 🧠 Manager Agent (Grok-4)
 │   ├── 🎯 analyze_query_and_load_relevant_tools()
 │   ├── 📋 Task coordination and delegation
 │   ├── 🔧 Complete tool management authority
 │   └── 📚 Memory and knowledge base control
 │
-├── 🛠️ Dev Agent (Claude Sonnet-4)
+├── 🛠️ Dev Agent (Gemini-2.5-Pro)
 │   ├── 💻 Code execution and environment management
 │   ├── 🐍 Python script generation and testing
 │   ├── 📦 Package installation and dependency management
 │   └── 🔧 Basic tool discovery and loading
 │
-├── 🎯 Critic Agent (Gemini-2.5-Pro)
+├── 🎯 Critic Agent (Claude Sonnet-4)
 │   ├── 📊 Task completion quality evaluation
 │   ├── 🔍 Gap analysis and improvement recommendations
 │   ├── 🛠️ Tool creation necessity assessment
@@ -169,6 +171,23 @@ STELLA/
 - **Contents**: Biomedical databases, gene expression datasets, protein networks
 - **Extract to**: `agents/STELLA/resource/`
 
+### ⚡ Performance & Integration Features
+
+#### **Parallel Tool Execution**
+- **Multi-threading**: Execute multiple tools simultaneously for faster results
+- **Load Balancing**: Intelligent task distribution across available resources
+- **Timeout Management**: Automatic timeout handling for robust execution
+
+#### **MCP Server Integration** 
+- **PubMed MCP**: Direct integration with biomedical literature databases
+- **Extensible**: Support for custom MCP servers and protocols
+- **Real-time**: Live data access from external scientific databases
+
+#### **Auto-Memory System**
+- **Performance Tracking**: Automatic monitoring of agent and tool performance
+- **Success Pattern Recognition**: Learn from successful task completions
+- **Adaptive Optimization**: Continuous improvement based on usage analytics
+
 ### 🛠️ Installation
 
 #### Prerequisites
@@ -207,6 +226,21 @@ cd agents/STELLA/
 # Start STELLA
 python3 start_stella_web.py
 ```
+
+#### **Model Configuration**
+STELLA uses different specialized models for optimal performance:
+
+| Agent | Model | Purpose |
+|-------|-------|---------|
+| 🧠 Manager Agent | **Grok-4** | Strategic planning, tool coordination, query analysis |
+| 🛠️ Dev Agent | **Gemini-2.5-Pro** | Code execution, environment management, data analysis |
+| 🎯 Critic Agent | **Claude Sonnet-4** | Quality evaluation, improvement recommendations |
+| 🧰 Tool Creation Agent | **Claude Sonnet-4** | Dynamic tool development, best practices research |
+
+**Why Multiple Models?**
+- **Grok-4**: Excellent at strategic thinking and coordination tasks
+- **Gemini-2.5-Pro**: Superior code generation and scientific analysis capabilities  
+- **Claude Sonnet-4**: Outstanding evaluation, reasoning, and code quality assessment
 
 ### 🚀 Usage Guide
 
@@ -281,7 +315,7 @@ Analyze gene coexpression networks in cancer datasets and identify potential bio
 
 STELLA follows an optimized workflow for maximum efficiency:
 
-1. **🎯 Query Analysis**: Manager agent analyzes user request using Gemini-2.5-Pro
+1. **🎯 Query Analysis**: Manager agent analyzes user request using Grok-4
 2. **🛠️ Tool Selection**: `analyze_query_and_load_relevant_tools()` automatically loads relevant professional tools
 3. **📋 Task Delegation**: Manager coordinates with specialized agents for execution
 4. **🔍 Quality Evaluation**: Critic agent assesses completion quality and suggests improvements
@@ -345,8 +379,9 @@ MIT License - see LICENSE file for details.
 ### ✨ 核心特性
 
 #### 🤖 **LLM驱动的智能工具选择**
-- **智能分析**: 使用Gemini-2.5-Pro深度理解研究查询
+- **智能分析**: 使用Grok-4深度理解研究查询
 - **动态加载**: 自动从**61+专业生物医学工具**中选择最相关的工具
+- **并行执行**: `execute_tools_in_parallel()` 实现同时执行多个工具操作
 - **多语言支持**: 完美支持中英文科学文献
 - **实时优化**: 基于使用模式持续改进工具选择
 
@@ -424,7 +459,7 @@ pip install biopython rdkit-pypi pymed arxiv scholarly
 
 ### 🎯 工作流程
 
-1. **🎯 查询分析**: Manager智能体使用Gemini-2.5-Pro分析用户请求
+1. **🎯 查询分析**: Manager智能体使用Grok-4分析用户请求
 2. **🛠️ 工具选择**: 自动加载最相关的专业工具
 3. **📋 任务委派**: Manager协调专业智能体执行任务
 4. **🔍 质量评估**: Critic智能体评估完成质量并提出改进建议
