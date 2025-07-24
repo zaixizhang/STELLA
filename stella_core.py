@@ -13,8 +13,7 @@ import argparse
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from predefined_tools import visit_webpage, search_github_repositories, search_github_code, get_github_repository_info, run_shell_command, create_conda_environment, install_packages_conda, install_packages_pip, check_gpu_status, create_script, run_script, create_requirements_file, monitor_training_logs
-# from new_tools.virtual_screening_tools import *
+from predefined_tools import *
 from smolagents import (
     CodeAgent,
     ToolCallingAgent,
@@ -26,12 +25,18 @@ from smolagents import (
 )
 from mcp import StdioServerParameters
 
+# Environment variables management
+from dotenv import load_dotenv
+
 # Optimization imports
 from functools import lru_cache, wraps
 import threading
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 from collections import deque
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Mem0 integration for enhanced memory management
 try:
@@ -43,9 +48,30 @@ except ImportError:
     print("⚠️ Mem0 library not installed - using traditional knowledge base")
     print("💡 Install with: pip install mem0ai")
 
-OPENROUTER_API_KEY_STRING = "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"
+# === API Keys Management ===
+def get_api_key(key_name: str, required: bool = True) -> str:
+    """Get API key from environment variables with proper error handling."""
+    api_key = os.getenv(key_name)
+    
+    if required and not api_key:
+        print(f"❌ Missing required API key: {key_name}")
+        print(f"💡 Please set {key_name} in your .env file")
+        print(f"📋 Copy .env.example to .env and fill in your API keys")
+        if key_name == "OPENROUTER_API_KEY":
+            print(f"🔗 Get your OpenRouter API key at: https://openrouter.ai/")
+            sys.exit(1)
+    elif not api_key:
+        print(f"⚠️ Optional API key not set: {key_name}")
+        return ""
+    
+    return api_key
 
-openrouter_model_id = "anthropic/claude-sonnet-4"  # Example model, change as needed
+# Load API keys from environment variables
+OPENROUTER_API_KEY_STRING = get_api_key("OPENROUTER_API_KEY", required=True)
+MEM0_API_KEY = get_api_key("MEM0_API_KEY", required=False)
+PHOENIX_API_KEY = get_api_key("PHOENIX_API_KEY", required=False)
+TAVILY_API_KEY = get_api_key("TAVILY_API_KEY", required=False)
+GEMINI_API_KEY = get_api_key("GEMINI_API_KEY", required=False)
 
 HTTP_REFERER_URL = "http://localhost:8000"  # Replace if you have a specific site
 X_TITLE_APP_NAME = "My Smolagent Web Search System" # Replace with your app name
@@ -58,7 +84,7 @@ os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = "http://localhost:6006"
 # --- Import Knowledge Base System ---
 from Knowledge_base import KnowledgeBase, Mem0EnhancedKnowledgeBase, MEM0_AVAILABLE
 from memory_manager import MemoryManager
-# Mem0EnhancedKnowledgeBase class is now imported from Knowledge_base.py
+
 
 
 # Global memory manager instance (replaces global_knowledge_base)
@@ -469,8 +495,157 @@ def load_dynamic_tool(tool_name: str, add_to_agents: bool = True) -> str:
 
 
 @tool
+def execute_tools_in_parallel(tool_calls: list, max_workers: int = 3, timeout: int = 30) -> str:
+    """Execute multiple tool calls in parallel to improve efficiency.
+    
+    Args:
+        tool_calls: List of tool call dictionaries with 'tool_name' and 'args' keys
+        max_workers: Maximum number of parallel workers (default: 3)
+        timeout: Timeout in seconds for each tool call (default: 30)
+        
+    Returns:
+        Formatted results from all parallel tool executions
+        
+    Example:
+        tool_calls = [
+            {"tool_name": "query_pubmed", "args": {"query": "protein research", "max_results": 5}},
+            {"tool_name": "query_uniprot", "args": {"genes": ["FAST"], "fields": "function"}},
+            {"tool_name": "multi_source_search", "args": {"query": "cell fusion", "sources": "google"}}
+        ]
+        results = execute_tools_in_parallel(tool_calls)
+    """
+    try:
+        import concurrent.futures
+        import time
+        
+        global manager_agent
+        
+        if not tool_calls:
+            return "❌ No tool calls provided for parallel execution"
+        
+        if not isinstance(tool_calls, list):
+            return "❌ tool_calls must be a list of dictionaries"
+        
+        # Validate tool calls format
+        for i, call in enumerate(tool_calls):
+            if not isinstance(call, dict):
+                return f"❌ Tool call {i+1} must be a dictionary"
+            if 'tool_name' not in call:
+                return f"❌ Tool call {i+1} missing 'tool_name'"
+            if 'args' not in call:
+                return f"❌ Tool call {i+1} missing 'args'"
+            if call['tool_name'] not in manager_agent.tools:
+                return f"❌ Tool '{call['tool_name']}' not found in loaded tools"
+        
+        def execute_single_tool(tool_call):
+            """Execute a single tool call with timeout"""
+            tool_name = tool_call['tool_name']
+            args = tool_call['args']
+            start_time = time.time()
+            
+            try:
+                tool_func = manager_agent.tools[tool_name]
+                result = tool_func(**args)
+                duration = time.time() - start_time
+                
+                return {
+                    'tool_name': tool_name,
+                    'success': True,
+                    'result': result,
+                    'duration': duration,
+                    'error': None
+                }
+            except Exception as e:
+                duration = time.time() - start_time
+                return {
+                    'tool_name': tool_name,
+                    'success': False,
+                    'result': None,
+                    'duration': duration,
+                    'error': str(e)
+                }
+        
+        # Execute tools in parallel
+        results = []
+        start_total = time.time()
+        
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # Submit all tool calls
+            future_to_call = {
+                executor.submit(execute_single_tool, call): call 
+                for call in tool_calls
+            }
+            
+            # Collect results with timeout
+            for future in concurrent.futures.as_completed(future_to_call, timeout=timeout):
+                try:
+                    result = future.result(timeout=5)  # Individual result timeout
+                    results.append(result)
+                except concurrent.futures.TimeoutError:
+                    call = future_to_call[future]
+                    results.append({
+                        'tool_name': call['tool_name'],
+                        'success': False,
+                        'result': None,
+                        'duration': timeout,
+                        'error': 'Timeout'
+                    })
+                except Exception as e:
+                    call = future_to_call[future]
+                    results.append({
+                        'tool_name': call['tool_name'],
+                        'success': False,
+                        'result': None,
+                        'duration': 0,
+                        'error': str(e)
+                    })
+        
+        total_duration = time.time() - start_total
+        
+        # Format results
+        successful = [r for r in results if r['success']]
+        failed = [r for r in results if not r['success']]
+        
+        output = f"🚀 Parallel Execution Complete ({len(tool_calls)} tools, {total_duration:.1f}s total)\n"
+        output += f"✅ Successful: {len(successful)} | ❌ Failed: {len(failed)}\n\n"
+        
+        # Show successful results
+        if successful:
+            output += "📋 Successful Results:\n"
+            for result in successful:
+                tool_name = result['tool_name']
+                duration = result['duration']
+                result_preview = str(result['result'])[:100] + "..." if len(str(result['result'])) > 100 else str(result['result'])
+                output += f"  ✅ {tool_name} ({duration:.1f}s): {result_preview}\n"
+        
+        # Show failed results
+        if failed:
+            output += f"\n❌ Failed Results:\n"
+            for result in failed:
+                tool_name = result['tool_name']
+                error = result['error']
+                output += f"  ❌ {tool_name}: {error}\n"
+        
+        # Performance summary
+        if successful:
+            avg_duration = sum(r['duration'] for r in successful) / len(successful)
+            max_duration = max(r['duration'] for r in successful)
+            output += f"\n📊 Performance: Avg {avg_duration:.1f}s, Max {max_duration:.1f}s"
+            
+            # Calculate efficiency gain
+            sequential_time = sum(r['duration'] for r in successful)
+            if sequential_time > total_duration:
+                speedup = sequential_time / total_duration
+                output += f", {speedup:.1f}x speedup vs sequential"
+        
+        return output
+        
+    except Exception as e:
+        return f"❌ Parallel execution error: {str(e)}"
+
+@tool
 def analyze_query_and_load_relevant_tools(user_query: str, max_tools: int = 10) -> str:
-    """Analyze user query using LLM and intelligently load the most relevant tools from literature_tools.py, database_tools.py, and virtual_screening_tools.py.
+    """Analyze user query using LLM and intelligently load the most relevant tools from database_tools.py, virtual_screening_tools.py, and biosecurity_tools.py.
     
     Optimized version with caching and reduced token usage.
     
@@ -508,9 +683,9 @@ def analyze_query_and_load_relevant_tools(user_query: str, max_tools: int = 10) 
         # Define tool files to analyze (use absolute paths based on script location)
         script_dir = os.path.dirname(os.path.abspath(__file__))
         tool_files = {
-            'literature_tools': os.path.join(script_dir, 'new_tools', 'literature_tools.py'),
             'database_tools': os.path.join(script_dir, 'new_tools', 'database_tools.py'),
-            'virtual_screening_tools': os.path.join(script_dir, 'new_tools', 'virtual_screening_tools.py')
+            'virtual_screening_tools': os.path.join(script_dir, 'new_tools', 'virtual_screening_tools.py'),
+            'biosecurity_tools': os.path.join(script_dir, 'new_tools', 'biosecurity_tools.py')
         }
         
         available_tools = {}
@@ -551,7 +726,7 @@ def analyze_query_and_load_relevant_tools(user_query: str, max_tools: int = 10) 
                 continue
         
         if not available_tools:
-            return f"❌ No tools found in literature_tools.py, database_tools.py, or virtual_screening_tools.py"
+            return f"❌ No tools found in database_tools.py, virtual_screening_tools.py, or biosecurity_tools.py"
         
         # Create tool list for LLM analysis - OPTIMIZED
         tool_list = []
@@ -633,11 +808,34 @@ Return JSON with top {max_tools} most relevant tools:
             except Exception as e:
                 continue
         
-        # Generate concise result summary
+        # Generate enhanced result with tool signatures
         result = f"🎯 Loaded {loaded_count} tools for: '{user_query[:50]}...'\n"
-        result += f"Tools: {', '.join([t['name'] for t in loaded_tools[:5]])}"
+        result += f"📋 Tools with signatures:\n"
+        
+        # Add tool signatures for immediate use
+        for i, tool_data in enumerate(loaded_tools[:5], 1):
+            tool_name = tool_data['name']
+            try:
+                # Get tool signature inline
+                if tool_name in manager_agent.tools:
+                    import inspect
+                    tool_func = manager_agent.tools[tool_name]
+                    sig = inspect.signature(tool_func)
+                    
+                    # Extract key parameters (first 3 for conciseness)
+                    params = list(sig.parameters.keys())[:3]
+                    param_str = ", ".join(params) if params else "no params"
+                    
+                    result += f"  {i}. {tool_name}({param_str}...)\n"
+                else:
+                    result += f"  {i}. {tool_name} (signature unavailable)\n"
+            except Exception:
+                result += f"  {i}. {tool_name} (signature error)\n"
+        
         if len(loaded_tools) > 5:
-            result += f" (+{len(loaded_tools)-5} more)"
+            result += f"  ... (+{len(loaded_tools)-5} more tools loaded)\n"
+        
+        result += f"\n💡 All tools ready to use with correct parameter names shown above"
         
         # Cache the result
         with tool_loading_lock:
@@ -696,7 +894,28 @@ def _fallback_tool_selection(user_query: str, available_tools: dict, max_tools: 
                 if hasattr(tool_creation_agent, 'python_executor') and hasattr(tool_creation_agent.python_executor, 'custom_tools'):
                     tool_creation_agent.python_executor.custom_tools[tool_name] = tool_func
     
-    return f"🎯 Fallback Analysis: '{user_query}'\n✅ Loaded {loaded_count} tools using keyword matching."
+    # Generate enhanced fallback result with signatures
+    result = f"🎯 Fallback Analysis: '{user_query}'\n✅ Loaded {loaded_count} tools using keyword matching.\n"
+    result += f"📋 Tools with signatures:\n"
+    
+    # Add signatures for fallback loaded tools
+    tool_count = 0
+    for tool_name, score in selected_tools:
+        if score > 0 and tool_count < 5:
+            try:
+                if tool_name in manager_agent.tools:
+                    import inspect
+                    tool_func = manager_agent.tools[tool_name]
+                    sig = inspect.signature(tool_func)
+                    params = list(sig.parameters.keys())[:3]
+                    param_str = ", ".join(params) if params else "no params"
+                    result += f"  {tool_count+1}. {tool_name}({param_str}...)\n"
+                    tool_count += 1
+            except Exception:
+                pass
+    
+    result += f"\n💡 Use tools with the parameter names shown above"
+    return result
 
 
 @tool
@@ -1321,23 +1540,8 @@ def get_agent_contributions(agent_name: str) -> str:
         return f"❌ Error getting agent contributions: {str(e)}"
 
 
-
-# --- Initialize the Model ---
-# The OpenAIServerModel can be used for any OpenAI-compatible API, including OpenRouter.
-
-# Check if the placeholder key is still there and warn the user.
-if "YOUR_ACTUAL_OPENROUTER_KEY_HERE" in OPENROUTER_API_KEY_STRING:
-    print("🔴 WARNING: You are using a placeholder API key.")
-    print("Please replace 'sk-or-v1-YOUR_ACTUAL_OPENROUTER_KEY_HERE' with your actual OpenRouter API key.")
-    # You might want to exit here if the key isn't real, to prevent errors.
-    # exit()
-
-print("🤖 Model Configuration:")
-print(f"   Dev Agent: {openrouter_model_id}")
-print(f"   Manager & Critic: google/gemini-2.5-pro")
-
-model = OpenAIServerModel(
-    model_id=openrouter_model_id,
+claude_model = OpenAIServerModel(
+    model_id="anthropic/claude-sonnet-4",
     api_base="https://openrouter.ai/api/v1",
     api_key=OPENROUTER_API_KEY_STRING,
 )
@@ -1397,7 +1601,8 @@ dev_tool_management = [
 
 # 为 manager_agent 定义完整工具管理权限 - OPTIMIZED
 manager_tool_management = [
-    analyze_query_and_load_relevant_tools,  # 🎯 智能工具检索和加载
+    analyze_query_and_load_relevant_tools,  # 🎯 智能工具检索和加载（集成工具签名）
+    execute_tools_in_parallel,  # 🚀 并行工具执行（提高效率）
     evaluate_with_critic,     # 🎯 评估任务质量
     list_dynamic_tools,       # 📋 查看工具库
     create_new_tool,          # 🛠️ 决定创建新工具
@@ -1408,19 +1613,28 @@ manager_tool_management = [
     auto_recall_experience,   # 🧠 智能回忆相似任务
     check_agent_performance,  # 📊 检查智能体性能
     quick_tool_stats,         # 🔧 快速工具统计
-    WebSearchTool(),
-    visit_webpage,
+    # OPTIMIZED: Keep only most reliable web tools
+    WebSearchTool(),          # ✅ Most reliable web search
+    extract_url_content,      # ✅ Specialized content extraction
+    query_arxiv,
+    query_scholar,
+    query_pubmed,
+    extract_pdf_content,
+    fetch_supplementary_info_from_doi,
+    
+    # Unified Search Tool (Simplified Integration)
+    multi_source_search,          # 🔍 Unified search tool (default: google,serpapi) - replaces all other search tools
     
     # GitHub tools
     search_github_repositories,
     search_github_code,
     get_github_repository_info,
     
-    # Knowledge Base Tools
-    retrieve_similar_templates,
-    save_successful_template,
+    # Knowledge Base Tools (Templates disabled by default)
+    # retrieve_similar_templates,     # Disabled for simplified workflow
+    # save_successful_template,       # Disabled for simplified workflow
     list_knowledge_base_status,
-    search_templates_by_keyword,
+    # search_templates_by_keyword,    # Disabled for simplified workflow
     
     # Mem0-specific Tools
     get_user_memories,
@@ -1437,9 +1651,17 @@ manager_tool_management = [
 
 # Create the web search and development agent (ToolCallingAgent)
 base_tools = [
-    # Core web and search tools
-    WebSearchTool(),
-    visit_webpage,
+    # Core web and search tools - OPTIMIZED: Keep only most reliable tools
+    WebSearchTool(),              # ✅ Most reliable web search (DuckDuckGo/Bing)
+    extract_url_content,          # ✅ Specialized content extraction with BeautifulSoup
+    query_arxiv,
+    query_scholar,
+    query_pubmed,
+    extract_pdf_content,
+    fetch_supplementary_info_from_doi,
+    
+    # Unified Search Tool for dev_agent
+    multi_source_search,          # 🔍 Unified search tool - supports all search needs
     
     # GitHub tools
     search_github_repositories,
@@ -1466,7 +1688,7 @@ all_tools = base_tools + mcp_tools
 
 dev_agent = ToolCallingAgent(
     tools=all_tools,
-    model=model,
+    model=gemini_model,
     max_steps=15,  # Reduced from 20 to improve performance
     name="dev_agent",
     description="""A specialist agent for code execution and environment management.
@@ -1476,7 +1698,7 @@ dev_agent = ToolCallingAgent(
 )
 
 dev_agent.prompt_templates["managed_agent"]["task"] += """
-Save Files and Data to the '../agent_outputs' directory."""
+Save Files and Data to the './agent_outputs' directory."""
 
 # Enable automatic memory recording for dev_agent
 dev_agent = create_memory_enabled_agent(dev_agent, "dev_agent")
@@ -1484,9 +1706,17 @@ dev_agent = create_memory_enabled_agent(dev_agent, "dev_agent")
 
 # Create tool creation agent for writing new tools
 tool_creation_tools = [
-    # Core web and search tools  
-    WebSearchTool(),
-    visit_webpage,
+    # OPTIMIZED: Core web and search tools - keep only most reliable
+    WebSearchTool(),              # ✅ Most reliable web search
+    extract_url_content,          # ✅ Specialized content extraction
+    query_arxiv,
+    query_scholar,
+    query_pubmed,
+    extract_pdf_content,
+    fetch_supplementary_info_from_doi,
+    
+    # Unified Search Tool for research and best practices
+    multi_source_search,          # 🔍 Unified search tool - supports comprehensive research and best practices
     
     # GitHub tools for research and code examples
     search_github_repositories,
@@ -1507,7 +1737,7 @@ tool_creation_tools = [
 
 tool_creation_agent = ToolCallingAgent(
     tools=tool_creation_tools,
-    model=model,
+    model=claude_model,
     max_steps=20,  # Reduced from 25
     name="tool_creation_agent",
     description="""A specialized agent for creating new Python tools and utilities.
@@ -1547,16 +1777,16 @@ Always test your created tools to ensure they work correctly."""
 tool_creation_agent = create_memory_enabled_agent(tool_creation_agent, "tool_creation_agent")
 
 
-# Create critic agent for intelligent evaluation (FIXED)
+# Create critic agent for intelligent evaluation (OPTIMIZED)
 critic_tools = [
-    WebSearchTool(),  # For querying best practices
-    visit_webpage,    # For reference materials
-    run_shell_command,  # For verification tasks
+    WebSearchTool(),         # ✅ For querying best practices - most reliable
+    extract_url_content,     # ✅ For reference materials - specialized extraction
+    run_shell_command,       # For verification tasks
 ]
 
 critic_agent = ToolCallingAgent(
     tools=critic_tools,  # ✅ Fixed: Added necessary tools
-    model=gemini_model,
+    model=claude_model,
     max_steps=5,  # Reduced from 8
     name="critic_agent", 
     description="""Expert critic agent that evaluates task completion quality and determines if specialized tools are needed.
@@ -1620,7 +1850,7 @@ def main():
     else:
         # 默认尝试加载自定义提示词
         try:
-            prompt_templates_path = os.path.join(os.path.dirname(__file__), "prompts", "Stella_prompt.yaml")
+            prompt_templates_path = os.path.join(os.path.dirname(__file__), "prompts", "Stella_prompt_modified.yaml")
             with open(prompt_templates_path, 'r', encoding='utf-8') as stream:
                 custom_prompt_templates = yaml.safe_load(stream)
             print(f"✅ Custom prompts loaded: {prompt_templates_path}")
@@ -1685,7 +1915,7 @@ def main():
             print("✅ Custom prompt templates rendered with Jinja variables")
             manager_agent = CodeAgent(
                 tools=manager_tool_management,  # 使用完整的工具管理权限
-                model=gemini_model,
+                model=grok_model,
                 managed_agents=[dev_agent, critic_agent, tool_creation_agent],
                 additional_authorized_imports=[
                     # Basic Python modules
@@ -1705,29 +1935,38 @@ def main():
                     "re", "unicodedata", "string"
                 ],
                 name="manager_agent", 
-                description="""The main coordinator agent with self-evolution capabilities and tool management.
+                description="""STELLA - Self-Evolving Laboratory Assistant.
 
-                🎯 WORKFLOW:
-                1. FIRST: Use analyze_query_and_load_relevant_tools() for domain-specific tools
-                2. Plan and delegate tasks to specialized agents
-                3. Evaluate results with critic_agent
-                4. Create new tools if needed
-                5. Save successful approaches when enabled
+                🎯 SIMPLIFIED WORKFLOW (MANDATORY):
+                1. Task Planning: Create detailed action plan with clear objectives
+                2. Tool Preparation: Use analyze_query_and_load_relevant_tools() after planning (includes signatures)
+                3. Execution: Use tools with exact parameter names; use execute_tools_in_parallel() for independent calls
+                4. Quality Evaluation: Assess results with critic_agent
+                5. Self-Evolution: Create new tools if needed (templates disabled)
+                6. Knowledge Storage: Save successful approaches to memory (when enabled)
+                
+                🔍 UNIFIED SEARCH CAPABILITY:
+                - multi_source_search: Unified search tool with flexible source combinations
+                  • "google": Basic Google search (0.3s)
+                  • "google,serpapi": Enhanced Google search (1-2s, DEFAULT)
+                  • "google,knowledge": Deep research search (30s)
+                  • "google,knowledge,serpapi": Full-featured search combination (45s)
                 
                 🤖 Available agents:
-                - dev_agent: Code execution and environment management
+                - dev_agent: Code execution and environment management (with unified search)
                 - critic_agent: Quality evaluation  
-                - tool_creation_agent: New tool creation
+                - tool_creation_agent: New tool creation (with unified search)
                 
                 📋 60+ specialized tools available on-demand (PubMed, UniProt, ChEMBL, KEGG, etc.)
+                💡 Template retrieval disabled for simplified workflow - focus on direct problem solving
                 """,
-                prompt_templates=rendered_templates,  # 使用渲染后的模板
+                prompt_templates=rendered_templates,  # Use rendered templates
             )
         else:
-            # 使用默认模板
+            # Use default templates
             manager_agent = CodeAgent(
                 tools=manager_tool_management,  
-                model=gemini_model,
+                model=grok_model,
                 managed_agents=[dev_agent, critic_agent, tool_creation_agent],
                 additional_authorized_imports=[
                     "time", "datetime", "os", "sys", "json", "csv", "pickle", "pathlib",
@@ -1752,7 +1991,7 @@ def main():
         print("🔄 Creating basic manager agent without custom prompts...")
         manager_agent = CodeAgent(
             tools=manager_tool_management,
-            model=gemini_model,
+            model=grok_model,
             managed_agents=[dev_agent, critic_agent, tool_creation_agent],
             name="manager_agent",
             description="Basic manager agent"
@@ -1768,8 +2007,7 @@ def main():
             global_memory_manager = MemoryManager(
                 gemini_model=gemini_model,
                 use_mem0=args.use_mem0,
-                mem0_platform=args.mem0_platform,
-                mem0_api_key=args.mem0_api_key,
+                mem0_api_key=MEM0_API_KEY,
                 openrouter_api_key=OPENROUTER_API_KEY_STRING
             )
             
@@ -1789,42 +2027,11 @@ def main():
         if args.use_mem0:
             print("💡 Mem0 option requires --use_template")
     
-    print("\n🌟 Launching Stella Optimized - Performance Enhanced Version")
-    print("=" * 80)
-    print("✨ Key Optimizations:")
-    print("   ✓ Reduced token usage with concise prompts")
-    print("   ✓ Tool loading cache with 5-minute TTL")
-    print("   ✓ Retry mechanism with exponential backoff")
-    print("   ✓ Reduced agent max steps (15/20/5)")
-    print("   ✓ LRU cache for repeated operations")
-    print("   ✓ Simplified evaluation without complex JSON")
-    print("")
-    print("🤖 Agent Configuration:")
-    print(f"   Dev Agent: {openrouter_model_id} (15 steps)")
-    print(f"   Manager & Critic: google/gemini-2.5-pro (5 steps)")
-    print(f"   Tool Creation: {openrouter_model_id} (20 steps)")
     print(f"   Prompt Templates: {'Custom' if custom_prompt_templates else 'Default'}")
     
     if use_templates:
         backend = "Mem0 Enhanced" if args.use_mem0 else "Traditional KB"
         print(f"   Memory System: {backend}")
-    
-    print("")
-    print("🎯 Optimized Features:")
-    print("   1. Cache tool selections for similar queries")
-    print("   2. Simplified critic evaluation")
-    print("   3. Reduced logging verbosity")
-    print("   4. Parallel task execution support")
-    print("   5. Automatic retry on failures")
-    print("   6. 🧠 Automatic memory system - tracks performance")
-    print("   7. 🔍 Smart task recall - learns from past successes")
-    print("   8. 📊 Real-time agent performance monitoring")
-    print("")
-    print("🧠 Memory Tools Available:")
-    print("   - auto_recall_experience: Find similar successful tasks")
-    print("   - check_agent_performance: Monitor agent success rates")
-    print("   - quick_tool_stats: See which tools work best")
-    print("=" * 80)
     
     # Final check before creating Gradio UI
     if manager_agent is None:
@@ -1832,7 +2039,7 @@ def main():
         print("🔧 Creating emergency fallback manager agent...")
         manager_agent = CodeAgent(
             tools=manager_tool_management[:3],  # Use only first 3 tools to avoid issues
-            model=gemini_model,
+            model=grok_model,
             managed_agents=[dev_agent],  # Minimal agents
             name="emergency_manager",
             description="Emergency fallback manager agent"
@@ -1863,7 +2070,7 @@ def initialize_stella(use_template=True, use_mem0=True):
         custom_prompt_templates = None
     else:
         try:
-            prompt_templates_path = os.path.join(os.path.dirname(__file__), "prompts", "Stella_prompt.yaml")
+            prompt_templates_path = os.path.join(os.path.dirname(__file__), "prompts", "Stella_prompt_modified.yaml")
             with open(prompt_templates_path, 'r', encoding='utf-8') as stream:
                 custom_prompt_templates = yaml.safe_load(stream)
             print(f"✅ Custom prompts loaded: {prompt_templates_path}")
@@ -1922,7 +2129,7 @@ def initialize_stella(use_template=True, use_mem0=True):
             print("✅ Custom prompt templates rendered with Jinja variables")
             manager_agent = CodeAgent(
                 tools=manager_tool_management,
-                model=gemini_model,
+                model=grok_model,
                 managed_agents=[dev_agent, critic_agent, tool_creation_agent],
                 additional_authorized_imports=[
                     "time", "datetime", "os", "sys", "json", "csv", "pickle", "pathlib",
@@ -1935,29 +2142,38 @@ def initialize_stella(use_template=True, use_mem0=True):
                     "re", "unicodedata", "string"
                 ],
                 name="manager_agent", 
-                description="""The main coordinator agent with self-evolution capabilities and tool management.
+                description="""STELLA - Self-Evolving Laboratory Assistant with Simplified Workflow.
 
-                🎯 WORKFLOW:
-                1. FIRST: Use analyze_query_and_load_relevant_tools() for domain-specific tools
-                2. Plan and delegate tasks to specialized agents
-                3. Evaluate results with critic_agent
-                4. Create new tools if needed
-                5. Save successful approaches when enabled
+                🎯 SIMPLIFIED WORKFLOW (MANDATORY):
+                1. Task Planning: Create detailed action plan with clear objectives
+                2. Tool Preparation: Use analyze_query_and_load_relevant_tools() after planning (includes signatures)
+                3. Execution: Use tools with exact parameter names; use execute_tools_in_parallel() for parallel calls
+                4. Quality Evaluation: Assess results with critic_agent
+                5. Self-Evolution: Create new tools if needed (templates disabled)
+                6. Knowledge Storage: Save successful approaches to memory (when enabled)
+                
+                🔍 UNIFIED SEARCH CAPABILITY:
+                - multi_source_search: Unified search tool with flexible source combinations
+                  • "google": Basic Google search (0.3s)
+                  • "google,serpapi": Enhanced Google search (1-2s, DEFAULT)
+                  • "google,knowledge": Deep research search (30s)
+                  • "google,knowledge,serpapi": Full-featured search combination (45s)
                 
                 🤖 Available agents:
-                - dev_agent: Code execution and environment management
+                - dev_agent: Code execution and environment management (with unified search)
                 - critic_agent: Quality evaluation  
-                - tool_creation_agent: New tool creation
+                - tool_creation_agent: New tool creation (with unified search)
                 
                 📋 60+ specialized tools available on-demand (PubMed, UniProt, ChEMBL, KEGG, etc.)
+                💡 Template retrieval disabled for simplified workflow - focus on direct problem solving
                 """,
                 prompt_templates=rendered_templates,
             )
         else:
-            # 使用默认模板
+            # Use default templates
             manager_agent = CodeAgent(
                 tools=manager_tool_management,
-                model=gemini_model,
+                model=grok_model,
                 managed_agents=[dev_agent, critic_agent, tool_creation_agent],
                 additional_authorized_imports=[
                     "time", "datetime", "os", "sys", "json", "csv", "pickle", "pathlib",
@@ -1988,6 +2204,7 @@ def initialize_stella(use_template=True, use_mem0=True):
             global_memory_manager = MemoryManager(
                 gemini_model=gemini_model,
                 use_mem0=use_mem0,
+                mem0_api_key=MEM0_API_KEY,
                 openrouter_api_key=OPENROUTER_API_KEY_STRING
             )
             print("✅ Memory system initialized")

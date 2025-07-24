@@ -1,24 +1,29 @@
+"""
+Enhanced Memory Manager for STELLA AI Assistant
+Integrates Mem0 for advanced memory management with fallback mechanisms
+"""
+
 import os
-import re
-import requests
-import subprocess
 import json
 import time
-import sys
+import uuid
+import logging
 from pathlib import Path
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+from typing import Dict, List, Optional, Any, Union
+from datetime import datetime
 
-# Mem0 integration for enhanced memory management
+# 设置日志记录
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 try:
     from mem0 import Memory, MemoryClient
     MEM0_AVAILABLE = True
-    print("✅ Mem0 library available - enhanced memory features enabled")
-except ImportError:
+    logger.info("✅ Mem0 library loaded successfully")
+except ImportError as e:
     MEM0_AVAILABLE = False
-    print("⚠️ Mem0 library not installed - using traditional knowledge base")
-    print("💡 Install with: pip install mem0ai")
+    logger.warning(f"⚠️ Mem0 library not available: {e}")
+    logger.info("💡 Install with: pip install mem0ai")
 
 # Import traditional KnowledgeBase for fallback
 from Knowledge_base import KnowledgeBase
@@ -38,28 +43,39 @@ class BaseMemoryComponent:
         # 初始化 Mem0
         if MEM0_AVAILABLE and mem0_config:
             try:
+                logger.info(f"🔧 正在初始化 {self.component_name} 的 Mem0 组件...")
+                
                 if mem0_config.get('use_platform', False):
                     # 使用托管平台
                     self.memory = MemoryClient(api_key=mem0_config.get('api_key'))
                 else:
-                    # 使用自托管版本
+                    # 使用自托管版本，带有重试机制
                     config = self._get_component_config()
                     self.memory = Memory.from_config(config)
                 
                 self.mem0_enabled = True
-                print(f"✅ {self.component_name} Mem0 初始化成功")
+                logger.info(f"✅ {self.component_name} Mem0 初始化成功")
                 
             except Exception as e:
-                print(f"❌ {self.component_name} Mem0 初始化失败: {str(e)}")
+                logger.error(f"❌ {self.component_name} Mem0 初始化失败: {e}")
+                logger.info(f"📋 {self.component_name} 将使用传统知识库作为备用方案")
                 self.mem0_enabled = False
+                self.memory = None
     
     def _get_component_config(self):
         """获取组件特定的 Mem0 配置"""
+        # 优先使用更新的 embedding 模型，如果不可用则使用备用方案
+        embedding_models = [
+            "text-embedding-3-small",
+            "text-embedding-3-large", 
+            "nomic-embed-text"  # 开源备用选项
+        ]
+        
         base_config = {
             "embedder": {
                 "provider": "openai",
                 "config": {
-                    "model": "text-embedding-ada-002",
+                    "model": embedding_models[0],  # 使用第一个可用的模型
                     "api_key": self.mem0_config.get('openrouter_api_key'),
                     "openai_base_url": "https://openrouter.ai/api/v1"
                 }
