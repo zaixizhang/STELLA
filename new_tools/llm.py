@@ -17,7 +17,7 @@ class LLMChat:
         Args:
             api_key: OpenRouter API key. If not provided, will use OPENROUTER_API_KEY env var
         """
-        self.api_key = "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"
+        self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
         if not self.api_key:
             raise ValueError("OpenRouter API key is required. Set OPENROUTER_API_KEY environment variable or pass api_key parameter.")
         
