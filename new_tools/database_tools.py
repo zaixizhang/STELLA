@@ -13,7 +13,7 @@ import time
 from smolagents import tool, OpenAIServerModel
 
 
-OPENROUTER_API_KEY_STRING = "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"
+OPENROUTER_API_KEY_STRING = ""
 
 # Use absolute path for schema database
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
