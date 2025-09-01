@@ -1,0 +1,45 @@
+# STELLA AI Assistant - Python Dependencies
+# Python 3.12 required
+
+# Core dependencies
+requests>=2.31.0
+markdownify>=0.11.6
+PyYAML>=6.0
+python-dotenv>=1.0.0
+jinja2>=3.1.2
+
+# AI/ML frameworks
+smolagents>=0.1.0
+openai>=1.0.0
+
+# Scientific computing (install via conda if possible)
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Memory and knowledge base
+mem0ai>=0.0.20  # Optional: Enhanced memory features
+
+# Web scraping and search
+beautifulsoup4>=4.12.0
+googlesearch-python>=1.2.0
+PyPDF2>=3.0.0
+
+# Biomedical tools (optional)
+biopython>=1.81  # Optional: For biomedical research features
+
+# Development tools
+gradio>=4.0.0
+ipython>=8.14.0
+
+# MCP (Model Context Protocol) support
+mcp>=0.1.0
+
+# Threading and optimization
+threadpoolctl>=3.2.0
+
+# Additional utilities
+pathlib>=1.0.1
+uuid>=1.30
