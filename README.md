@@ -77,7 +77,24 @@ python start_stella_web.py
 
 ## Installation
 
-### Prerequisites
+### Option 1: Using Conda (Recommended)
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/STELLA.git
+cd STELLA
+
+# Create conda environment with Python 3.12
+conda create -n stella python=3.12 -y
+conda activate stella
+
+# Install scientific packages via conda
+conda install -c conda-forge numpy pandas scikit-learn matplotlib seaborn -y
+
+# Install remaining dependencies via pip
+pip install -r requirements.txt
+```
+
+### Option 2: Using pip only
 ```bash
 # Python 3.8+ required
 python --version
@@ -90,8 +107,7 @@ pip install requests beautifulsoup4 markdownify
 ```
 
 
-
-### Optional Enhanced Features
+#### Optional Enhanced Features
 ```bash
 # For Mem0 enhanced memory (recommended)
 pip install mem0ai
