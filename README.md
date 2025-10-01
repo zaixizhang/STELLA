@@ -10,6 +10,12 @@ This repository contains the official implementation of the paper **STELLA: Self
 
 Recent advancements in Large Language Models (LLMs) have demonstrated their potential in specialized fields such as biomedical research. However, their performance is often limited by the lack of domain-specific knowledge and reasoning abilities. To address this, we introduce STELLA, a Self-Evolving LLM Agent designed for complex biomedical research tasks. STELLA leverages a novel self-evolving mechanism that enables it to continuously learn and adapt from new data and experiences. Our agent architecture integrates a dynamic knowledge base, a reasoning module, and a self-correction component, allowing it to perform intricate tasks such as literature analysis, experimental design, and data interpretation. We evaluate STELLA on a comprehensive benchmark of biomedical question-answering and research simulation tasks, demonstrating its superior performance over existing state-of-the-art models. Our results highlight the potential of self-evolving agents to accelerate biomedical discovery and innovation.
 
+## 🎬 Demo Video
+
+[![Watch the demo](video_image.png)](https://drive.google.com/file/d/1a6PoJWZMMix8zyccWVOZxU47NKhABO_W/view?usp=sharing)
+
+*Click the thumbnail above to watch the STELLA demonstration video on Google Drive.*
+
 ## Key Figures
 
 <img src="asset/stella_illustration.png" width="800"/>
