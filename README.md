@@ -1,6 +1,6 @@
-# STELLA: Self-Evolving LLM Agent for Biomedical Research
+# STELLA: Towards a Biomedical World Model with Self-Evolving Multimodal Agents
 
-This repository contains the official implementation of the paper **STELLA: Self-Evolving LLM Agent for Biomedical Research**.
+This repository contains the official implementation of the paper **STELLA: Towards a Biomedical World Model with Self-Evolving Multimodal Agents**.
 
 [**Paper on arXiv**](https://arxiv.org/abs/2507.02004) | [**Mention on 𝕏 (Twitter)**](https://x.com/BiologyAIDaily/status/1941122955850993966)
 
