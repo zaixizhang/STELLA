@@ -1,0 +1,1094 @@
+Task ID,Task Name,Task Type,Task Description,Input,Output,Success Criteria,Source,Tool
+1,KEGG_Pathway_ComplementCascade_Extraction,pathway_to_gene_mapping,"Given the KEGG pathway ""Complement and coagulation cascades"", retrieve the pathway ID
+and list all genes involved in the complement arm (classical, lectin, and alternative activation routes),
+as shown in KEGG pathway map04610.","query: ""Complement and coagulation cascades""","pathway_id: map04610
+complement_genes:
+  - C1QA
+  - C1QB
+  - C1QC
+  - C1R
+  - C1S
+  - C2
+  - C3
+  - C4A
+  - C4B
+  - C5
+  - C6
+  - C7
+  - C8A
+  - C8B
+  - C8G
+  - C9
+  - MASP1
+  - MASP2
+  - MBL2
+  - CFP
+  - CFH
+  - CFI
+  - SERPING1  # (C1INH)
+  - CFB
+  - CFD
+  - CD55
+  - CD59","- pathway_id matches map04610
+- All key genes in the classical, lectin, and alternative complement cascades are retrieved
+- Gene symbols are HGNC-compliant
+- Output format is valid and structured (e.g., for YAML/JSON parsing)","source_database: KEGG
+url: https://www.kegg.jp/pathway/map04610
+derived_from: uploaded pathway diagram
+pathway_focus: complement cascade only (not coagulation)",kegg_pathway_search
+2,KEGG_Pathway_NeuroactiveLigandReceptor_Extraction,pathway_to_gene_mapping,"Given the KEGG pathway name ""Neuroactive ligand-receptor interaction"", extract the full list of
+ligand-receptor gene pairs shown in the KEGG pathway map04080. This task includes GPCRs and
+hormone receptor families involved in neurotransmitter and hormone signaling.","query: ""Neuroactive ligand-receptor interaction""","pathway_id: map04080
+ligand_receptor_pairs:
+  - ligand: CHRM   # Acetylcholine
+    receptor: CHRM
+  - ligand: ADR    # Epinephrine, norepinephrine
+    receptor: ADR
+  - ligand: DRD    # Dopamine
+    receptor: DRD
+  - ligand: HRH    # Histamine
+    receptor: HRH
+  - ligand: HTR    # 5-HT
+    receptor: HTR
+  - ligand: TAR    # Trace amine
+    receptor: TAR
+  - ligand: AGT
+    receptor: AGTR
+  - ligand: APLN/APELA
+    receptor: APLNR
+  - ligand: GPR
+    receptor: GRPR
+  - ligand: KNG
+    receptor: BDKRB
+  - ligand: GHRL
+    receptor: GHSR
+  - ligand: KISS1
+    receptor: KISS1R
+  - ligand: MLN
+    receptor: MLNR
+  - ligand: NMU/S
+    receptor: NMUR
+  - ligand: NPS
+    receptor: NPSR1
+  - ligand: NPY
+    receptor: NPYR
+  - ligand: NPW/B
+    receptor: GPR7/8
+  - ligand: NTS
+    receptor: NTSR
+  - ligand: OPR
+    receptor: OPR
+  - ligand: AVP
+    receptor: AVPR
+  - ligand: PRLH
+    receptor: PRLHR
+  - ligand: PMCH
+    receptor: MCHR
+  - ligand: TSH
+    receptor: TSHR
+  - ligand: FSH
+    receptor: FSHR
+  - ligand: LHB
+    receptor: LHCGR
+  - ligand: CGH
+    receptor: TSHR
+  - ligand: PTGDR
+    receptor: PTGDR","- All receptor genes in the diagram are extracted
+- Ligands and receptors are matched as gene symbol pairs
+- Gene symbols must be HGNC-valid
+- Output is in valid YAML format and maps directly to KEGG map04080","pathway_id: map04080
+name: Neuroactive ligand-receptor interaction
+kegg_url: https://www.kegg.jp/entry/map04080
+extracted_from: pathway image + KEGG DB
+focus: GPCRs, hormone receptors, neuropeptides, prostanoid signaling",kegg_pathway_search
+3,Disease_Gene_CysticFibrosis_TextMining,disease_to_gene_mapping,"Identify top genes associated with Cystic Fibrosis based on text-mining evidence
+from the DISEASES database. Use Z-score threshold of ≥5.7 to select genes.","disease_list:
+  - ""Cystic Fibrosis""
+confidence_cutoff: 5.7
+similarity_threshold: 80
+top_n: 10
+file_path: resource/diseases/human_disease_integrated_full.tsv","""Cystic Fibrosis"":
+  matched_disease: ""Cystic fibrosis""
+  similarity_score: 90
+  genes:
+    - gene: CFTR
+      z_score: 8.9
+      confidence: 4
+    - gene: ELANE
+      z_score: 6.5
+      confidence: 4
+    - gene: CXCL8
+      z_score: 6.2
+      confidence: 4
+    - gene: MUC5AC
+      z_score: 6.0
+      confidence: 3
+    - gene: MUC5B
+      z_score: 5.9
+      confidence: 3
+    - gene: SERPINA1
+      z_score: 5.9
+      confidence: 3
+    - gene: IL1B
+      z_score: 5.9
+      confidence: 3
+    - gene: IL6
+      z_score: 5.8
+      confidence: 3
+    - gene: TNF
+      z_score: 5.8
+      confidence: 2
+    - gene: SCNN1B
+      z_score: 5.7
+      confidence: 2
+  count: 10
+  note: ""Top 10 text-mined genes for Cystic Fibrosis from DISEASES database""","- CFTR must be ranked highest (Z-score 8.9)
+- All 10 genes should match the published list with Z-score ≥ 5.7
+- Output must list Z-score and confidence for each gene
+- Correct YAML format for parsing","database: DISEASES (Jensen Lab)
+disease_id: DOID:1485
+disease_name: Cystic Fibrosis
+url: https://diseases.jensenlab.org/Entity?order=textmining,knowledge,experiments&textmining=10&knowledge=10&experiments=10&type1=-26&type2=9606&id1=DOID:1485
+extracted_from: Text mining section
+accessed_on: 2025-07-23",disease_gene_search
+4,Disease_Gene_Association_ParkinsonsDisease,disease_gene_association,"Identify genes associated with Parkinson's disease (DOID:14330) using the DISEASES database
+with evidence derived from text mining. Top genes are selected based on Z-score ranking.","disease_id: DOID:14330
+disease_name: Parkinson's disease
+evidence_source: textmining
+max_genes: 10","associated_genes:
+  - gene: SNCA
+    z_score: 9.0
+  - gene: LRRK2
+    z_score: 7.9
+  - gene: TH
+    z_score: 7.8
+  - gene: PRKN
+    z_score: 7.7
+  - gene: SLC6A3
+    z_score: 7.7
+  - gene: PINK1
+    z_score: 7.7
+  - gene: PARK7
+    z_score: 7.6
+  - gene: MAOB
+    z_score: 7.4
+  - gene: BDNF
+    z_score: 7.2
+  - gene: APP
+    z_score: 7.1","- Each gene must appear in the top 10 list by Z-score.
+- Genes must have a Z-score >= 7.0 from text mining data.
+- Source must be traceable to the DISEASES database.
+- All genes must match the expected list (SNCA, LRRK2, TH, PRKN, etc.)
+- Z-scores must match the published values","database: DISEASES (Jensen Lab)
+disease_id: DOID:14330
+disease_name: Parkinson's disease
+url: https://diseases.jensenlab.org/Entity?order=textmining,knowledge,experiments&textmining=10&knowledge=10&experiments=10&type1=-26&type2=9606&id1=DOID:14330
+accessed_on: 2025-07-23",
+5,Disease_Gene_Association_Parkinsons_Disease_Text_Mining,disease_to_gene_mapping,"Identify top genes associated with Parkinson's disease based on text-mining evidence
+from the DISEASES database. Use Z-score threshold of ≥7.1 to select genes.","disease_list:
+  - ""Parkinson's disease""
+confidence_cutoff: 7.1
+similarity_threshold: 80
+top_n: 10
+file_path: resource/diseases/human_disease_integrated_full.tsv","""Parkinson's disease"":
+  matched_disease: ""Parkinson's disease""
+  similarity_score: 90
+  genes:
+    - gene: SNCA
+      z_score: 9.0
+      confidence: 4
+    - gene: LRRK2
+      z_score: 7.9
+      confidence: 4
+    - gene: TH
+      z_score: 7.8
+      confidence: 4
+    - gene: PRKN
+      z_score: 7.7
+      confidence: 4
+    - gene: SLC6A3
+      z_score: 7.7
+      confidence: 4
+    - gene: PINK1
+      z_score: 7.7
+      confidence: 4
+    - gene: PARK7
+      z_score: 7.6
+      confidence: 4
+    - gene: MAOB
+      z_score: 7.4
+      confidence: 4
+    - gene: BDNF
+      z_score: 7.2
+      confidence: 4
+    - gene: APP
+      z_score: 7.1
+      confidence: 4
+  count: 10
+  note: ""Top 10 text-mined genes for Parkinson's disease from DISEASES database""","- SNCA must be ranked highest (Z-score 9.0)
+- All 10 genes should match the published list with Z-score ≥ 7.1
+- Output must list Z-score and confidence for each gene
+- Correct YAML format for parsing","database: DISEASES (Jensen Lab)
+disease_id: DOID:14330
+disease_name: Parkinson's disease
+url: https://diseases.jensenlab.org/Entity?order=textmining,knowledge,experiments&textmining=10&knowledge=10&experiments=10&type1=-26&type2=9606&id1=DOID:14330
+extracted_from: Text mining section
+accessed_on: 2025-07-23",disease_gene_search
+6,STRING_Protein_Interaction_PHB21,gene_to_interacting_partners,"Identify protein-protein interaction partners for PHB2 using the STRING database.
+Extract top interaction partners with combined scores ≥ 0.88 from STRING network output.
+Analyze functional enrichments including GO terms and PubMed references.","gene_list:
+  - PHB2
+score_cutoff: 0.88
+species_id: 9606
+limit: 1000","PHB2:
+  partners:
+    - gene: PHB
+      score: 0.999
+    - gene: ESR1
+      score: 0.985
+    - gene: C1QBP
+      score: 0.964
+    - gene: ARFGEF3
+      score: 0.962
+    - gene: HDAC1
+      score: 0.946
+    - gene: TUFM
+      score: 0.911
+    - gene: MFN1
+      score: 0.907
+    - gene: OPA1
+      score: 0.905
+    - gene: AFG3L2
+      score: 0.892
+    - gene: UQCRC1
+      score: 0.887
+  count: 10
+  enrichment:
+    biological_process:
+      - GO:0008053: ""Mitochondrial fusion""
+      - GO:1990051: ""Activation of protein kinase C activity""
+      - GO:0039529: ""RIG-I signaling pathway""
+      - GO:0033144: ""Negative regulation of intracellular steroid hormone receptor signaling""
+      - GO:0010863: ""Positive regulation of phospholipase C activity""
+    cellular_component:
+      - GO:0035632: ""Mitochondrial prohibitin complex""
+      - GO:0098800: ""Inner mitochondrial membrane protein complex""
+      - GO:0098798: ""Mitochondrial protein-containing complex""
+      - GO:0005743: ""Mitochondrial inner membrane""
+      - GO:0031966: ""Mitochondrial membrane""
+    reference_publications:
+      - PMID:26052702
+      - PMID:33130089
+      - PMID:21689744
+      - PMID:33257655
+      - PMID:34361072","- Must return top 10 PHB2 interactors with STRING score ≥ 0.88
+- Interactions must match STRING DB output for PHB2
+- GO terms and PubMed enrichment must match evidence shown in STRING interface","database: STRING v11.5
+gene: PHB2
+species: Homo sapiens
+species_id: 9606
+url: https://string-db.org/cgi/network?taskId=bPZNkPyVbrFo&sessionId=bIv2j7m6i0dn
+accessed_on: 2025-07-23",string_database_search
+7,Protein_Interaction_Network_NDC80_STRING,gene_interaction_prediction,"Identify predicted protein-protein interactions (PPI) for the human gene NDC80
+using STRING database. Report top interaction partners with score ≥ 0.99.","gene_list:
+  - ""NDC80""
+score_cutoff: 0.99
+species_id: 9606
+limit: 1000
+model_name: gemini-2.5-pro","NDC80:
+  partners:
+    - gene: NUF2
+      score: 0.999
+    - gene: SPC25
+      score: 0.999
+    - gene: SPC24
+      score: 0.999
+    - gene: BUB1
+      score: 0.998
+    - gene: KNL1
+      score: 0.995
+    - gene: CKAP5
+      score: 0.994
+    - gene: BUB1B
+      score: 0.992
+    - gene: TTK
+      score: 0.992
+    - gene: ZWINT
+      score: 0.991
+    - gene: MIS12
+      score: 0.991
+  count: 10
+  note: ""Top 10 predicted functional partners for NDC80 from STRING database.""","- At least 10 high-confidence partners (score ≥ 0.99)
+- Interactions must be supported by multiple evidence channels
+- Correct YAML structure for tool-based parsing","database: STRING v11.5
+url: https://string-db.org/cgi/network?taskId=buCjxdFuXCrg&sessionId=bIv2j7m6i0dn
+accessed_on: 2025-07-23
+input_gene: NDC80
+organism: Homo sapiens (NCBI:9606)",string_database_search
+8,GO_Gene_Association_Mitotic_Spindle_Checkpoint,go_term_to_gene_mapping,"Identify human genes associated with the GO term ""mitotic spindle assembly checkpoint signaling"" (GO:0007094),
+including known synonyms such as ""mitotic checkpoint"", ""SAC-independent checkpoint"", ""Mad2-dependent checkpoint"", and
+other related signaling pathway terms. The tool searches local GO annotation files and applies LLM-assisted matching
+for accurate term resolution.","query_list:
+  - ""mitotic checkpoint""
+  - ""SAC-independent checkpoint""
+  - ""Dma1-dependent checkpoint""
+  - ""Mad2-dependent checkpoint""
+  - ""signaling pathway involved in SAC-independent checkpoint""
+  - ""signaling cascade involved in Dma1-dependent checkpoint""
+max_candidates: 100
+similarity_threshold: 10
+model_name: gemini-2.5-pro","GO_term: ""GO:0007094 – Mitotic spindle assembly checkpoint signaling""
+expected_genes:  # Example genes based on STRING/QuickGO cross-reference (can vary with actual GO JSONs)
+  - gene: BUB1
+  - gene: BUB1B
+  - gene: MAD2L1
+  - gene: TTK
+  - gene: CDC20
+  - gene: NDC80
+  - gene: SPC25
+  - gene: KNL1
+min_expected_gene_count: 5
+score_metric: normalized_relevance_score","- GO:0007094 must be matched for at least one query
+- All listed genes should appear in the output for at least one synonym
+- Normalized scores assigned to valid genes
+- YAML must be parseable and complete","ontology: Gene Ontology (GO)
+go_id: GO:0007094
+term_name: Mitotic spindle assembly checkpoint signaling
+synonyms:
+  - mitotic checkpoint
+  - SAC-independent checkpoint
+  - Dma1-dependent checkpoint
+  - Mad2-dependent checkpoint
+  - signaling pathway involved in SAC-independent checkpoint
+  - signaling pathway involved in Dma1-dependent checkpoint
+  - signal transduction involved in Dma1-dependent checkpoint
+  - signaling cascade involved in Dma1-dependent checkpoint
+url: https://www.ebi.ac.uk/QuickGO/term/GO:0007094
+definition: >
+  A mitotic cell cycle checkpoint that delays mitotic sister chromatid separation and the metaphase/anaphase transition
+  until the spindle is correctly assembled and chromosomes are attached. Involves Mph kinase, MCC, and inhibition of APC/C.
+accessed_on: 2025-07-23",go_terms_search
+9,Essential_Genes_U2OS_DepMap,cell_line_gene_dependency,"Analyze essential genes in the U2OS osteosarcoma cell line (ACH-000364)
+using CRISPR and RNAi datasets from DepMap (Chronos + DEMETER2).
+Identify top 10 preferentially essential genes and visualize gene effect scores.","cell_line: U2OS
+depmap_id: ACH-000364
+source: DepMap Public 25Q2
+methods: [CRISPR_Chronos, RNAi_DEMETER2]
+top_n: 10","CRISPR:
+  method: Chronos
+  top_essential_genes:
+    - DCAF12L1
+    - FBXL18
+    - SUB1
+    - ATCAY
+    - HS2ST1
+    - MAP2K7
+    - R3HCC1
+    - SLC35B2
+    - ZNF655
+    - ZNF700
+RNAi:
+  method: DEMETER2
+  top_essential_genes:
+    - NOM1
+    - SUB1
+    - GTPBP4
+    - GAL
+    - FIP1L1
+    - LONP1
+    - MPI
+    - ICOSLG
+    - OR2T11
+    - AVIL","- Extract and match top 10 essential genes from each screening method
+- Output must clearly separate CRISPR and RNAi results
+- Correct mapping to U2OS (ACH-000364) with link to DepMap portal","database: DepMap (Broad Institute)
+cell_line: U2OS
+depmap_id: ACH-000364
+oncotree_code: OS
+oncotree_disease: Osteosarcoma
+lineage: Bone
+url: https://depmap.org/portal/cell_line/ACH-000364?tab=overview
+accessed_on: 2025-07-23",depmap_gene_effect_analysis
+10,AML_General_Info_NCI,cancer_knowledge_summary,"Provide a structured summary of general information about adult acute myeloid leukemia (AML)
+from the National Cancer Institute (NCI) patient treatment guide. Covers definition, affected
+cell types, risk factors, symptoms, diagnostic steps, and prognosis considerations.","disease: Acute Myeloid Leukemia (AML)","summary: |
+  Acute myeloid leukemia (AML) is a type of cancer in which the bone marrow produces a large number
+  of abnormal blood cells. It can affect red blood cells, white blood cells, and platelets.
+  Blood stem cells in the bone marrow can develop into either myeloid or lymphoid stem cells.
+  Myeloid stem cells mature into:
+    - Red blood cells (oxygen transport)
+    - Granulocytes and other white blood cells (immune response)
+    - Platelets (blood clotting)
+  Key information includes:
+    - There are different subtypes of AML.
+    - Risk factors include smoking, previous chemotherapy, and radiation exposure.
+    - Common symptoms: fever, fatigue, easy bruising or bleeding.
+    - Diagnosis involves blood and bone marrow tests.
+    - Additional tests are done post-diagnosis to check cancer spread.
+    - Patients may seek second opinions.
+    - Prognosis and treatment depend on several individual factors.","- Includes structure of blood development from stem cells
+- Describes affected blood cell types
+- Lists AML symptoms, risk factors, and diagnostic methods
+- Captures key patient-oriented insights from NCI","source_name: National Cancer Institute (NCI)
+page_title: Adult Acute Myeloid Leukemia Treatment (PDQ®)–Patient Version
+url: https://www.cancer.gov/types/leukemia/patient/adult-aml-treatment-pdq
+accessed_on: 2025-07-22",
+11,PubChem_Structure_Info,drug_info_extraction,,"name: Imatinib
+pubchem_cid: 5291","iupac_name: >
+  4-[(4-methylpiperazin-1-yl)methyl]-N-[4-methyl-3-[(4-pyridin-3-ylpyrimidin-2-yl)amino]phenyl]benzamide
+inchi: >
+  InChI=1S/C29H31N7O/c1-21-5-10-25(18-27(21)34-29-31-13-11-26(33-29)24-4-3-12-30-19-24)
+  32-28(37)23-8-6-22(7-9-23)20-36-16-14-35(2)15-17-36/h3-13,18-19H,14-17,20H2,1-2H3,
+  (H,32,37)(H,31,33,34)
+smiles: >
+  CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC
+synonyms:
+  - Imatinib
+  - 152459-95-5
+  - Glamox
+  - BKJ8M8G5HI
+  - N-(4-Methyl-3-((4-(pyridin-3-yl)pyrimidin-2-yl)amino)phenyl)-4-((4-methylpiperazin-1-yl)methyl)benzamide
+hazards:
+  - Irritant
+  - Health Hazard","- IUPAC name must match PubChem database entry
+- InChI and SMILES representations must be accurate
+- All common synonyms must be included
+- Hazard information must be complete and accurate","source_name: PubChem & National Cancer Institute (NCI)
+page_title: Imatinib | Compound Summary & Adult Acute Myeloid Leukemia Treatment (PDQ®)–Patient Version
+url: https://pubchem.ncbi.nlm.nih.gov/compound/5291
+accessed_on: 2025-07-22",
+12,OMIM_Colorectal_Cancer_Gene_Mapping,gene_disease_association,,"disease_query: ""Colorectal cancer""
+omim_id: ""608812""","associated_genes:
+  - gene: GALNT12
+    location: 9q22.33
+    evidence: >
+      Guda et al. (2009) identified six different heterozygous loss-of-function mutations in GALNT12
+      among 6 of 272 patients with late-onset colon cancer. These mutations affected catalytic or
+      lectin-binding domains, led to decreased enzymatic activity, and were absent in 192 controls.
+      Somatic mutations were also found in microsatellite-stable tumors. This suggests impaired
+      glycosylation of colon proteins may contribute to cancer development.
+  - gene: TGFBR1
+    location: 9q22
+    evidence: >
+      Valle et al. (2008) showed that allele-specific expression (ASE) of TGFBR1 occurs in 10–20% of
+      CRC patients and 1–3% of controls, causing reduced expression and impaired SMAD-mediated
+      TGF-beta signaling. ASE is dominantly inherited and increases CRC risk with an estimated odds
+      ratio of 8.7. No causative germline variants were found, but ASE segregates in families.
+genetic_linkage:
+  - study: Wiesner et al. (2003)
+    findings: >
+      Linkage to chromosome 9q22.2–q31.2 observed in 53 kindreds with non-FAP, non-HNPCC colorectal
+      cancer using sib-pair analysis (p = 0.00045). Suggests autosomal dominant inheritance of susceptibility loci.
+  - study: Skoglund et al. (2006)
+    findings: >
+      A Swedish family study identified linkage to 9q22.32–q31.1 with a multipoint LOD score of 2.4.
+      Adenomas were found in additional relatives under ongoing surveillance, supporting inherited susceptibility.","- Describes at least two associated genes with OMIM and chromosomal locations
+- Cites molecular evidence (e.g. germline/somatic mutations, ASE)
+- Summarizes genetic linkage studies supporting CRC susceptibility on 9q
+- Explains potential mechanisms (glycosylation, TGF-beta signaling)","source_name: OMIM
+page_title: COLORECTAL CANCER, SUSCEPTIBILITY TO, 1; CRCS1
+url: https://www.omim.org/entry/608812
+accessed_on: 2025-07-22",
+13,GSEA_Gene_Set_Lookup,gene_set_enrichment,,"query: ABBUD_LIF_SIGNALING_1_DN
+organism: Mus musculus
+database: MSigDB
+category: ""M2: Curated (CGP - Chemical and Genetic Perturbations)""","systematic_name: MM623
+brief_description: >
+  Genes down-regulated in AtT20 cells (pituitary cancer) after treatment with LIF [GeneID=3976].
+full_description: >
+  Leukemia inhibitory factor (LIF) mediates the hypothalamo-pituitary-adrenal stress response.
+  Transgenic mice overexpressing LIF in the developing pituitary have altered pituitary differentiation
+  with expansion of corticotropes, maintenance of Rathke's cleft cysts, and suppression of all other pituitary cell types.
+  Affymetrix GeneChips were used to identify modulators of LIF effects in corticotrope (AtT-20) and somatolactotrope (GH(3)) cells.
+  Notably, C/EBPbeta and GIF were identified as transcriptional regulators of POMC and SOCS-3, and AHSG/fetuin as an inhibitor of LIF signaling.
+species: Mus musculus
+gene_platform: MOUSE_SEQ_ACCESSION","- Retrieves the correct gene set associated with LIF signaling in AtT20 cells
+- Matches species and platform correctly (Mus musculus, MOUSE_SEQ_ACCESSION)
+- Includes key transcriptional regulators (e.g., C/EBPbeta, GIF, SOCS-3, AHSG)
+- Cites the original publication and dataset table","publication:
+  title: C/EBPbeta and GIF are downstream effectors of LIF action in corticotropes
+  authors: Abbud RA, Kelleher R, Melmed S
+  pubmed_id: 14576184
+  table: Table 2
+msigdb_link: https://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/ABBUD_LIF_SIGNALING_1_DN.html",
+14,PCR_Primer_Design_TargetTm60_v2,molecular_cloning_primer_design,Design forward and reverse primers flanking a CDS-like region with an annealing temperature around 60°C.,"region_to_amplify: >
+  ATGGTGTCCAAGGGCGAAGAGGACAACATGGCCAGCCTGCCTGCCACCCACGAGCTGCACATCTTCGGCAGCATCAACGGCGTGGACTTCGACATGGTGGGACAGGGCACCGGCAACCCCAACGACGGCTACGAGGAACTGAACCTGAAGTCCACAAAGGGCGACCTGCAGTTCAGCCCCTGGATCCTGGTGCCCCACATCGGCTACGGCTTCCACCAGTACCTGCCCTACCCCGACGGCATGAGCCCTTTTCAGGCCGCCATGGTGGATGGCAGCGGCTACCAGGTGCACCGGACCATGCAGTTTGAGGACGGCGCCAGCCTGACCGTGAACTACCGGTACACATACGAGGGCAGCCACATCAAGGGCGAGGCCCAAGTGAAGGGCACAGGCTTTCCAGCCGACGGCCCCGTGATGACCAATAGCCTGACAGCCGCCGACTGGTGCAGAAGCAAGAAAACCTACCCCAATGACAAGACCATCATCAGCACCTTCAAGTGGTCCTACACCACCGGCAATGGCAAGCGGTACAGAAGCACCGCCCGGACCACCTACACCTTCGCCAAACCCATGGCCGCCAACTACCTGAAGAACCAGCCTATGTACGTGTTCCGCAAGACCGAGCTGAAGCACTCCAAGACAGAACTGAACTTCAAAGAGTGGCAGAAAGCCTTCACCGACGTGATGGGCATGGACGAGCTGTACAAG
+target_Tm_C: 60","primer_forward:
+  sequence: ATGGTGTCCAAGGGCGAAG
+primer_reverse:
+  sequence: CTTGTACAGCTCGTCCATGCC
+expected_product_size_bp: 702","- Both primers designed with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–25 nt
+- Primers produce an amplicon of correct expected size",,
+15,PCR_Primer_Design_TargetTm60_4,molecular_cloning_primer_design,"Use defined primers to amplify a region of DNA from the provided sequence, targeting an annealing temperature of ~60°C.","region_to_amplify: >
+  atgagccatattcaacgggaaacgtcttgctctaggccgcgattaaattccaacatggatgctgatttatatgggtataaatgggctcgcgataatgtcgggcaatcaggtgcgacaatctatcgattgtatgggaagcccgatgcgccagagttgtttctgaaacatggcaaaggtagcgttgccaatgatgttacagatgagatggtcagactaaactggctgacggaatttatgcctcttccgaccatcaagcattttatccgtactcctgatgatgcatggttactcaccactgcgatccccgggaaaacagcattccaggtattagaagaatatcctgattcaggtgaaaatattgttgatgcgctggcagtgttcctgcgccggttgcattcgattcctgtttgtaattgtccttttaacagcgatcgcgtatttcgtctcgctcaggcgcaatcacgaatgaataacggtttggttgatgcgagtgattttgatgacgagcgtaatggctggcctgttgaacaagtctggaaagaaatgcataaacttttgccattctcaccggattcagtcgtcactcatggtgatttctcacttgataaccttatttttgacgaggggaaattaataggttgtattgatgttggacgagtcggaatcgcagaccgataccaggatcttgccatcctatggaactgcctcggtgagttttctccttcattacagaaacggctttttcaaaaatatggtattgataatcctgatatgaataaattgcagtttcatttgatgctcgatgagtttttctaa
+target_Tm_C: 60","primer_forward:
+  sequence: atgagccatattcaacgggaaacg
+primer_reverse:
+  sequence: ttagaaaaactcatcgagcatcaaatgaaact
+expected_product_size_bp: auto","- Both primers designed or selected with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–30 nt
+- Primers produce an amplicon of correct expected size",,
+16,PCR_Primer_Design_TargetTm60_Set2,molecular_cloning_primer_design,"Use defined primers to amplify a DNA region from the provided sequence, targeting an annealing temperature of ~60°C.","region_to_amplify: >
+  atgagtattcaacatttccgtgtcgcccttattcccttttttgcggcattttgccttcctgtttttgctcacccagaaacgctggtgaaagtaaaagatgctgaagatcagttgggtgcacgagtgggttacatcgaactggatctcaacagcggtaagatccttgagagttttcgccccgaagaacgttttccaatgatgagcacttttaaagttctgctatgtggcgcggtattatcccgtattgacgccgggcaagagcaactcggtcgccgcatacactattctcagaatgacttggttgagtactcaccagtcacagaaaagcatcttacggatggcatgacagtaagagaattatgcagtgctgccataaccatgagtgataacactgcggccaacttacttctgacaacgatcggaggaccgaaggagctaaccgcttttttgcacaacatgggggatcatgtaactcgccttgatcgttgggaaccggagctgaatgaagccataccaaacgacgagcgtgacaccacgatgcctgtagcaatggcaacaacgttgcgcaaactattaactggcgaactacttactctagcttcccggcaacaattaatagactggatggaggcggataaagttgcaggaccacttctgcgctcggcccttccggctggctggtttattgctgataaatctggagccggtgagcgtgggtctcgcggtatcattgcagcactggggccagatggtaagccctcccgtatcgtagttatctacacgacggggagtcaggcaactatggatgaacgaaatagacagatcgctgagataggtgcctcactgattaagcattggtaa
+target_Tm_C: 60","primer_forward:
+  sequence: atgagtattcaacatttccgtgtcgc
+primer_reverse:
+  sequence: ttaccaatgcttaatcagtgaggcac
+expected_product_size_bp: auto","- Both primers designed or selected with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–30 nt
+- Primers produce an amplicon of correct expected size",,
+17,PCR_Primer_Design_TargetTm55_Set3,molecular_cloning_primer_design,"Use defined primers to amplify a DNA region from the provided sequence, targeting an annealing temperature of ~55°C.","region_to_amplify: >
+  atgagtattcaacatttccgtgtcgcccttattcccttttttgcggcattttgccttcctgtttttgctcacccagaaacgctggtgaaagtaaaagatgctgaagatcagttgggtgcacgagtgggttacatcgaactggatctcaacagcggtaagatccttgagagttttcgccccgaagaacgttttccaatgatgagcacttttaaagttctgctatgtggcgcggtattatcccgtattgacgccgggcaagagcaactcggtcgccgcatacactattctcagaatgacttggttgagtactcaccagtcacagaaaagcatcttacggatggcatgacagtaagagaattatgcagtgctgccataaccatgagtgataacactgcggccaacttacttctgacaacgatcggaggaccgaaggagctaaccgcttttttgcacaacatgggggatcatgtaactcgccttgatcgttgggaaccggagctgaatgaagccataccaaacgacgagcgtgacaccacgatgcctgtagcaatggcaacaacgttgcgcaaactattaactggcgaactacttactctagcttcccggcaacaattaatagactggatggaggcggataaagttgcaggaccacttctgcgctcggcccttccggctggctggtttattgctgataaatctggagccggtgagcgtgggtctcgcggtatcattgcagcactggggccagatggtaagccctcccgtatcgtagttatctacacgacggggagtcaggcaactatggatgaacgaaatagacagatcgctgagataggtgcctcactgattaagcattggtaa
+target_Tm_C: 55","primer_forward:
+  sequence: atgagtattcaacatttccgtgt
+primer_reverse:
+  sequence: ttaccaatgcttaatcagtgagg
+expected_product_size_bp: auto","- Both primers designed or selected with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–30 nt
+- Primers produce an amplicon of correct expected size",,
+18,PCR_Primer_Design_TargetTm65_Set4,molecular_cloning_primer_design,"Use defined primers to amplify a DNA region from the provided sequence, targeting an annealing temperature of ~65°C.","region_to_amplify: >
+  atgagtattcaacatttccgtgtcgcccttattcccttttttgcggcattttgccttcctgtttttgctcacccagaaacgctggtgaaagtaaaagatgctgaagatcagttgggtgcacgagtgggttacatcgaactggatctcaacagcggtaagatccttgagagttttcgccccgaagaacgttttccaatgatgagcacttttaaagttctgctatctgcaagagatcttcagcaacgagatggccaaggtggacgacagcttcttccacagactggaagagtccttcctggtggaagaggataagaagcacgagcggcaccccatcttcggcaacatcgtggacgaggtggcctaccacgagaagtaccccaccatctaccacctgagaaagaaactggtggacagcaccgacaaggccgacctgcggctgatctatctggccctggcccacatgatcaagttccggggccacttcct...
+target_Tm_C: 65","primer_forward:
+  sequence: atgagtattcaacatttccgtgtcgcccttattcc
+primer_reverse:
+  sequence: ttaccaatgcttaatcagtgaggcacctatctcagc
+expected_product_size_bp: auto","- Both primers designed or selected with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–35 nt
+- Primers produce an amplicon of correct expected size",,
+19,PCR_Primer_Design_TargetTm60_Set5,molecular_cloning_primer_design,"Use defined primers to amplify a region from the provided plasmid-like sequence, targeting an annealing temperature of ~60°C.","region_to_amplify: >
+  atgaccatgattacgccaagcttgcatgcctgcaggtcgactctagaggatccccgggtaccgagctcgaattcactggccgtcgttttacaacgtcgtgactgggaaaaccctggcgttacccaacttaatcgccttgcagcacatccccctttcgccagctggcgtaatagcgaagaggcccgcaccgatcgcccttcccaacagttgcgcagcctgaatggcgaatggcgcctgatgcggtattttctccttacgcatctgtgcggtatttcacaccgcatatggtgcactctcagtacaatctgctctgatgccgcatag
+target_Tm_C: 60","primer_forward:
+  sequence: atgaccatgattacgccaagcttg
+primer_reverse:
+  sequence: ctatgcggcatcagagcagattg","- Both primers designed or selected with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–30 nt
+- Primers produce an amplicon of correct expected size",,
+20,PCR_Primer_Design_TargetTm60_Set6,molecular_cloning_primer_design,"Use defined primers to amplify a CDS-like region from the provided sequence, targeting an annealing temperature of ~60°C.","region_to_amplify: >
+  ATGGTGTCCAAGGGCGAAGAGGACAACATGGCCAGCCTGCCTGCCACCCACGAGCTGCACATCTTCGGCAGCATCAACGGCGTGGACTTCGACATGGTGGGACAGGGCACCGGCAACCCCAACGACGGCTACGAGGAACTGAACCTGAAGTCCACAAAGGGCGACCTGCAGTTCAGCCCCTGGATCCTGGTGCCCCACATCGGCTACGGCTTCCACCAGTACCTGCCCTACCCCGACGGCATGAGCCCTTTTCAGGCCGCCATGGTGGATGGCAGCGGCTACCAGGTGCACCGGACCATGCAGTTTGAGGACGGCGCCAGCCTGACCGTGAACTACCGGTACACATACGAGGGCAGCCACATCAAGGGCGAGGCCCAAGTGAAGGGCACAGGCTTTCCAGCCGACGGCCCCGTGATGACCAATAGCCTGACAGCCGCCGACTGGTGCAGAAGCAAGAAAACCTACCCCAATGACAAGACCATCATCAGCACCTTCAAGTGGTCCTACACCACCGGCAATGGCAAGCGGTACAGAAGCACCGCCCGGACCACCTACACCTTCGCCAAACCCATGGCCGCCAACTACCTGAAGAACCAGCCTATGTACGTGTTCCGCAAGACCGAGCTGAAGCACTCCAAGACAGAACTGAACTTCAAAGAGTGGCAGAAAGCCTTCACCGACGTGATGGGCATGGACGAGCTGTACAAG
+target_Tm_C: 60","primer_forward:
+  sequence: ATGGTGTCCAAGGGCGAAG
+primer_reverse:
+  sequence: CTTGTACAGCTCGTCCATGCC","- Both primers designed or selected with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–30 nt
+- Primers produce an amplicon of correct expected size",,
+21,Restriction_Digest_EcoRI_AatII,molecular_cloning_restriction_digest,Plan restriction enzyme digest with EcoRI and AatII,"enzymes:
+  - EcoRI
+  - AatII
+buffer_options:
+  - NEBuffer r1.1
+  - NEBuffer r2.1
+  - NEBuffer r3.1
+  - rCutSmart
+temperature_C: 37","recommended_buffer: NEBuffer r3.1
+enzyme_activities:
+  EcoRI:
+    activity_percent: 50
+    note: May exhibit star activity in this buffer
+  AatII:
+    activity_percent: 50
+time_saver: true
+heat_inactivation:
+  EcoRI: 65°C
+  AatII: 80°C","- Recommends optimal buffer
+- Provides enzyme activities
+- Specifies heat inactivation temperatures",,
+22,Cancer_Gene_Classification,cancer_biology_gene_classification,Classify genes as cancer-related vs normal using curated databases,"gene_databases:
+  cosmic_genes: Cancer_notes/data/COSMIC_genes.txt
+  pcawg_cancer: Cancer_notes/data/PCAWG_2020_PID_C_87_genes.txt
+  pcawg_normal: Cancer_notes/data/PCAWG_2020_PID_N_93_genes.txt
+file_formats:
+  cosmic: ""One gene symbol per line""
+  pcawg: ""One gene symbol per line""","gene_classifications: cancer_gene_classifications.txt
+classification_metrics: classification_performance.txt
+overlap_analysis: gene_list_overlaps.txt
+analysis_summary:
+  - cosmic_genes: ~700 genes
+  - pcawg_cancer: 87 genes
+  - pcawg_normal: 93 genes","- Can classify genes as cancer vs normal with >80% accuracy
+- Identifies overlapping genes across databases
+- Provides confidence scores for classifications",,
+23,BWA_MEM_Alignment,sequence_alignment,Align Illumina short reads to reference genome using BWA-MEM,"reference: ref/GRCh38.fa
+reads:
+  single_end: reads/sample_R1.fastq.gz
+  paired_end:
+    read1: reads/sample_R1.fastq.gz
+    read2: reads/sample_R2.fastq.gz
+parameters:
+  threads: 4
+  mark_secondary: true
+  read_group: ""@RG\\tID:sample\\tSM:sample\\tPL:ILLUMINA""","sam_file: aligned.sam
+bam_file: aligned.bam
+alignment_stats:
+  total_reads: expected_count
+  mapped_reads: "">90%""
+  mapping_quality: "">30""","- Generate valid SAM/BAM output
+- Mapping rate >90%
+- Proper read group tags",,
+24,MACS2_Peak_Calling,epigenomics_peak_calling,Call peaks from ChIP-seq data using MACS2,"treatment_bam: data/bams/H1hesc_Nanog_Rep1_aln.bam
+control_bam: data/bams/H1hesc_Input_Rep1_aln.bam
+genome_size: hs
+output_prefix: nanog_peaks","peak_file: nanog_peaks_peaks.narrowPeak
+summit_file: nanog_peaks_summits.bed
+model_file: nanog_peaks_model.r
+peak_count: expected_peak_count","- Generate peak files in narrowPeak format
+- Provide summit files for motif analysis
+- Create model plots for quality assessment",,
+25,ChIPQC_Quality_Assessment,epigenomics_quality_assessment,Assess ChIP-seq data quality using ChIPQC,"sample_sheet: samplesheet_chr12.csv
+bam_files:
+  - data/bams/H1hesc_Nanog_Rep1_aln.bam
+  - data/bams/H1hesc_Nanog_Rep2_aln.bam
+  - data/bams/H1hesc_Pou5f1_Rep1_aln.bam
+  - data/bams/H1hesc_Pou5f1_Rep2_aln.bam
+  - data/bams/H1hesc_Input_Rep1_aln.bam
+  - data/bams/H1hesc_Input_Rep2_aln.bam","qc_report: chipqc_report.html
+qc_metrics: chipqc_metrics.txt
+quality_scores:
+  - ssd: ""Sample-specific distance""
+  - nsc: ""Normalized strand cross-correlation""
+  - rsc: ""Relative strand cross-correlation""","- Generate comprehensive QC report
+- Calculate quality metrics
+- Identify problematic samples",,
+26,DREME_Motif_Analysis,epigenomics_motif_analysis,Discover DNA motifs using DREME,"peak_file: nanog_peaks_peaks.narrowPeak
+genome: ref/hg19.fa
+background: ""Random genomic regions or input control""","motif_file: dreme_results.txt
+html_report: dreme_results.html
+discovered_motifs:
+  - motif_sequences: ""Discovered motif sequences""
+  - e_values: ""Statistical significance""
+  - frequencies: ""Motif frequencies""","- Discover significant DNA motifs
+- Provide statistical significance
+- Generate interpretable results",,
+27,PCR_Primer_Design_TargetTm60,molecular_cloning_primer_design,Design primers for a specific DNA region targeting 60°C annealing temperature,"region_to_amplify: >
+  ctagttagaaaaagacatttttgctgtcagtcactgtcaagagattcttttgctggcatttcttctagaagcaaaaagagcgatgcgtcttttccgctgaaccgttccagcaaaaaagactaccaacgcaatatggattgtcagaatcatataaaagagaagcaaataactccttgtcttgtatcaattgcattataatatcttcttgttagtgcaatatcatatagaagtcatc
+target_Tm_C: 60","primer_forward:
+  sequence: CTAGTTAGAAAAAGACATTTTTGC
+  position: 1-24
+  length: 24
+  Tm_C: 59.8
+  GC_percent: 33.3
+primer_reverse:
+  sequence: GATGACTTCTATATGATATTGCAC
+  position: reverse_complement of 199-176
+  length: 24
+  Tm_C: 60.1
+  GC_percent: 37.5
+expected_product_size_bp: 199","- Design primers with target Tm
+- Provide balanced primer properties
+- Calculate expected product size",,
+28,PCR_Primer_Design_OneTaq,molecular_cloning_primer_design,Design PCR primers using OneTaq DNA Polymerase (Standard Buffer),"polymerase: OneTaq DNA Polymerase (Standard Buffer)
+primer_concentration_nM: 200
+primer_1: TAACGAAGCTTTCGATATCAGGCATGCAG
+primer_2: CTCAACAGCCTCGCGCGC","annealing_temperature: 57°C
+primer_1:
+  length: 29
+  gc_content: 45%
+  tm: 62°C
+primer_2:
+  length: 18
+  gc_content: 72%
+  tm: 65°C","- Generates annealing temperature
+- Calculates primer properties
+- Provides optimal PCR conditions",,
+29,Restriction_Digest_SacII_AatII,molecular_cloning_restriction_digest,Plan restriction enzyme digest with SacII and AatII,"enzymes:
+  - SacII
+  - AatII
+buffer_options:
+  - NEBuffer r1.1
+  - NEBuffer r2.1
+  - NEBuffer r3.1
+  - rCutSmart
+temperature_C: 37","recommended_buffer: rCutSmart
+enzyme_activities:
+  SacII:
+    activity_percent: 100
+    note: May exhibit star activity in this buffer
+  AatII:
+    activity_percent: 100
+time_saver: true
+heat_inactivation:
+  SacII: 65°C
+  AatII: 80°C
+methylation_sensitivity:
+  SacII: cpg (Blocked)
+  AatII: cpg (Blocked)","- Recommends optimal buffer
+- Provides enzyme activities
+- Specifies heat inactivation temperatures",,
+30,Restriction_Digest_NheIHF_HindIIIHF,molecular_cloning_restriction_digest,Plan restriction enzyme digest with NheI-HF and HindIII-HF,"enzymes:
+  - NheI-HF
+  - HindIII-HF
+buffer_options:
+  - NEBuffer r1.1
+  - NEBuffer r2.1
+  - NEBuffer r3.1
+  - rCutSmart
+temperature_C: 37","recommended_buffer: rCutSmart
+enzyme_activities:
+  NheI-HF:
+    activity_percent: 100
+    note: Blocked by some combinations of overlapping cpg methylation
+  HindIII-HF:
+    activity_percent: 100
+    note: No methylation sensitivity
+time_saver: true
+heat_inactivation:
+  NheI-HF: 80°C
+  HindIII-HF: 80°C
+methylation_sensitivity:
+  NheI-HF: cpg (Blocked by Some Combinations of Overlapping)
+  HindIII-HF: None","- Recommends optimal buffer
+- Provides enzyme activities
+- Specifies heat inactivation temperatures",,
+31,PCR_Primer_Design_TargetTm60_v3,molecular_cloning_primer_design,Design primers for a CDS-like region targeting 60°C annealing temperature,"region_to_amplify: >
+  ATGGTGTCCAAGGGCGAAGAGGACAACATGGCCAGCCTGCCTGCCACCCACGAGCTGCACATCTTCGGCAGCATCAACGGCGTGGACTTCGACATGGTGGGACAGGGCACCGGCAACCCCAACGACGGCTACGAGGAACTGAACCTGAAGTCCACAAAGGGCGACCTGCAGTTCAGCCCCTGGATCCTGGTGCCCCACATCGGCTACGGCTTCCACCAGTACCTGCCCTACCCCGACGGCATGAGCCCTTTTCAGGCCGCCATGGTGGATGGCAGCGGCTACCAGGTGCACCGGACCATGCAGTTTGAGGACGGCGCCAGCCTGACCGTGAACTACCGGTACACATACGAGGGCAGCCACATCAAGGGCGAGGCCCAAGTGAAGGGCACAGGCTTTCCAGCCGACGGCCCCGTGATGACCAATAGCCTGACAGCCGCCGACTGGTGCAGAAGCAAGAAAACCTACCCCAATGACAAGACCATCATCAGCACCTTCAAGTGGTCCTACACCACCGGCAATGGCAAGCGGTACAGAAGCACCGCCCGGACCACCTACACCTTCGCCAAACCCATGGCCGCCAACTACCTGAAGAACCAGCCTATGTACGTGTTCCGCAAGACCGAGCTGAAGCACTCCAAGACAGAACTGAACTTCAAAGAGTGGCAGAAAGCCTTCACCGACGTGATGGGCATGGACGAGCTGTACAAG
+target_Tm_C: 60","primer_forward:
+  sequence: ATGGTGTCCAAGGGCGAAG
+  position: 1-19
+  length: 19
+  Tm_C: 59.7
+  GC_percent: 52.6
+primer_reverse:
+  sequence: CTTGTACAGCTCGTCCATGCC
+  position: reverse_complement of 702-682
+  length: 21
+  Tm_C: 60.4
+  GC_percent: 52.4
+expected_product_size_bp: 702
+notes:
+  - Primers flank the entire CDS-like region
+  - Designed for ~60°C annealing temperature
+  - GC content and Tm are well balanced
+  - Reverse primer is reverse-complemented from the 3' end of the sequence","- Design primers with target Tm
+- Provide balanced primer properties
+- Calculate expected product size",,
+32,PCR_Primer_Design_TargetTm55_v4,molecular_cloning_primer_design,Design primers for AT-rich region targeting 55°C annealing temperature,"region_to_amplify: >
+  TTTGTTTATTTTTCTAAATACATTCAAATATGTATCCGCTCATGAGACAATAACCCTGATAAATGCTTCAATAATATTGAAAAAGGAAGAGT
+target_Tm_C: 55","primer_forward:
+  sequence: TTTGTTTATTTTTCTAAATACATTCAAATAT
+  position: 1-31
+  length: 31
+  Tm_C: 54.8
+  GC_percent: 19.4
+primer_reverse:
+  sequence: ACTCTTCCTTTTTCAATATTATTGAAGC
+  position: reverse_complement of 95-69
+  length: 27
+  Tm_C: 55.0
+  GC_percent: 33.3
+expected_product_size_bp: 95
+notes:
+  - Designed for ~55°C annealing temperature
+  - GC content is low, which is common for AT-rich regions
+  - Primers meet minimum length and Tm for efficient amplification","- Design primers with target Tm
+- Provide balanced primer properties
+- Calculate expected product size",,
+33,Non_cutter_Restriction_Enzyme_Identification_pUC19,molecular_cloning_restriction_analysis,Identify all restriction enzymes that do NOT cut within the pUC19 plasmid sequence,"plasmid_name: pUC19
+plasmid_source: https://www.addgene.org/50005/
+plasmid_sequence_fasta: addgene-plasmid-50005-sequence.fasta
+restriction_enzyme_database: REBASE 2024","non_cutters:
+  - AanI, AarI, AatI, AbsI, AccIII, AccB7I, AcvI, AdeI, AfeI, AflII, AgeI, AhlI, AjiI, AjuI, AleI, AlfI, AloI, Aor13HI, Aor51HI, ApaI, ArsI, AscI, AsiGI, AsiSI, AspI, AspA2I, AsuII, AsuNHI, AvrII, AxyI, BaeI, BalI, BanIII, BarI, BbrPI, BbsI, BbvCI, BclI, BcuI, BfrI, BglII, BlnI, BlpI, BmgBI, BmtI, BoxI, BpiI, BplI, Bpu10I, Bpu14I, Bpu1102I, BpuAI, Bsa29I, BsaAI, BsaBI, BsaMI, Bse8I, Bse21I, BseAI, BseCI, BseJI, BsePI, BseRI, BseX3I, BsgI, BshVI, BshTI, BsiWI, BslFI, BsmI, BsmFI, Bsp13I, Bsp19I, Bsp68I, Bsp119I, Bsp120I, Bsp1407I, Bsp1720I, BspDI, BspEI, BspOI, BspTI, BspT104I, BspXI, BsrGI, BssHII, BssNAI, BssT1I, Bst98I, Bst1107I, BstAFI, BstAUI, BstBI, BstBAI, BstDSI, BstEII, BstENI, BstHPI, BstPI, BstPAI, BstSNI, BstV2I, BstXI, BstZI, BstZ17I, Bsu15I, Bsu36I, BsuTUI, BtgI, BtgZI, BtrI, BtuMI, CciNI, CelII, Cfr42I, ClaI, CpoI, CsiI, CspI, Csp45I, CspAI, CspCI, DraIII, EagI, EclXI, Eco32I, Eco47III, Eco52I, Eco72I, Eco81I, Eco91I, Eco105I, Eco130I, Eco147I, EcoNI, EcoO65I, EcoRV, EcoT14I, EcoT22I, ErhI, FalI, FaqI, FbaI, FseI, FspAI, HpaI, I-CeuI, I-PpoI, I-SceI, KflI, Kpn2I, KroNI, KspI, Ksp22I, KspAI, MabI, MamI, MauBI, MfeI, MlsI, MluI, MluNI, Mox20I, Mph1103I, MreI, MroI, MroNI, MscI, Msp20I, MspCI, MssI, MunI, Mva1269I, NaeI, Nb.BbvCI, Nb.Bpu10I, Nb.BsmI, Nb.Mva1269I, NcoI, NgoMIV, NheI, NotI, NruI, NsiI, NspV, Nt.BbvCI, Nt.Bpu10I, OliI, PacI, PaeR7I, PalAI, PaqCI, PauI, Pfl23II, PflFI, PI-PspI, PI-SceI, PinAI, PmaCI, PmeI, PmlI, Ppu21I, PpuMI, PshAI, PsiI, Psp5II, PspCI, PspEI, PspLI, PspOMI, PspPPI, PspXI, PsrI, PsyI, PteI, RgaI, RigI, RruI, RsrII, Rsr2I, SacII, SanDI, SauI, SexAI, SfaAI, SfiI, Sfr274I, Sfr303I, SfuI, SgfI, SgrAI, SgrBI, SgrDI, SgsI, SlaI, SmiI, SnaBI, SpeI, SrfI, SseBI, SspBI, SstII, StuI, StyI, SwaI, TstI, Tth111I, Van91I, Vha464I, XagI, XcmI, XhoI, XmaJI, Zsp2I","- Identify all non-cutting enzymes
+- Provide enzyme availability information
+- Generate comprehensive analysis report",,
+34,Non_cutter_Restriction_Enzyme_Identification_pCMV_PE6c,molecular_cloning_restriction_analysis,Identify all restriction enzymes that do NOT cut within the pCMV-PE6c plasmid sequence,"plasmid_name: pCMV-PE6c
+plasmid_source: https://www.addgene.org/207853/
+plasmid_sequence_fasta: addgene-plasmid-207853-sequence.fasta
+restriction_enzyme_database: REBASE 2024","non_cutters:
+  - AanI, AarI, AbsI, Acc65I, AflII, AleI, AlfI, AscI, AsiSI, AspI, Asp718I, AsuII, AsuNHI, BaeI, BamHI, BbeI, BfrI, BmtI, BplI, Bpu14I, BsaI, BsePI, BsiWI, BsmBI, Bso31I, Bsp119I, Bsp1407I, BspOI, BspTI, BspT104I, BspTNI, BsrGI, BssHII, BssNAI, Bst98I, Bst1107I, BstAFI, BstAUI, BstBI, BstEII, BstHPI, BstPI, BstZ17I, Cfr9I, Csp45I, DinI, Eco31I, Eco91I, EcoO65I, EcoT22I, EgeI, EheI, Esp3I, FseI, FspAI, HindIII, HpaI, I-CeuI, I-PpoI, I-SceI, KasI, KpnI, KspAI, MauBI, Mly113I, Mph1103I, MreI, MspCI, NarI, NheI, NsiI, NspV, OliI, PacI, PaeR7I, PalAI, PaqCI, PauI, Pfl23II, PflFI, PI-PspI, PI-SceI, PluTI, PsiI, PspEI, PspLI, PspXI, PsyI, PteI, RgaI, RigI, SfaAI, SfiI, SfoI, Sfr274I, SfuI, SgfI, SgrAI, SgsI, SlaI, SmaI, SmiI, SrfI, SspBI, SspDI, SwaI, TspMI, Tth111I, Vha464I, XhoI, XmaI, XmaCI, Zsp2I","- Identify all non-cutting enzymes
+- Provide enzyme availability information
+- Generate comprehensive analysis report",,
+35,PCR_Q5_HighFidelity,wet_lab_protocol_execution,Design and simulate a PCR experiment using Q5 High-Fidelity DNA Polymerase to amplify a 1.5 kb DNA target from a plasmid template,"template_type: plasmid
+target_length_bp: 1500
+primer_tm_celsius: 60
+primers:
+  forward: ""5'-ATGCGTACGTTAGCTACG-3'""
+  reverse: ""5'-CGTAGCTAACGTACGCAT-3'""
+polymerase: Q5_HighFidelity
+total_volume_ul: 50","reaction_setup:
+  buffer: ""5X Q5 Reaction Buffer""
+  dntps: ""10 mM dNTPs""
+  primer_concentration_uM: 0.5
+  polymerase_volume_ul: 0.5
+  enhancer: ""optional""
+  water_volume_ul: auto_fill
+thermocycling_conditions:
+  initial_denaturation:
+    temp: 98
+    time: 30s
+  cycles: 30
+  denaturation:
+    temp: 98
+    time: 10s
+  annealing:
+    temp: 60
+    time: 20s
+  extension:
+    temp: 72
+    time: ""30s/kb""
+  final_extension:
+    temp: 72
+    time: 2min
+  hold:
+    temp: 4
+    time: ""∞""","- Volume accuracy matches official NEB protocol
+- Annealing temperature within ±5°C of primer Tm
+- Proper thermocycling conditions for 1.5 kb target
+- Complete reaction setup with all components",,
+36,Gibson_Assembly_TwoFragments,wet_lab_protocol_execution,Simulate the setup of a Gibson Assembly reaction to clone a 1.5 kb gene insert into a 5 kb plasmid using the NEB Gibson Assembly Kit,"vector_length_bp: 5000
+insert_length_bp: 1500
+vector_mass_ng: 50
+insert_molar_excess: 3
+fragment_count: 2
+reaction_volume_ul: 20
+temperature: 50
+incubation_time_min: 15","reaction_setup:
+  gibson_master_mix_2x_ul: 10
+  dna_fragments:
+    - name: vector
+      mass_ng: 50
+    - name: insert
+      calculated_mass_ng: auto  # auto = use molar ratio formula
+  water_ul: auto  # to complete 20 µl total
+incubation_conditions:
+  temp_celsius: 50
+  time_minutes: 15
+post_step:
+  transformation:
+    competent_cells: ""NEB 5-alpha E. coli""
+    volume_ul: 2
+    storage: ""-20°C or ice until transformation""","- Molar ratio correctness (insert ~3x molar excess relative to vector)
+- Component volume check (Master mix = 10 µl; Total = 20 µl)
+- Incubation accuracy (Temp = 50°C; Time = 15 min)
+- Protocol reasoning (explain why ratios and steps are chosen)",,
+37,Golden_Gate_Assembly_Multi_Insert,wet_lab_protocol_execution,Design and simulate a Golden Gate Assembly reaction using NEB E1601 kit (BsaI-HFv2) to assemble 4 DNA inserts into the pGGAselect vector,"insert_count: 4
+destination_vector:
+  name: pGGAselect
+  length_bp: 2133
+  concentration_ng_per_ul: 75
+insert_length_bp: [500, 700, 900, 300]
+insert_form: plasmid
+enzyme: BsaI-HFv2
+total_reaction_volume_ul: 20","reaction_setup:
+  vector_volume_ul: 1.0
+  inserts:
+    - name: insert1
+      mass_ng: 75
+    - name: insert2
+      mass_ng: 75
+    - name: insert3
+      mass_ng: 75
+    - name: insert4
+      mass_ng: 75
+  ligase_buffer_10x_ul: 2.0
+  golden_gate_mix_ul: 1.0
+  water_ul: auto_fill
+thermocycling_protocol:
+  steps:
+    - cycle: 30
+      steps:
+        - temp: 37
+          time: 1min
+        - temp: 16
+          time: 1min
+    - step:
+        temp: 60
+        time: 5min
+enzyme_logic:
+  restriction_enzyme: BsaI-HFv2
+  recognition_site: GGTCTC
+  sticky_end_generation: true
+  orientation_check: required","- Insert-vector ratio at 2:1 molar ratio
+- Correct thermocycling sequence (1 min @ 37°C, 1 min @ 16°C, 30x cycles)
+- Proper enzyme and buffer usage (1-2 µl Golden Gate Mix, 2 µl ligase buffer)
+- Vector restriction site validation and orientation check
+- Total reaction volume equals 20 µl",,
+38,LB_Media_Ingredient_Calculation,wet_lab_formula_calculation,"Given a target volume and LB media formulation type (Miller, Lennox, Luria), calculate the correct mass (g) of each ingredient","total_volume_ml: 250
+formulation: ""Miller""
+include_agar: false
+agar_concentration_g_per_l: 15","components:
+  tryptone:
+    amount_g: 2.5
+    concentration_g_per_l: 10
+  yeast_extract:
+    amount_g: 1.25
+    concentration_g_per_l: 5
+  sodium_chloride:
+    amount_g: 2.5
+    concentration_g_per_l: 10
+  agar:
+    amount_g: 0
+    concentration_g_per_l: 0","- Mass scaling calculation: (concentration g/L) × (volume ml ÷ 1000)
+- Formulation correctness: Miller (10 g/L NaCl), Lennox (5 g/L), Luria (0.5 g/L)
+- Agar inclusion logic: only included if include_agar = true
+- All component masses calculated correctly for target volume",,
+39,QIAprep_Spin_Miniprep_Buffer_Order,wet_lab_protocol_execution,"Given a bacterial culture volume (1–5 mL), verify that the agent correctly specifies the volumes and order of buffers for plasmid miniprep using the QIAprep Spin Miniprep Kit","culture_volume_ml: 3.0
+elution_volume_ul: 50
+optional_endA_plus_strain: true","buffer_order:
+  - name: Buffer P1
+    volume_ul: 250
+    function: Resuspension (contains RNase A)
+  - name: Buffer P2
+    volume_ul: 250
+    function: Alkaline lysis
+  - name: Buffer N3
+    volume_ul: 350
+    function: Neutralization and precipitation
+  - name: Buffer PB
+    volume_ul: 500
+    function: Optional wash (for endA⁺ strains)
+  - name: Buffer PE
+    volume_ul: 750
+    function: Ethanol wash
+  - name: Buffer EB
+    volume_ul: 50
+    function: Elution of plasmid DNA","- Correct buffer order: P1 → P2 → N3 → (PB) → PE → EB
+- Buffer volume match: volumes must match standard QIAprep protocol
+- Conditional PB inclusion: only included if endA_plus_strain is true
+- Elution range: EB volume should be between 30–100 µL",,
+40,Agarose_Gel_Electrophoresis_Prep,wet_lab_formula_calculation,"Given desired gel volume, agarose percentage, and buffer type, calculate ingredient amounts and specify order for accurate gel prep","gel_volume_ml: 100
+agarose_percentage: 1.0
+buffer_type: ""TAE""
+include_stain: ""EtBr""
+etbr_concentration_ug_per_ml: 0.5","components:
+  agarose_g: 1.0
+  buffer_volume_ml: 100
+  stain:
+    name: EtBr
+    concentration_ug_per_ml: 0.5
+  loading_buffer_ratio:
+    sample_to_loading_ul: 25
+    loading_buffer_ul: 5
+gel_pouring_order:
+  - component: buffer
+    amount: buffer_volume_ml
+  - component: agarose
+    amount: agarose_g
+  - component: heat
+    notes: ""melt agarose until clarity""
+  - component: cool
+    notes: ""cool ~5 min before pouring (~60 °C)""
+  - component: stain
+    condition: include_stain != none
+    notes: ""add stain to molten gel""","- Agarose calculation: gel_volume_ml × agarose_percentage / 100
+- Buffer volume matches gel volume (typically 1× buffer)
+- Correct gel pouring order: buffer → agarose → heat → cool → stain
+- Stain inclusion logic: only added if include_stain != none
+- Loading buffer ratio: 5 µL per 25 µL sample",,
+41,Bacterial_Glycerol_Stock_Prep,wet_lab_formula_calculation,Calculate the correct mixture for making glycerol stock from overnight bacterial culture,"culture_volume_ul: 500
+glycerol_percent: 20
+glycerol_solution_concentration_percent: 50","glycerol_stock:
+  culture_ul: 500
+  glycerol_stock_solution_ul: 500
+  glycerol_solution_concentration_percent: 50
+  mix:
+    final_volume_ul: 1000
+    final_glycerol_percent: 20","- Volume scaling: use equal volumes of culture and 50% glycerol stock
+- Final volume accuracy: culture_ul + glycerol_stock_ul
+- Glycerol concentration accuracy: final percentage must match input glycerol_percent
+- Formula application: needed_glycerol_stock = culture_volume_ul × (desired_percent / 50)",,
+42,Protein_Concentration_Amicon_Filter,wet_lab_formula_calculation,"Simulate a protein concentration step using centrifugal filters (e.g., 10 kDa cutoff Amicon Ultra)","starting_volume_ul: 1000
+target_concentration_mg_per_ml: 10
+starting_concentration_mg_per_ml: 1.5
+molecular_weight_cutoff_kDa: 10
+buffer_type: ""Tris pH 7.5, 150 mM NaCl""","final_volume_ul: 150
+fold_concentration: 6.67
+filter_type: ""Amicon Ultra 0.5 mL 10K""
+centrifugation_settings:
+  speed_rcf: 14000
+  time_minutes: 10
+  temperature_c: 4
+notes: ""Ensure protein stays in buffer post-spin; avoid drying membrane completely.""","- Volume calculation: final_volume = start_conc / target_conc × start_volume
+- Cutoff logic: protein MW must be > cutoff (e.g., 30 kDa protein → 10 kDa filter OK)
+- Compatible buffer: explain buffer suitability (e.g., no imidazole for crystallization)
+- Centrifugation settings: proper speed, time, and temperature for protein concentration",,
+43,PDB_Structure_Analysis,structure_analysis,"Analyze the PDB structure 1PC2 to:
+1. Count the number of VAL and TRP residues (alpha carbons only)
+2. Calculate the distance between alpha carbons of ASP72 and GLY144 in chain A","pdb_id: ""1PC2""
+analysis_type: [""residue_count"", ""distance_measurement""]
+residues_to_count: [""VAL"", ""TRP""]
+distance_measurement:
+  residue1: ""ASP72""
+  residue2: ""GLY144""
+  chain: ""A""
+  atom_type: ""CA""","residue_counts:
+  VAL: 12
+  TRP: 1
+distance_CA_ASP72_GLY144: 47.14  # Å, rounded from 47.14374542236328","- Accurate residue counts (VAL: 12, TRP: 1)
+- Correct distance measurement (approximately 47.14 Å)
+- Clear structural analysis report",,
+44,PDB_Chain_Analysis,structure_analysis,Analyze the PDB structure 3BDP to identify and describe all unique chains in the structure.,"pdb_id: ""3BDP""
+analysis_type: ""chain_analysis""","chains:
+  - A
+  - P
+  - T
+chain_count: 3","- Identify all unique chains
+- Describe chain types (protein, DNA, etc.)
+- Provide comprehensive chain analysis",,
+45,Protein_DNA_Interaction_Analysis,structure_analysis,"Analyze protein-DNA interactions in PDB structure 3BDP, focusing on contacts between protein chain A and DNA chain P.","pdb_id: ""3BDP""
+analysis_type: ""interaction_analysis""
+chains:
+  protein: ""A""
+  dna: ""P""
+distance_cutoff: 4.0  # Angstroms","interacting_residues:
+  chain_A:
+    - LYS 431
+    - PRO 531
+    - THR 550
+    - LYS 551
+    - SER 555
+    - THR 556
+    - SER 557
+    - ALA 558
+    - ARG 578
+    - GLN 579
+    - LYS 582
+    - TYR 587
+    - GLN 624
+    - ASN 625
+    - ILE 626
+    - PRO 627
+    - ILE 628
+    - ARG 629
+  chain_P:
+    - DC 8
+    - DT 10
+    - DG 11
+    - DA 12
+    - DT 13
+    - DG 14
+    - DC 15","- Identify interacting residues
+- Calculate interaction distances
+- Provide detailed interaction report",,
+46,Secondary_Structure_Analysis,structure_analysis,Analyze the secondary structure composition of chain A in PDB structure 3BDP.,"pdb_id: ""3BDP""
+chain: ""A""
+analysis_type: ""secondary_structure""","helix_residues: 668
+sheet_residues: 128
+coil_residues: 0","- Calculate secondary structure percentages
+- Identify structural elements
+- Provide comprehensive structure report",,
+47,Ligand_Analysis,structure_analysis,Identify and analyze all non-water ligands in PDB structure 3BDP.,"pdb_id: ""3BDP""
+analysis_type: ""ligand_analysis""
+exclude_water: true","ligands:
+  - resn: SO4
+    resi: 910
+    chain: A
+  - resn: SO4
+    resi: 912
+    chain: A
+  - resn: SO4
+    resi: 915
+    chain: A
+  - resn: SO4
+    resi: 920
+    chain: A
+  - resn: 2DT
+    resi: 16
+    chain: P","- Identify all non-water ligands
+- Describe ligand properties
+- Provide detailed ligand report",,
