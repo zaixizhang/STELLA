@@ -10,6 +10,7 @@ from io import BytesIO
 import PyPDF2
 import os
 from typing import Optional, Dict, Any
+from urllib.parse import urljoin
 
 # Import googlesearch-python for reliable Google search
 try:
