@@ -18,6 +18,8 @@
 
 [**Paper**](https://www.biorxiv.org/content/10.1101/2025.07.01.662467v2) | [**Online Demo**](https://stella-agent.com/) | [**arXiv**](https://arxiv.org/abs/2507.02004) | [**Twitter**](https://x.com/BiologyAIDaily/status/1941122955850993966)
 
+### :globe_with_meridians: [Try STELLA Online — stella-agent.com](https://stella-agent.com/)
+
 **Authors:**
 Ruofan Jin (1\*), Mingyang Xu (1\*), Fei Meng (1\*), Guancheng Wan (2), Qingran Cai (1), Yize Jiang (1), Jin Han (1), Yuanyuan Chen (1), Wanqing Lu (1), Mengyang Wang (1), Zhiqian Lan (1), Yuxuan Jiang (1), Junhong Liu (1), Dongyao Wang (1), Le Cong (3), Zaixi Zhang (1,†)
 
