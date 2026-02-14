@@ -21,10 +21,12 @@
 ### :globe_with_meridians: [Try STELLA Online — stella-agent.com](https://stella-agent.com/)
 
 **Authors:**
-Ruofan Jin (1\*), Mingyang Xu (1\*), Fei Meng (1\*), Guancheng Wan (2), Qingran Cai (1), Yize Jiang (1), Jin Han (1), Yuanyuan Chen (1), Wanqing Lu (1), Mengyang Wang (1), Zhiqian Lan (1), Yuxuan Jiang (1), Junhong Liu (1), Dongyao Wang (1), Le Cong (3), Zaixi Zhang (1,†)
+Ruofan Jin<sup>1</sup>, Mingyang Xu<sup>2</sup>, Fei Meng<sup>3,4</sup>, Guancheng Wan<sup>5</sup>, Qingran Cai<sup>6</sup>, Yize Jiang<sup>7</sup>, Jin Han<sup>8</sup>, Yuanyuan Chen<sup>9</sup>, Wanqing Lu<sup>9</sup>, Mengyang Wang<sup>10</sup>, Zhiqian Lan<sup>11</sup>, Yuxuan Jiang<sup>11</sup>, Junhong Liu<sup>7,✉</sup>, Dongyao Wang<sup>3,4,✉</sup>, Le Cong<sup>12,✉</sup>, and Zaixi Zhang<sup>1,✉</sup>
 
-<sup>1: Princeton University, 2: UIUC, 3: Stanford School of Medicine</sup>
-<sup>* Equal Contribution, † Corresponding Author</sup>
+<sup>1</sup>Princeton University, <sup>2</sup>University of Michigan, <sup>3</sup>The First Affiliated Hospital, USTC, <sup>4</sup>National Key Laboratory of Immune Response and Immunotherapy
+<sup>5</sup>UCLA, <sup>6</sup>Shanghai Jiao Tong University, <sup>7</sup>Microcyto, <sup>8</sup>Nanjing University, <sup>9</sup>Tianjin University of Science and Technology
+<sup>10</sup>Peking University, <sup>11</sup>The University of Hong Kong, <sup>12</sup>Stanford University
+<sup>✉</sup> liujunhong@microcyto.cn, dywsn@ustc.edu.cn, congle@stanford.edu, zz8680@princeton.edu
 
 </div>
 
