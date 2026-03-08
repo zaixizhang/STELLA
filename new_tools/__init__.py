@@ -1,11 +1,11 @@
 """
-PubMed Search Tool Package
+STELLA New Tools Package
 
-This package provides a simple interface to search PubMed for scientific articles
-using the NCBI E-utilities API.
+This package provides biomedical research tools for STELLA AI Assistant.
 """
 
-from .pubmed_search import pubmed_search
+# Only import modules that actually exist
+# Avoid importing missing modules to prevent import errors
 
-__all__ = ['pubmed_search']
+__all__ = []
 __version__ = '1.0.0'

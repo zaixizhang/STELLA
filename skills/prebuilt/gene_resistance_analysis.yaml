@@ -1,0 +1,128 @@
+skill_id: gene_resistance_analysis
+version: "1.0.0"
+name: Multi-Database Gene Resistance Analysis
+domain: genomics
+description: >
+  Comprehensive gene resistance analysis workflow that queries multiple biological
+  databases (UniProt, KEGG, PubMed) to identify resistance-associated genes,
+  cross-validates findings across sources, and ranks candidates by cumulative
+  evidence strength. Suitable for antimicrobial resistance, drug resistance,
+  and disease resistance gene discovery.
+
+workflow:
+  - step: 1
+    action: query_protein_databases
+    description: >
+      Query UniProt for proteins associated with the resistance phenotype of interest.
+      Extract gene names, protein families, functional annotations, and GO terms
+      related to resistance mechanisms.
+    tools_required:
+      - uniprot_query
+    parameters:
+      query_type: resistance_genes
+      include_annotations: true
+    agent: dev
+
+  - step: 2
+    action: search_pathway_context
+    description: >
+      Search KEGG pathway database for pathways involving the identified genes.
+      Map resistance genes to their metabolic and signaling pathway contexts
+      to understand mechanism of action.
+    tools_required:
+      - kegg_pathway_search
+    parameters:
+      include_pathway_maps: true
+      organism: hsa
+    agent: dev
+
+  - step: 3
+    action: literature_validation
+    description: >
+      Search PubMed and Google Scholar for recent publications supporting the
+      resistance roles of identified gene candidates. Collect citation counts
+      and publication dates for evidence scoring.
+    tools_required:
+      - query_pubmed
+      - enhanced_google_search
+    parameters:
+      max_results: 20
+      date_range_years: 5
+    agent: dev
+
+  - step: 4
+    action: cross_validate_and_rank
+    description: >
+      Cross-validate gene candidates across all queried databases. Compute an
+      evidence score based on the number of independent sources confirming
+      resistance association, pathway involvement, and literature support.
+      Rank genes by composite evidence score.
+    tools_required: []
+    parameters:
+      scoring_weights:
+        uniprot_annotation: 0.3
+        kegg_pathway: 0.3
+        literature_support: 0.4
+    agent: manager
+
+  - step: 5
+    action: generate_report
+    description: >
+      Compile a structured report with ranked gene candidates, evidence summaries,
+      pathway diagrams, and key literature references. Include confidence levels
+      and suggestions for experimental validation.
+    tools_required: []
+    parameters:
+      output_format: markdown
+    agent: critic
+
+tools_required:
+  - tool_id: uniprot_query
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: kegg_pathway_search
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: query_pubmed
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: enhanced_google_search
+    version: ">=1.0.0"
+    optional: true
+
+tags:
+  - gene resistance
+  - antimicrobial resistance
+  - UniProt
+  - KEGG
+  - PubMed
+  - cross-validation
+  - evidence ranking
+  - genomics
+
+applicable_queries:
+  - "*resistance*gene*"
+  - "*drug resistance*analys*"
+  - "*antimicrobial*resistance*"
+  - "*gene*resistance*mechanism*"
+  - "*resistance*pathway*"
+
+quality_metrics:
+  success_count: 12
+  failure_count: 1
+  avg_completion_time_sec: 145.0
+  avg_critic_score: 0.85
+  last_used: "2026-03-08"
+  created_at: "2026-03-08"
+  last_updated: "2026-03-08"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-03-08"
+      changes: "Initial prebuilt skill for multi-database gene resistance analysis with cross-validation and evidence ranking."
+
+status: active

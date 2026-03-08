@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  stella:
+    build:
+      context: .
+      dockerfile: Dockerfile.stella-core
+    container_name: stella-core
+    ports:
+      - "7860:7860"
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - SERPAPI_API_KEY=${SERPAPI_API_KEY}
+      - PAPERQA_API_KEY=${PAPERQA_API_KEY}
+    volumes:
+      - ./logs:/app/logs
+      - ./cache:/app/cache
+      - ./agent_outputs:/app/agent_outputs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+

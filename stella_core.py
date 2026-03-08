@@ -18,7 +18,6 @@ from smolagents import (
     CodeAgent,
     ToolCallingAgent,
     OpenAIServerModel,
-    WebSearchTool,
     GradioUI,
     MCPClient,
     tool,
@@ -37,6 +36,9 @@ from collections import deque
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Configuration constants
+DEFAULT_MAX_STEPS = 50  # Increased from 20 for complex biomedical tasks
 
 # Mem0 integration for enhanced memory management
 try:
@@ -69,27 +71,32 @@ def get_api_key(key_name: str, required: bool = True) -> str:
 # Load API keys from environment variables
 OPENROUTER_API_KEY_STRING = get_api_key("OPENROUTER_API_KEY", required=True)
 MEM0_API_KEY = get_api_key("MEM0_API_KEY", required=False)
-PHOENIX_API_KEY = get_api_key("PHOENIX_API_KEY", required=False)
-TAVILY_API_KEY = get_api_key("TAVILY_API_KEY", required=False)
-GEMINI_API_KEY = get_api_key("GEMINI_API_KEY", required=False)
 
 HTTP_REFERER_URL = "http://localhost:8000"  # Replace if you have a specific site
 X_TITLE_APP_NAME = "My Smolagent Web Search System" # Replace with your app name
-
-# --- Phoenix Configuration ---
-# Set the Phoenix endpoint (assuming Phoenix is running on localhost:6006)
 os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = "http://localhost:6006"
 
 
-# --- Import Knowledge Base System ---
-from Knowledge_base import KnowledgeBase, Mem0EnhancedKnowledgeBase, MEM0_AVAILABLE
-from memory_manager import MemoryManager
+# --- Import Knowledge Base System (legacy, kept for migration) ---
+try:
+    from Knowledge_base import KnowledgeBase, Mem0EnhancedKnowledgeBase, MEM0_AVAILABLE
+    from memory_manager import MemoryManager
+    LEGACY_KB_AVAILABLE = True
+except ImportError:
+    LEGACY_KB_AVAILABLE = False
+    MEM0_AVAILABLE = False
 
+# --- Import New Skill Management System ---
+from skill_manager import SkillManager
+from skill_schema import Skill
+from tool_governance import ToolIndex
 
+# Global skill manager instance (replaces global_memory_manager)
+global_skill_manager = None
 
-# Global memory manager instance (replaces global_knowledge_base)
+# Legacy compatibility
 global_memory_manager = None
-use_templates = False  # Global flag for template usage
+use_templates = False  # Global flag for template/skill usage
 
 # Global custom prompt templates
 custom_prompt_templates = None
@@ -335,20 +342,21 @@ def evaluate_with_critic(task_description: str, current_result: str, expected_ou
     try:
         # Optimized prompt - more concise
         evaluation_prompt = f"""
-Evaluate task completion:
+Evaluate ML model task completion with focus on PERFORMANCE METRICS:
 
 TASK: {task_description}
-RESULT: {current_result[:500]}...  # Truncate long results
-EXPECTED: {expected_outcome if expected_outcome else "Not specified"}
+FULL RESULT: {current_result[:1500]}  # Include more context for performance analysis
+EXPECTED: {expected_outcome if expected_outcome else "High-performance ML model with good correlation scores"}
 
-Provide brief evaluation:
-1. status: EXCELLENT/SATISFACTORY/NEEDS_IMPROVEMENT/POOR
-2. quality_score: 1-10
-3. gaps: key missing areas (max 3)
-4. should_create_tool: true/false
-5. recommended_tool: if needed, name and purpose
+Provide evaluation focusing on ACTUAL PERFORMANCE:
+1. status: EXCELLENT/SATISFACTORY/NEEDS_IMPROVEMENT/POOR (based on performance metrics, not just completion)
+2. quality_score: 1-10 (heavily weight actual performance metrics)
+3. gaps: performance issues and missing optimizations (max 3)
+4. should_create_tool: true/false (recommend iteration tools for poor performance)
+5. recommended_tool: if performance is poor, suggest optimization tools
+6. performance_analysis: brief analysis of the numerical results
 
-Be concise.
+Be critical of poor performance. Completion ≠ Success.
 """
         
         critic_response = critic_agent.run(evaluation_prompt)
@@ -357,7 +365,6 @@ Be concise.
     except Exception as e:
         return f"Error in critic evaluation: {str(e)}"
     
-
 
 @tool
 def list_dynamic_tools() -> str:
@@ -421,11 +428,25 @@ The tool should be production-ready and immediately usable by other agents.
             'created_at': current_time,
             'file_path': f'./new_tools/{tool_name}.py'
         }
-        
+
+        # Generate tool manifest for governance
+        if global_skill_manager is not None:
+            try:
+                manifest = global_skill_manager.tool_index.auto_generate_manifest(
+                    function_name=tool_name,
+                    module_path=f"new_tools.{tool_name}",
+                    category=tool_category,
+                )
+                if manifest:
+                    global_skill_manager.tool_index.register(manifest, save=True)
+                    print(f"Tool manifest generated for {tool_name}")
+            except Exception as e:
+                print(f"Warning: manifest generation failed: {e}")
+
         # Automatically load the created tool into the agents
         load_result = load_dynamic_tool(tool_name, add_to_agents=True)
-        
-        final_result = f"✅ Tool creation completed!\n\n{result}\n\n🔧 Tool '{tool_name}' has been registered in the dynamic tools registry.\n\n📦 Auto-loading result: {load_result}"
+
+        final_result = f"Tool creation completed!\n\n{result}\n\nTool '{tool_name}' registered with governance manifest.\n\nAuto-loading result: {load_result}"
         
         return final_result
         
@@ -534,8 +555,25 @@ def execute_tools_in_parallel(tool_calls: list, max_workers: int = 3, timeout: i
                 return f"❌ Tool call {i+1} missing 'tool_name'"
             if 'args' not in call:
                 return f"❌ Tool call {i+1} missing 'args'"
-            if call['tool_name'] not in manager_agent.tools:
-                return f"❌ Tool '{call['tool_name']}' not found in loaded tools"
+            
+            # Check if tool exists (flexible approach)
+            tool_name = call['tool_name']
+            tool_found = False
+            
+            try:
+                # Try dictionary access first
+                if hasattr(manager_agent.tools, 'get'):
+                    tool_found = manager_agent.tools.get(tool_name) is not None
+                elif hasattr(manager_agent.tools, '__contains__'):
+                    tool_found = tool_name in manager_agent.tools
+                else:
+                    # List-like search
+                    tool_found = any(getattr(t, 'name', getattr(t, '__name__', str(t))) == tool_name for t in manager_agent.tools)
+            except:
+                tool_found = False
+            
+            if not tool_found:
+                return f"❌ Tool '{tool_name}' not found in loaded tools"
         
         def execute_single_tool(tool_call):
             """Execute a single tool call with timeout"""
@@ -544,8 +582,102 @@ def execute_tools_in_parallel(tool_calls: list, max_workers: int = 3, timeout: i
             start_time = time.time()
             
             try:
-                tool_func = manager_agent.tools[tool_name]
-                result = tool_func(**args)
+                # Get tool function - flexible approach
+                tool_func = None
+                
+                # Try different ways to access the tool
+                if hasattr(manager_agent.tools, 'get'):
+                    # Dictionary-like access
+                    tool_func = manager_agent.tools.get(tool_name)
+                elif hasattr(manager_agent.tools, '__getitem__'):
+                    # Dictionary or list-like with indexing
+                    try:
+                        tool_func = manager_agent.tools[tool_name]
+                    except (KeyError, TypeError):
+                        # Maybe it's a list, search by name
+                        for tool in manager_agent.tools:
+                            if getattr(tool, 'name', getattr(tool, '__name__', str(tool))) == tool_name:
+                                tool_func = tool
+                                break
+                else:
+                    # List-like search
+                    for tool in manager_agent.tools:
+                        if getattr(tool, 'name', getattr(tool, '__name__', str(tool))) == tool_name:
+                            tool_func = tool
+                            break
+                
+                if tool_func is None:
+                    raise ValueError(f"Tool '{tool_name}' not found")
+                
+                # Handle different tool calling conventions with debugging
+                import inspect
+                
+                # Debug: Log tool call attempt
+                if manager_agent and hasattr(manager_agent, 'verbose') and manager_agent.verbose:
+                    print(f"🔧 Tool signature:")
+                    try:
+                        if hasattr(tool_func, 'forward'):
+                            print(f"{tool_name}{inspect.signature(tool_func.forward)}")
+                        elif callable(tool_func):
+                            print(f"{tool_name}{inspect.signature(tool_func)}")
+                        else:
+                            print(f"{tool_name}(*args, sanitize_inputs_outputs: bool = False, **kwargs)")
+                    except:
+                        print(f"{tool_name}(unknown signature)")
+                    print(f"\n📖 Documentation:")
+                    print(tool_func.__doc__[:200] if tool_func.__doc__ else "No documentation available...")
+                    print()
+                
+                # Check if this is a dynamic tool that expects positional args
+                if 'args' in args and isinstance(args['args'], str):
+                    # This is likely a dynamic tool that expects a positional string argument
+                    try:
+                        # Extract additional parameters
+                        sanitize = args.get('sanitize_inputs_outputs', False)
+                        kwargs = {k: v for k, v in args.items() if k not in ['args', 'sanitize_inputs_outputs']}
+                        
+                        # Call with positional argument first
+                        if kwargs:
+                            result = tool_func(args['args'], sanitize_inputs_outputs=sanitize, **kwargs)
+                        else:
+                            result = tool_func(args['args'], sanitize_inputs_outputs=sanitize)
+                    except Exception as e:
+                        # If that fails, try standard keyword arguments
+                        try:
+                            result = tool_func(**args)
+                        except Exception as ex:
+                            # Log more details about the failure
+                            print(f"❌ Tool {tool_name} failed with both calling conventions")
+                            print(f"   Positional args error: {e}")
+                            print(f"   Keyword args error: {ex}")
+                            print(f"   Args provided: {args}")
+                            # Re-raise the original error
+                            raise e
+                else:
+                    # Standard tool with keyword arguments
+                    try:
+                        result = tool_func(**args)
+                    except TypeError as e:
+                        error_str = str(e)
+                        print(f"🔍 Debug: Tool {tool_name} failed with: {error_str}")
+                        print(f"🔍 Debug: Tool signature: {inspect.signature(tool_func)}")
+                        print(f"🔍 Debug: Args provided: {args}")
+                        
+                        # Try to provide helpful hints based on the error
+                        if "unexpected keyword argument" in error_str:
+                            print(f"💡 Hint: This tool may expect different parameters. Check the tool's documentation.")
+                            # Try extracting the positional arg if present
+                            if 'prompt' in args:
+                                print(f"💡 Trying with prompt as positional argument...")
+                                try:
+                                    result = tool_func(args['prompt'], **{k: v for k, v in args.items() if k != 'prompt'})
+                                    print(f"✅ Success with positional prompt!")
+                                except:
+                                    raise e
+                            else:
+                                raise
+                        else:
+                            raise
                 duration = time.time() - start_time
                 
                 return {
@@ -685,7 +817,7 @@ def analyze_query_and_load_relevant_tools(user_query: str, max_tools: int = 10) 
         tool_files = {
             'database_tools': os.path.join(script_dir, 'new_tools', 'database_tools.py'),
             'virtual_screening_tools': os.path.join(script_dir, 'new_tools', 'virtual_screening_tools.py'),
-            'biosecurity_tools': os.path.join(script_dir, 'new_tools', 'biosecurity_tools.py')
+            'enzyme_tools': os.path.join(script_dir, 'new_tools', 'enzyme_tools.py')
         }
         
         available_tools = {}
@@ -752,7 +884,7 @@ Return JSON with top {max_tools} most relevant tools:
         
         # Use LLM to select tools intelligently
         try:
-            llm_response = json_llm_call(llm_prompt, "gemini-2.5-pro")
+            llm_response = json_llm_call(llm_prompt, "gemini-3-pro")
             
             if "error" in llm_response:
                 # Fallback to simple keyword matching if LLM fails
@@ -789,6 +921,13 @@ Return JSON with top {max_tools} most relevant tools:
                     if hasattr(manager_agent, 'python_executor') and hasattr(manager_agent.python_executor, 'custom_tools'):
                         manager_agent.python_executor.custom_tools[tool_name] = tool_func
                     
+                    # Add to dynamic_tools_registry so list_dynamic_tools can find it
+                    dynamic_tools_registry[tool_name] = {
+                        'purpose': tool_info.get('description', f'Loaded biomedical tool from {tool_info["module"]}'),
+                        'module': tool_info['module'],
+                        'source': 'loaded_tool'
+                    }
+                    
                     loaded_count += 1
                 
                 # Add to tool_creation_agent tools if not already present  
@@ -813,34 +952,48 @@ Return JSON with top {max_tools} most relevant tools:
         result += f"📋 Tools with signatures:\n"
         
         # Add tool signatures for immediate use
-        for i, tool_data in enumerate(loaded_tools[:5], 1):
+        for i, tool_data in enumerate(loaded_tools, 1):
             tool_name = tool_data['name']
             try:
                 # Get tool signature inline
                 if tool_name in manager_agent.tools:
                     import inspect
                     tool_func = manager_agent.tools[tool_name]
-                    sig = inspect.signature(tool_func)
+                    
+                    # Try to get signature from the actual function
+                    if hasattr(tool_func, 'forward'):
+                        sig = inspect.signature(tool_func.forward)
+                    elif callable(tool_func):
+                        sig = inspect.signature(tool_func)
+                    else:
+                        result += f"  {i}. {tool_name}(args, sanitize_inputs_outputs: bool, kwargs)\n"
+                        continue
                     
                     # Show COMPLETE signature with parameter types
                     params = []
                     for param_name, param in sig.parameters.items():
+                        if param_name in ['self', 'cls']:  # Skip self/cls parameters
+                            continue
                         if param.annotation != inspect.Parameter.empty:
                             param_type = getattr(param.annotation, '__name__', str(param.annotation))
-                            params.append(f"{param_name}: {param_type}")
+                            if param.default != inspect.Parameter.empty:
+                                params.append(f"{param_name}: {param_type} = {param.default}")
+                            else:
+                                params.append(f"{param_name}: {param_type}")
                         else:
-                            params.append(param_name)
+                            if param.default != inspect.Parameter.empty:
+                                params.append(f"{param_name} = {param.default}")
+                            else:
+                                params.append(param_name)
                     
                     param_str = ", ".join(params) if params else "no params"
                     
                     result += f"  {i}. {tool_name}({param_str})\n"
                 else:
                     result += f"  {i}. {tool_name} (signature unavailable)\n"
-            except Exception:
-                result += f"  {i}. {tool_name} (signature error)\n"
-        
-        if len(loaded_tools) > 5:
-            result += f"  ... (+{len(loaded_tools)-5} more tools loaded)\n"
+            except Exception as e:
+                # For dynamic tools, show the standard signature
+                result += f"  {i}. {tool_name}(*args, sanitize_inputs_outputs: bool = False, **kwargs)\n"
         
         result += f"\n💡 All tools ready to use with correct parameter names shown above"
         
@@ -893,6 +1046,13 @@ def _fallback_tool_selection(user_query: str, available_tools: dict, max_tools: 
                 if hasattr(manager_agent, 'python_executor') and hasattr(manager_agent.python_executor, 'custom_tools'):
                     manager_agent.python_executor.custom_tools[tool_name] = tool_func
                 
+                # Add to dynamic_tools_registry so list_dynamic_tools can find it
+                dynamic_tools_registry[tool_name] = {
+                    'purpose': f'Loaded biomedical tool (fallback method)',
+                    'module': 'fallback_selection',
+                    'source': 'loaded_tool'
+                }
+                
                 loaded_count += 1
             if tool_name not in tool_creation_agent.tools:
                 tool_creation_agent.tools[tool_name] = tool_func
@@ -908,12 +1068,12 @@ def _fallback_tool_selection(user_query: str, available_tools: dict, max_tools: 
     # Add signatures for fallback loaded tools
     tool_count = 0
     for tool_name, score in selected_tools:
-        if score > 0 and tool_count < 5:
+        if score > 0 and tool_count < 10:
             try:
                 if tool_name in manager_agent.tools:
                     import inspect
                     tool_func = manager_agent.tools[tool_name]
-                    sig = inspect.signature(tool_func)
+                    sig = inspect.signature(tool_func.forward)
                     
                     # Show COMPLETE signature with parameter types
                     params = []
@@ -996,7 +1156,7 @@ def get_tool_signature(tool_name: str) -> str:
         
         import inspect
         tool_func = manager_agent.tools[tool_name]
-        sig = inspect.signature(tool_func)
+        sig = inspect.signature(tool_func.forward)
         
         # Get complete signature with types
         params = []
@@ -1069,584 +1229,185 @@ def add_tool_to_agents(tool_function_name: str, module_name: str) -> str:
     except Exception as e:
         return f"❌ Error adding tool to agents: {str(e)}"
 
-# --- Knowledge Base Tools with Optimization ---
+# --- Skill Management Tools (replaces Knowledge Base Tools) ---
 @tool
-@lru_cache(maxsize=16)  # Cache template retrievals
-def retrieve_similar_templates(task_description: str, top_k: int = 3, user_id: str = "default") -> str:
-    """Retrieve similar problem-solving templates from the knowledge base.
-    
-    Optimized with caching and reduced output.
-    
+def retrieve_similar_skills(task_description: str, top_k: int = 3, domain: str = "") -> str:
+    """Retrieve relevant skills (reusable workflows) for the current task.
+
+    Uses hybrid 3-stage retrieval: tag matching, semantic similarity, and quality re-ranking.
+    Each skill contains structured workflow steps, required tools, and quality metrics.
+
     Args:
         task_description: Description of the current task
-        top_k: Number of similar templates to retrieve (default: 3)
-        user_id: User ID for personalized memory retrieval (default: "default")
-        
+        top_k: Number of skills to retrieve (default: 3)
+        domain: Optional domain filter (e.g., "genomics", "drug_discovery")
+
     Returns:
-        List of similar templates with reasoning approaches
+        Ranked list of matching skills with workflows and tool requirements
     """
-    global global_memory_manager, use_templates
-    
-    if not use_templates:
-        return "📋 Template usage is disabled. Use --use_template to enable."
-    
-    if global_memory_manager is None:
-        return "❌ Memory manager not initialized."
-    
+    global global_skill_manager
+
+    if global_skill_manager is None:
+        return "Skill system not initialized."
+
     try:
-        # 使用新的知识记忆组件
-        result = global_memory_manager.knowledge.search_templates(task_description, top_k, user_id)
-        if result["success"]:
-            similar_templates = result["templates"]
-        else:
-            similar_templates = []
-        
-        if not similar_templates:
-            return "📚 No similar templates found in knowledge base."
-        
-        # Optimized output - more concise
-        result = f"📚 Found {len(similar_templates)} templates:\n"
-        
-        for i, template in enumerate(similar_templates, 1):
-            similarity = template.get('similarity', 0.0)
-            task = template.get('task', '')[:80]  # Reduced from 150
-            result += f"{i}. {task}... (Sim: {similarity:.2f})\n"
-        
-        return result
-        
+        return global_skill_manager.retrieve_skills(
+            query=task_description,
+            top_k=top_k,
+            domain=domain if domain else None,
+        )
     except Exception as e:
-        return f"❌ Error retrieving templates: {str(e)}"
+        return f"Error retrieving skills: {str(e)}"
 
 
 @tool
-def save_successful_template(task_description: str, reasoning_process: str, solution_outcome: str, domain: str = "general", user_id: str = "default") -> str:
-    """Save a successful problem-solving approach to the knowledge base.
-    
+def save_successful_skill(task_description: str, reasoning_process: str, solution_outcome: str, domain: str = "general", tools_used: str = "") -> str:
+    """Save a successful problem-solving approach as a reusable skill.
+
+    The skill system automatically extracts structured workflow steps,
+    deduplicates against existing skills, and tracks quality metrics.
+
     Args:
         task_description: Description of the solved task
-        reasoning_process: The reasoning process that led to success
+        reasoning_process: The reasoning process and steps that led to success
         solution_outcome: The successful outcome achieved
         domain: Domain category (default: "general")
-        user_id: User ID for personalized memory storage (default: "default")
-        
+        tools_used: Comma-separated list of tools used (default: "")
+
     Returns:
-        Status of the save operation
+        Status of the save operation with skill ID
     """
-    global global_memory_manager, use_templates
-    
-    if not use_templates:
-        return "📋 Template usage is disabled. Use --use_template to enable."
-    
-    if global_memory_manager is None:
-        return "❌ Memory manager not initialized."
-    
+    global global_skill_manager
+
+    if global_skill_manager is None:
+        return "Skill system not initialized."
+
     try:
-        # 使用新的知识记忆组件保存模板
-        result = global_memory_manager.knowledge.add_template(task_description, reasoning_process, solution_outcome, domain, user_id)
-        
-        if result.get("success", False):
-            # 获取统计信息
-            stats = global_memory_manager.knowledge.get_stats(user_id)
-            total_templates = stats.get('total_templates', 0)
-            return f"✅ Template saved! Total: {total_templates}"
-        else:
-            return f"❌ Failed to save template: {result.get('message', 'Unknown error')}"
-        
+        tool_list = [t.strip() for t in tools_used.split(",") if t.strip()] if tools_used else []
+        return global_skill_manager.save_skill_from_run(
+            query=task_description,
+            reasoning_process=reasoning_process,
+            result_summary=solution_outcome,
+            tools_used=tool_list,
+            domain=domain,
+        )
     except Exception as e:
-        return f"❌ Error saving template: {str(e)}"
+        return f"Error saving skill: {str(e)}"
 
 
 @tool
-def list_knowledge_base_status(user_id: str = "default") -> str:
-    """Get status and statistics of the knowledge base.
-    
-    Optimized to return concise information.
-    
-    Args:
-        user_id: User ID for personalized memory statistics (default: "default")
-    
+def get_skill_system_status() -> str:
+    """Get status and statistics of the skill management system.
+
+    Shows skill counts, run statistics, success rates, and tool index summary.
+
     Returns:
-        Knowledge base status and statistics
+        Comprehensive skill system status
     """
-    global global_memory_manager, use_templates
-    
-    if not use_templates:
-        return "📋 Template usage is disabled."
-    
-    if global_memory_manager is None:
-        return "❌ Memory manager not initialized."
-    
+    global global_skill_manager
+
+    if global_skill_manager is None:
+        return "Skill system not initialized."
+
     try:
-        # 获取知识记忆组件的统计信息
-        stats = global_memory_manager.knowledge.get_stats(user_id)
-        
-        result = f"📚 Memory Status: {stats.get('backend', 'Unknown')} - {stats.get('total_templates', 0)} templates"
-        
-        return result
-        
+        return global_skill_manager.get_skill_status()
     except Exception as e:
-        return f"❌ Error getting memory system status: {str(e)}"
+        return f"Error getting skill status: {str(e)}"
 
 
 @tool
-def search_templates_by_keyword(keyword: str, user_id: str = "default", limit: int = 5) -> str:
-    """Search templates in the knowledge base by keyword.
-    
+def search_skills_by_keyword(keyword: str, limit: int = 5) -> str:
+    """Search skills by keyword using hybrid retrieval.
+
     Args:
-        keyword: Keyword to search for in templates
-        user_id: User ID for personalized search (default: "default")
+        keyword: Keyword to search for in skills
         limit: Maximum number of results to return (default: 5)
-        
+
     Returns:
-        Matching templates containing the keyword
+        Matching skills with relevance scores
     """
-    global global_memory_manager, use_templates
-    
-    if not use_templates:
-        return "📋 Template usage is disabled. Use --use_template to enable."
-    
-    if global_memory_manager is None:
-        return "❌ Memory manager not initialized."
-    
+    global global_skill_manager
+
+    if global_skill_manager is None:
+        return "Skill system not initialized."
+
     try:
-        # 使用知识记忆组件进行语义搜索
-        result = global_memory_manager.knowledge.search_templates(keyword, limit, user_id)
-        if result["success"]:
-            matching_results = result["templates"]
-        else:
-            matching_results = []
-            
-        if not matching_results:
-            return f"🔍 No memories found containing keyword '{keyword}'."
-            
-        result = f"🔍 Found {len(matching_results)} memories:\n"
-        
-        for i, memory_result in enumerate(matching_results, 1):
-            memory_text = memory_result.get('memory', str(memory_result))
-            result += f"{i}. {memory_text[:100]}...\n"
-            
-        return result
-        
+        return global_skill_manager.search_skills(keyword, limit=limit)
     except Exception as e:
-        return f"❌ Error searching templates: {str(e)}"
-
-
-# --- New Mem0-specific Tools ---
-@tool
-def get_user_memories(user_id: str = "default", limit: int = 10) -> str:
-    """Get all memories for a specific user (Mem0 enhanced feature).
-    
-    Args:
-        user_id: User ID to retrieve memories for (default: "default")
-        limit: Maximum number of memories to display (default: 10)
-        
-    Returns:
-        List of user memories
-    """
-    global global_memory_manager, use_templates
-    
-    if not use_templates:
-        return "📋 Template usage is disabled. Use --use_template to enable."
-    
-    if global_memory_manager is None:
-        return "❌ Memory manager not initialized."
-    
-    if not hasattr(global_memory_manager, 'session') or global_memory_manager.session is None:
-        return "❌ This feature requires Mem0 enhanced memory system. Use --use_mem0 to enable."
-    
-    try:
-        memories = global_memory_manager.session.get_user_memories(user_id)
-        
-        if not memories:
-            return f"📚 No memories found for user '{user_id}'."
-        
-        result = f"📚 Memories for user '{user_id}' ({min(len(memories), limit)} of {len(memories)}):\n"
-        
-        for i, memory in enumerate(memories[:limit], 1):
-            memory_text = memory.get('memory', str(memory))[:150]  # Reduced from 300
-            result += f"{i}. {memory_text}...\n"
-        
-        return result
-        
-    except Exception as e:
-        return f"❌ Error retrieving user memories: {str(e)}"
-
-
-# --- User session and context management functions have been removed ---
-# Focus on agent team collaboration and shared knowledge base instead
-
-# --- Multi-Agent Collaboration Tools ---
-
-@tool
-def create_shared_workspace(workspace_id: str, task_description: str, participating_agents: str = "dev_agent,manager_agent,critic_agent") -> str:
-    """Create a shared workspace for agent team collaboration.
-    
-    Args:
-        workspace_id: Unique identifier for the workspace
-        task_description: Description of the collaborative task
-        participating_agents: Comma-separated list of agent names
-        
-    Returns:
-        Workspace creation status and details
-    """
-    global global_memory_manager, use_templates
-    
-    if not use_templates:
-        return "📋 Template usage is disabled. Use --use_template to enable collaboration features."
-    
-    if global_memory_manager is None:
-        return "❌ Memory manager not initialized."
-    
-    if not hasattr(global_memory_manager, 'collaboration') or global_memory_manager.collaboration is None:
-        return "❌ This feature requires enhanced memory system. Use --use_template to enable."
-    
-    try:
-        agents_list = [agent.strip() for agent in participating_agents.split(',')]
-        
-        result = global_memory_manager.collaboration.create_shared_workspace(
-            workspace_id=workspace_id,
-            task_description=task_description,
-            participating_agents=agents_list
-        )
-        
-        if result["success"]:
-            return f"✅ Workspace '{workspace_id}' created with {len(result['participating_agents'])} agents"
-        else:
-            return f"❌ Failed to create workspace: {result['message']}"
-            
-    except Exception as e:
-        return f"❌ Error creating shared workspace: {str(e)}"
+        return f"Error searching skills: {str(e)}"
 
 
 @tool
-def add_workspace_memory(workspace_id: str, agent_name: str, content: str, memory_type: str = "observation") -> str:
-    """Add memory/observation to a shared workspace.
-    
+def check_tools_for_task(task_description: str) -> str:
+    """Check which tools are needed and available for a task based on matching skills.
+
     Args:
-        workspace_id: ID of the target workspace
-        agent_name: Name of the contributing agent  
-        content: The observation, discovery, or result to share
-        memory_type: Type of memory (observation, discovery, result, question)
-        
+        task_description: Description of the task
+
     Returns:
-        Status of memory addition
+        Tool availability report for the task
     """
-    global global_memory_manager, use_templates
-    
-    if not use_templates:
-        return "📋 Template usage is disabled. Use --use_template to enable."
-    
-    if global_memory_manager is None:
-        return "❌ Memory manager not initialized."
-    
-    if not hasattr(global_memory_manager, 'collaboration') or global_memory_manager.collaboration is None:
-        return "❌ This feature requires enhanced memory system. Use --use_template to enable."
-    
+    global global_skill_manager
+
+    if global_skill_manager is None:
+        return "Skill system not initialized."
+
     try:
-        result = global_memory_manager.collaboration.add_workspace_memory(
-            workspace_id=workspace_id,
-            agent_name=agent_name,
-            content=content,
-            memory_type=memory_type
-        )
-        
-        if result["success"]:
-            return f"✅ Memory added to workspace '{workspace_id}'"
-        else:
-            return f"❌ Failed to add workspace memory: {result['message']}"
-            
+        return global_skill_manager.check_tools_for_query(task_description)
     except Exception as e:
-        return f"❌ Error adding workspace memory: {str(e)}"
+        return f"Error checking tools: {str(e)}"
 
 
 @tool
-def get_workspace_memories(workspace_id: str, memory_type: str = "all", limit: int = 10) -> str:
-    """Retrieve memories from a shared workspace.
-    
-    Optimized to return concise information.
-    
+def export_skill_environment(skill_id: str, format: str = "requirements") -> str:
+    """Export reproducible environment specification for a skill's tools.
+
     Args:
-        workspace_id: ID of the target workspace
-        memory_type: Type filter (all, observation, discovery, result, question)
-        limit: Maximum number of memories to retrieve
-        
+        skill_id: ID of the skill to export environment for
+        format: Output format - "requirements" (pip) or "conda" (environment.yml)
+
     Returns:
-        Formatted list of workspace memories
+        Environment specification content
     """
-    global global_memory_manager, use_templates
-    
-    if not use_templates:
-        return "📋 Template usage is disabled. Use --use_template to enable."
-    
-    if global_memory_manager is None:
-        return "❌ Memory manager not initialized."
-    
-    if not hasattr(global_memory_manager, 'collaboration') or global_memory_manager.collaboration is None:
-        return "❌ This feature requires enhanced memory system. Use --use_template to enable."
-    
+    global global_skill_manager
+
+    if global_skill_manager is None:
+        return "Skill system not initialized."
+
     try:
-        result = global_memory_manager.collaboration.get_workspace_memories(
-            workspace_id=workspace_id,
-            memory_type=memory_type,
-            limit=limit
-        )
-        
-        if result["success"]:
-            if not result["memories"]:
-                return f"📭 No memories found in workspace '{workspace_id}'"
-            
-            output = f"🏢 Workspace '{workspace_id}' ({result['total_found']} memories):\n"
-            
-            for i, memory in enumerate(result["memories"], 1):
-                metadata = memory.get('metadata', {})
-                agent = metadata.get('agent_name', 'Unknown')
-                mem_type = metadata.get('memory_type', 'unknown')
-                content = memory.get('memory', str(memory))[:100]  # Reduced from 200
-                
-                output += f"{i}. [{mem_type}] {agent}: {content}...\n"
-            
-            return output
-        else:
-            return f"❌ Failed to retrieve workspace memories: {result.get('message', 'Unknown error')}"
-            
+        return global_skill_manager.export_environment_for_skill(skill_id, format=format)
     except Exception as e:
-        return f"❌ Error retrieving workspace memories: {str(e)}"
+        return f"Error exporting environment: {str(e)}"
 
 
-@tool
-def create_task_breakdown(task_id: str, main_task: str, subtasks: str, agent_assignments: str = "") -> str:
-    """Create a task breakdown with tracking for complex collaborative tasks.
-    
-    Args:
-        task_id: Unique identifier for the task
-        main_task: Description of the main task
-        subtasks: JSON array string of subtask descriptions  
-        agent_assignments: JSON object string mapping subtask indices to agent names
-        
-    Returns:
-        Task breakdown creation status
-    """
-    global global_memory_manager, use_templates
-    
-    if not use_templates:
-        return "📋 Template usage is disabled. Use --use_template to enable."
-    
-    if global_memory_manager is None:
-        return "❌ Memory manager not initialized."
-    
-    if not hasattr(global_memory_manager, 'collaboration') or global_memory_manager.collaboration is None:
-        return "❌ This feature requires enhanced memory system. Use --use_template to enable."
-    
-    try:
-        import json
-        
-        # Parse subtasks
-        try:
-            subtasks_list = json.loads(subtasks)
-        except json.JSONDecodeError:
-            # Fallback: split by line or comma
-            subtasks_list = [task.strip() for task in subtasks.replace('\n', ',').split(',') if task.strip()]
-        
-        # Parse agent assignments
-        assignments_dict = {}
-        if agent_assignments:
-            try:
-                assignments_dict = json.loads(agent_assignments)
-            except json.JSONDecodeError:
-                # Ignore malformed assignments
-                pass
-        
-        result = global_memory_manager.collaboration.create_task_breakdown(
-            task_id=task_id,
-            main_task=main_task,
-            subtasks=subtasks_list,
-            agent_assignments=assignments_dict
-        )
-        
-        if result["success"]:
-            return f"✅ Task '{task_id}' created with {result['subtasks_created']} subtasks"
-        else:
-            return f"❌ Failed to create task breakdown: {result['message']}"
-            
-    except Exception as e:
-        return f"❌ Error creating task breakdown: {str(e)}"
-
-
-@tool  
-def update_subtask_status(task_id: str, subtask_index: int, new_status: str, agent_name: str, progress_notes: str = "") -> str:
-    """Update the status of a specific subtask.
-    
-    Args:
-        task_id: ID of the parent task
-        subtask_index: Index of the subtask (0-based)
-        new_status: New status (pending, in_progress, completed, blocked)
-        agent_name: Name of the agent updating the status
-        progress_notes: Optional notes about the progress
-        
-    Returns:
-        Status update confirmation
-    """
-    global global_memory_manager, use_templates
-    
-    if not use_templates:
-        return "📋 Template usage is disabled. Use --use_template to enable."
-    
-    if global_memory_manager is None:
-        return "❌ Memory manager not initialized."
-    
-    if not hasattr(global_memory_manager, 'collaboration') or global_memory_manager.collaboration is None:
-        return "❌ This feature requires enhanced memory system. Use --use_template to enable."
-    
-    try:
-        result = global_memory_manager.collaboration.update_subtask_status(
-            task_id=task_id,
-            subtask_index=subtask_index,
-            new_status=new_status,
-            agent_name=agent_name,
-            progress_notes=progress_notes
-        )
-        
-        if result["success"]:
-            return f"✅ Subtask #{subtask_index} updated to {new_status}"
-        else:
-            return f"❌ Failed to update subtask status: {result['message']}"
-            
-    except Exception as e:
-        return f"❌ Error updating subtask status: {str(e)}"
-
-
-@tool
-def get_task_progress(task_id: str) -> str:
-    """Get comprehensive progress overview for a collaborative task.
-    
-    Optimized to return concise progress information.
-    
-    Args:
-        task_id: ID of the task to check
-        
-    Returns:
-        Detailed progress report with statistics and recent updates
-    """
-    global global_memory_manager, use_templates
-    
-    if not use_templates:
-        return "📋 Template usage is disabled. Use --use_template to enable."
-    
-    if global_memory_manager is None:
-        return "❌ Memory manager not initialized."
-    
-    if not hasattr(global_memory_manager, 'collaboration') or global_memory_manager.collaboration is None:
-        return "❌ This feature requires enhanced memory system. Use --use_template to enable."
-    
-    try:
-        result = global_memory_manager.collaboration.get_task_progress(task_id)
-        
-        if result["success"]:
-            progress = result["progress"]
-            
-            if not progress.get("main_task"):
-                return f"❌ Task '{task_id}' not found"
-            
-            # Concise output
-            output = f"📊 Task '{task_id}': {progress['progress_percentage']}% complete\n"
-            output += f"✅ {progress['completed']} / {progress['total_subtasks']} done"
-            
-            return output
-        else:
-            return f"❌ Failed to get task progress: {result.get('message', 'Unknown error')}"
-            
-    except Exception as e:
-        return f"❌ Error getting task progress: {str(e)}"
-
-
-@tool
-def get_agent_contributions(agent_name: str) -> str:
-    """Get statistics about an agent's contributions to team collaboration.
-    
-    Args:
-        agent_name: Name of the agent to analyze
-        
-    Returns:
-        Summary of the agent's collaboration statistics
-    """
-    global global_memory_manager, use_templates
-    
-    if not use_templates:
-        return "📋 Template usage is disabled. Use --use_template to enable."
-    
-    if global_memory_manager is None:
-        return "❌ Memory manager not initialized."
-    
-    if not hasattr(global_memory_manager, 'collaboration') or global_memory_manager.collaboration is None:
-        return "❌ This feature requires enhanced memory system. Use --use_template to enable."
-    
-    try:
-        result = global_memory_manager.collaboration.get_agent_contributions(agent_name)
-        
-        if result["success"]:
-            contrib = result["contributions"]
-            
-            output = f"📊 {agent_name} contributions: "
-            output += f"{contrib['total_contributions']} total "
-            output += f"({contrib['discoveries_shared']} discoveries, "
-            output += f"{contrib['workspace_contributions']} workspace, "
-            output += f"{contrib['task_updates']} updates)"
-            
-            return output
-        else:
-            return f"❌ Failed to get agent contributions: {result.get('message', 'Unknown error')}"
-            
-    except Exception as e:
-        return f"❌ Error getting agent contributions: {str(e)}"
+# Legacy compatibility aliases
+retrieve_similar_templates = retrieve_similar_skills
+save_successful_template = save_successful_skill
+list_knowledge_base_status = get_skill_system_status
+search_templates_by_keyword = search_skills_by_keyword
 
 
 claude_model = OpenAIServerModel(
-    model_id="anthropic/claude-sonnet-4",
+    model_id="google/gemini-3-flash-preview",
     api_base="https://openrouter.ai/api/v1",
     api_key=OPENROUTER_API_KEY_STRING,
 )
 
 # Create a more capable model for manager and critic agents
 gemini_model = OpenAIServerModel(
-    model_id="google/gemini-2.5-pro",
+    model_id="google/gemini-3-flash-preview",
     api_base="https://openrouter.ai/api/v1",
     api_key=OPENROUTER_API_KEY_STRING,
-    temperature=0.1,  # Lower temperature for more consistent analysis
+    temperature=0.1,
 )
 
-grok_model = OpenAIServerModel(
-    model_id="x-ai/grok-4",
+gpt_model = OpenAIServerModel(
+    model_id="google/gemini-3-flash-preview",
     api_base="https://openrouter.ai/api/v1",
     api_key=OPENROUTER_API_KEY_STRING,
-    temperature=0.1,  # Lower temperature for more consistent analysis
+    temperature=0.1,
 )
 
-
-# --- MCP Server Configuration ---
-def setup_mcp_tools():
-    """为生物医学和科学研究设置MCP工具。"""
-    mcp_tools = []
-    
-    # --- PubMed MCP Server (proven to work) ---
-    try:
-        pubmed_server_params = StdioServerParameters(
-            command="uvx",
-            args=["--quiet", "pubmedmcp@0.1.3"],
-            env={"UV_PYTHON": "3.12", **os.environ},
-        )
-        
-        print("🔬 正在连接PubMed MCP服务器...")
-        pubmed_client = MCPClient(pubmed_server_params)
-        pubmed_tools = pubmed_client.get_tools()
-        mcp_tools.extend(pubmed_tools)
-        print(f"✅ 成功连接PubMed MCP服务器，获得 {len(pubmed_tools)} 个工具")
-        
-    except Exception as e:
-        print(f"⚠️ PubMed MCP服务器连接失败: {e}")
-    
-    return mcp_tools
-
-mcp_tools = setup_mcp_tools()
 
 # --- Tool Management Permissions ---
 # 为 dev_agent 定义基础工具管理权限 - OPTIMIZED
@@ -1659,61 +1420,57 @@ dev_tool_management = [
     quick_tool_stats,         # 🔧 快速工具效果统计
 ]
 
-# 为 manager_agent 定义完整工具管理权限 - OPTIMIZED
-manager_tool_management = [
-    analyze_query_and_load_relevant_tools,  # 🎯 智能工具检索和加载（集成工具签名）
-    execute_tools_in_parallel,  # 🚀 并行工具执行（提高效率）
-    evaluate_with_critic,     # 🎯 评估任务质量
-    list_dynamic_tools,       # 📋 查看工具库
-    create_new_tool,          # 🛠️ 决定创建新工具
-    load_dynamic_tool,        # 📦 管理工具加载
-    refresh_agent_tools,      # 🔄 系统级刷新
-    add_tool_to_agents,       # ➕ 细粒度工具管理
-    get_tool_signature,       # 🔍 获取工具完整签名
-    # Simplified memory tools that actually get used
-    auto_recall_experience,   # 🧠 智能回忆相似任务
-    check_agent_performance,  # 📊 检查智能体性能
-    quick_tool_stats,         # 🔧 快速工具统计
-    # OPTIMIZED: Keep only most reliable web tools
-    WebSearchTool(),          # ✅ Most reliable web search
-    extract_url_content,      # ✅ Specialized content extraction
-    query_arxiv,
-    query_scholar,
-    query_pubmed,
-    extract_pdf_content,
-    fetch_supplementary_info_from_doi,
-    
-    # Unified Search Tool (Simplified Integration)
-    multi_source_search,          # 🔍 Unified search tool (default: google,serpapi) - replaces all other search tools
-    
-    # GitHub tools
+# Base manager tools (always available)
+base_manager_tools = [
+    multi_source_search,          # 🔍 Unified search tool (default: google,serpapi)
     search_github_repositories,
     search_github_code,
     get_github_repository_info,
-    
-    # Knowledge Base Tools (Templates disabled by default)
-    # retrieve_similar_templates,     # Disabled for simplified workflow
-    # save_successful_template,       # Disabled for simplified workflow
-    list_knowledge_base_status,
-    # search_templates_by_keyword,    # Disabled for simplified workflow
-    
-    # Mem0-specific Tools
-    get_user_memories,
-    
-    # Multi-Agent Collaboration Tools
-    create_shared_workspace,
-    add_workspace_memory,
-    get_workspace_memories,
-    create_task_breakdown,
-    update_subtask_status,
-    get_task_progress,
-    get_agent_contributions,
+    run_shell_command,  # 🖥️ Execute shell commands to read files
+    analyze_query_and_load_relevant_tools,  # 🎯 Smart tool retrieval and loading
+    execute_tools_in_parallel,  # 🚀 Parallel tool execution
+    evaluate_with_critic,     # 🎯 Evaluate task quality
+    list_dynamic_tools,       # 📋 View tool library
+    load_dynamic_tool,        # 📦 Manage tool loading
+    add_tool_to_agents,       # ➕ Fine-grained tool management
+    get_tool_signature,       # 🔍 Get tool signatures
+    # Skill management tools (replaces template/memory tools)
+    retrieve_similar_skills,      # 🧠 Retrieve relevant skills with hybrid retrieval
+    save_successful_skill,        # 💾 Save successful runs as reusable skills
+    get_skill_system_status,      # 📊 Skill system status and metrics
+    search_skills_by_keyword,     # 🔍 Search skills by keyword
+    check_tools_for_task,         # 🔧 Check tool availability for tasks
+    export_skill_environment,     # 📦 Export reproducible environments
+    # Legacy memory tools (still useful for agent-level tracking)
+    auto_recall_experience,   # 🧠 Recall similar task experiences
+    check_agent_performance,  # 📊 Check agent performance
+    quick_tool_stats,         # 🔧 Quick tool statistics
+    extract_url_content,      # ✅ Specialized content extraction
+    query_arxiv,
+    query_pubmed,
+    extract_pdf_content,
+    fetch_supplementary_info_from_doi,
 ]
+
+# Tool creation tools (only included when enabled)
+tool_creation_tools_for_manager = [
+    create_new_tool,          # 🛠️ 决定创建新工具
+]
+
+# Function to build manager tools based on configuration
+def build_manager_tools(enable_tool_creation=False):
+    """Build manager agent tools based on configuration."""
+    tools = base_manager_tools.copy()
+    if enable_tool_creation:
+        tools.extend(tool_creation_tools_for_manager)
+        print("🛠️ Tool creation enabled - added tool creation capabilities")
+    else:
+        print("⚡ Tool creation disabled - optimized for performance")
+    return tools
 
 # Create the web search and development agent (ToolCallingAgent)
 base_tools = [
     # Core web and search tools - OPTIMIZED: Keep only most reliable tools
-    WebSearchTool(),              # ✅ Most reliable web search (DuckDuckGo/Bing)
     extract_url_content,          # ✅ Specialized content extraction with BeautifulSoup
     query_arxiv,
     query_scholar,
@@ -1735,7 +1492,7 @@ base_tools = [
     install_packages_conda,
     install_packages_pip,
     check_gpu_status,
-    create_script,
+    create_and_run_script,
     run_script,
     create_requirements_file,
     monitor_training_logs,
@@ -1743,23 +1500,54 @@ base_tools = [
     # Basic tool management for dev_agent (read-only + basic operations)
 ] + dev_tool_management
 
-# Combine base tools with MCP tools
-all_tools = base_tools + mcp_tools
-
+dev_tools = base_tools
 
 dev_agent = ToolCallingAgent(
-    tools=all_tools,
-    model=gemini_model,
-    max_steps=15,  # Reduced from 20 to improve performance
+    tools=dev_tools,
+    model=claude_model,
+    max_steps=30,  # Increased for complex tasks
     name="dev_agent",
-    description="""A specialist agent for code execution and environment management.
-    It uses tools for complex tasks like creating conda environments or generating scripts from templates.
-    For file operations, prefer using the create_file tool, but basic Python functions like open() are also available.
-    Give it specific, self-contained coding tasks like 'Analyze this CSV and plot a histogram' or 'Install the `numpy` library and verify the installation.'""",
+    description="""A specialist agent for code execution and environment management through tool-based programming.
+    
+    Core Tool Capabilities:
+    🔧 Code Execution & Script Management:
+    - create_and_run_script: Create and execute Python code directly with no import restrictions
+    - run_script: Run existing script files
+    - run_shell_command: Execute system commands and shell operations
+    
+    📦 Package Management & Environment Setup:
+    - install_packages_pip: Install Python packages using pip
+    - install_packages_conda: Install packages and manage environments with conda
+    - create_conda_environment: Create isolated conda environments
+    - create_requirements_file: Generate project dependency files
+    
+    🔍 Research & Code Discovery:
+    - search_github_repositories: Search GitHub repos to find best implementation solutions
+    - search_github_code: Search for specific code snippets and implementations
+    - multi_source_search: Comprehensive search across academic papers and technical resources
+    
+    📁 File & Data Management:
+    - Complete file operations support: read/write, CSV processing, data loading
+    - Multiple format support: JSON, CSV, pickle, HDF5, etc.
+    
+    Use Case Examples:
+    - 'Analyze this CSV file and create visualizations' → use create_and_run_script for data analysis
+    - 'Install fair-esm package and run protein embeddings' → install_packages_pip + create_and_run_script
+    - 'Search for best ESM protein model implementations' → search_github_repositories
+    - 'Create complete machine learning pipeline script' → create_and_run_script
+    - 'Setup bioinformatics analysis environment' → create_conda_environment + package installation
+    """,
 )
 
 dev_agent.prompt_templates["managed_agent"]["task"] += """
-Save Files and Data to the './agent_outputs' directory."""
+Save Files and Data to the './agent_outputs' directory.
+
+RESEARCH-FIRST DEVELOPMENT APPROACH:
+- ALWAYS search for existing open-source implementations on GitHub before coding from scratch
+- Look for established libraries, pre-trained models, and proven methodologies
+- Use search_github_repositories, search_github_code, and multi_source_search tools
+- Prioritize building upon and adapting existing solutions over reinventing
+- Document the source and reasoning for chosen approaches"""
 
 # Enable automatic memory recording for dev_agent
 dev_agent = create_memory_enabled_agent(dev_agent, "dev_agent")
@@ -1768,29 +1556,22 @@ dev_agent = create_memory_enabled_agent(dev_agent, "dev_agent")
 # Create tool creation agent for writing new tools
 tool_creation_tools = [
     # OPTIMIZED: Core web and search tools - keep only most reliable
-    WebSearchTool(),              # ✅ Most reliable web search
     extract_url_content,          # ✅ Specialized content extraction
     query_arxiv,
     query_scholar,
     query_pubmed,
-    extract_pdf_content,
-    fetch_supplementary_info_from_doi,
-    
     # Unified Search Tool for research and best practices
     multi_source_search,          # 🔍 Unified search tool - supports comprehensive research and best practices
-    
     # GitHub tools for research and code examples
     search_github_repositories,
     search_github_code,
     get_github_repository_info,
-    
-    # Development environment tools
     run_shell_command,
     create_conda_environment,
     install_packages_conda,
     install_packages_pip,
     check_gpu_status,
-    create_script,
+    create_and_run_script,
     run_script,
     create_requirements_file,
     monitor_training_logs,
@@ -1798,8 +1579,8 @@ tool_creation_tools = [
 
 tool_creation_agent = ToolCallingAgent(
     tools=tool_creation_tools,
-    model=claude_model,
-    max_steps=20,  # Reduced from 25
+    model=gpt_model,
+    max_steps=25,  # Reasonable for tool creation tasks
     name="tool_creation_agent",
     description="""A specialized agent for creating new Python tools and utilities.
     
@@ -1831,6 +1612,14 @@ tool_creation_agent.prompt_templates["managed_agent"]["task"] += """
 You are a expert tool creator to write production-redady code for new tools.
 Create all new tools in the './new_tools/' directory.
 Use the @tool decorator from smolagents for all new tools.
+
+MANDATORY CODE DISCOVERY PROCESS:
+1. ALWAYS search GitHub repositories for existing implementations before writing new code
+2. Search for academic papers and open-source projects on the topic
+3. Look for established libraries, frameworks, and pre-trained models
+4. Build upon existing solutions rather than creating from scratch
+5. Use search_github_repositories, search_github_code, and multi_source_search tools
+
 Research the best practices and existing solutions via web search and GitHub.
 Always test your created tools to ensure they work correctly."""
 
@@ -1840,15 +1629,14 @@ tool_creation_agent = create_memory_enabled_agent(tool_creation_agent, "tool_cre
 
 # Create critic agent for intelligent evaluation (OPTIMIZED)
 critic_tools = [
-    WebSearchTool(),         # ✅ For querying best practices - most reliable
     extract_url_content,     # ✅ For reference materials - specialized extraction
     run_shell_command,       # For verification tasks
 ]
 
 critic_agent = ToolCallingAgent(
     tools=critic_tools,  # ✅ Fixed: Added necessary tools
-    model=claude_model,
-    max_steps=5,  # Reduced from 8
+    model=gemini_model,
+    max_steps=10,  # Reasonable for quality evaluation tasks
     name="critic_agent", 
     description="""Expert critic agent that evaluates task completion quality and determines if specialized tools are needed.
     
@@ -1872,7 +1660,14 @@ critic_agent.prompt_templates["managed_agent"]["task"] += """
 You are a expert critic agent to evaluate task completion quality and determine if specialized tools are needed.
 Analyze task completion quality objectively and identify gaps or areas for improvement.
 Recommend specific specialized tools when beneficial.
-Provide clear rationale for tool creation decisions."""
+Provide clear rationale for tool creation decisions.
+
+CRITICAL PERFORMANCE STANDARDS:
+- For ML/AI tasks, focus on ACTUAL PERFORMANCE METRICS, not just task completion
+- Spearman correlation benchmarks: < 0.1 = POOR, 0.1-0.3 = NEEDS_IMPROVEMENT, 0.3-0.6 = SATISFACTORY, > 0.6 = EXCELLENT
+- Never give high scores for low-performing models, even if they "run successfully"
+- Always recommend iteration and optimization tools when performance is subpar
+- Be especially critical of correlation scores near zero or negative values"""
 
 # Enable automatic memory recording for critic_agent
 critic_agent = create_memory_enabled_agent(critic_agent, "critic_agent")
@@ -1889,19 +1684,26 @@ def main():
     
     # Parse command line arguments
     parser = argparse.ArgumentParser(description="Stella - Self-Evolving AI Assistant with Enhanced Memory")
-    parser.add_argument("--use_template", action="store_true", 
-                       help="Enable knowledge base template usage for learning from past successes")
+    parser.add_argument("--use_template", action="store_true", default=True,
+                       help="Enable knowledge base template usage for learning from past successes (default: True)")
+    parser.add_argument("--no_template", action="store_true",
+                       help="Disable template usage (overrides --use_template)")
     parser.add_argument("--use_mem0", action="store_true",
                        help="Enable Mem0 enhanced memory system for better semantic understanding")
     parser.add_argument("--use_default_prompts", action="store_true",
                        help="Force use of default smolagents prompts instead of custom prompts/code_agent.yaml")
     parser.add_argument("--port", type=int, default=7860,
                        help="Port to run Gradio interface (default: 7860)")
+    parser.add_argument("--enable_tool_creation", action="store_true", default=False,
+                       help="Enable tool creation agent (default: True for full functionality)")
     
     args = parser.parse_args()
     
-    # Set global template usage flag
-    use_templates = args.use_template
+    # Set global template usage flag with override handling
+    use_templates = args.use_template and not args.no_template
+    
+    # Handle tool creation flag with override
+    enable_tool_creation = args.enable_tool_creation and not args.disable_tool_creation
     
     # Load custom prompt templates for manager_agent (default behavior)
     global custom_prompt_templates
@@ -1911,7 +1713,7 @@ def main():
     else:
         # 默认尝试加载自定义提示词
         try:
-            prompt_templates_path = os.path.join(os.path.dirname(__file__), "prompts", "Stella_prompt_modified.yaml")
+            prompt_templates_path = os.path.join(os.path.dirname(__file__), "prompts", "Stella_prompt_bioml.yaml")
             with open(prompt_templates_path, 'r', encoding='utf-8') as stream:
                 custom_prompt_templates = yaml.safe_load(stream)
             print(f"✅ Custom prompts loaded: {prompt_templates_path}")
@@ -1924,11 +1726,21 @@ def main():
             print("🔄 Using default smolagents prompts")
             custom_prompt_templates = None
     
+    # Build manager tools based on configuration
+    manager_tool_management = build_manager_tools(enable_tool_creation=enable_tool_creation)
+    
+    # Build managed agents list based on configuration  
+    managed_agents_list = [dev_agent, critic_agent]
+    if enable_tool_creation:
+        managed_agents_list.append(tool_creation_agent)
+        print(f"🤖 Managed agents: dev_agent, critic_agent, tool_creation_agent")
+    else:
+        print(f"🤖 Managed agents: dev_agent, critic_agent (tool_creation_agent disabled)")
+    
     # Create the manager agent AFTER loading custom prompts
     global manager_agent
     print("🚀 Creating manager agent with custom prompts...")
     print(f"📋 Available tools: {len(manager_tool_management)}")
-    print(f"🤖 Managed agents: dev_agent={type(dev_agent)}, critic_agent={type(critic_agent)}, tool_creation_agent={type(tool_creation_agent)}")
     
     try:
         # 为自定义模板提供Jinja模板变量支持
@@ -1946,11 +1758,7 @@ def main():
                     "typing", "dataclasses", "enum", "xml", "xml.etree", "xml.etree.ElementTree",
                     "requests", "urllib", "urllib.parse", "http", "re", "unicodedata", "string"
                 ]),
-                'managed_agents': {
-                    'dev_agent': dev_agent,
-                    'critic_agent': critic_agent,
-                    'tool_creation_agent': tool_creation_agent
-                },
+                'managed_agents': {agent.name if hasattr(agent, 'name') else f'agent_{i}': agent for i, agent in enumerate(managed_agents_list)},
                 'tools': {tool.name if hasattr(tool, 'name') else str(tool): tool for tool in manager_tool_management}
             }
             
@@ -1976,50 +1784,43 @@ def main():
             print("✅ Custom prompt templates rendered with Jinja variables")
             manager_agent = CodeAgent(
                 tools=manager_tool_management,  # 使用完整的工具管理权限
-                model=grok_model,
-                managed_agents=[dev_agent, critic_agent, tool_creation_agent],
+                model=gpt_model,
+                managed_agents=managed_agents_list,
                 additional_authorized_imports=[
-                    # Basic Python modules
-                    "time", "datetime", "os", "sys", "json", "csv", "pickle", "pathlib",
-                    # Math and science
-                    "math", "statistics", "random", 
-                    # Data science core (only if installed)
-                    "numpy", "pandas",
-                    # Collections and utilities
-                    "collections", "itertools", "functools", "operator",
-                    "typing", "dataclasses", "enum",
-                    # File formats
-                    "xml", "xml.etree", "xml.etree.ElementTree",
-                    # Networking
-                    "requests", "urllib", "urllib.parse", "http",
-                    # Text processing
-                    "re", "unicodedata", "string"
-                ],
+        # 基于环境检测的已安装模块
+        "sys", "os", "subprocess", "pathlib", "shutil", "glob", "fnmatch", "tempfile",
+        "io", "json", "csv", "pickle", "sqlite3", "gzip", "zipfile", "tarfile",
+        "math", "statistics", "random", "decimal", "fractions", "cmath",
+        "time", "datetime", "calendar", "locale", "re", "string", "unicodedata", 
+        "difflib", "textwrap", "collections", "itertools", "functools", "operator", 
+        "heapq", "bisect", "queue", "threading", "multiprocessing", "concurrent", 
+        "asyncio", "typing", "dataclasses", "enum", "abc", "contextlib", "inspect", 
+        "argparse", "configparser", "logging", "warnings", "traceback", "xml", 
+        "html", "urllib", "http", "socket", "ssl", "ftplib", "email", "numpy", 
+        "pandas", "matplotlib", "scipy", "sklearn", "requests", "Bio", "yaml", 
+        "tqdm", "joblib", "torch", "torchvision", "huggingface_hub", "seaborn", 
+        "plotly", "PIL", "rdkit", "statsmodels",
+    ],
+                executor_kwargs={
+                    "additional_functions": {
+                        "globals": lambda: {"__name__": "__main__"},  # Safe globals replacement
+                    }
+                },
                 name="manager_agent", 
-                description="""STELLA - Self-Evolving Laboratory Assistant.
+                description=f"""STELLA Manager Agent - Problem Analysis & Task Coordination Center
 
-                🎯 SIMPLIFIED WORKFLOW (MANDATORY):
-                1. Task Planning: Create detailed action plan with clear objectives
-                2. Tool Preparation: Use analyze_query_and_load_relevant_tools() after planning (includes signatures)
-                3. Execution: Use tools with exact parameter names; use execute_tools_in_parallel() for independent calls
-                4. Quality Evaluation: Assess results with critic_agent
-                5. Self-Evolution: Create new tools if needed (templates disabled)
-                6. Knowledge Storage: Save successful approaches to memory (when enabled)
-                
-                🔍 UNIFIED SEARCH CAPABILITY:
-                - multi_source_search: Unified search tool with flexible source combinations
-                  • "google": Basic Google search (0.3s)
-                  • "google,serpapi": Enhanced Google search (1-2s, DEFAULT)
-                  • "google,knowledge": Deep research search (30s)
-                  • "google,knowledge,serpapi": Full-featured search combination (45s)
-                
-                🤖 Available agents:
-                - dev_agent: Code execution and environment management (with unified search)
-                - critic_agent: Quality evaluation  
-                - tool_creation_agent: New tool creation (with unified search)
-                
-                📋 60+ specialized tools available on-demand (PubMed, UniProt, ChEMBL, KEGG, etc.)
-                💡 Template retrieval disabled for simplified workflow - focus on direct problem solving
+                Core Responsibilities:
+                1. Problem Analysis - Deep understanding of user requirements
+                2. Skill Retrieval - Find reusable skills (retrieve_similar_skills)
+                3. Strategic Planning - Plan solution strategies with skill workflows
+                4. Tool Management - Load tools (analyze_query_and_load_relevant_tools), check availability (check_tools_for_task)
+                5. Task Delegation - Assign tasks to specialized agents
+                6. Quality & Learning - Evaluate with critic, save successful runs as skills
+
+                Search: multi_source_search, search_github_repositories, PubMed, ArXiv
+                Skills: retrieve_similar_skills, save_successful_skill, check_tools_for_task, export_skill_environment
+                Agents: dev_agent (code/env), critic_agent (evaluation) {'tool_creation_agent (new tools)' if enable_tool_creation else ''}
+                Workflow: Analyze -> Retrieve Skills -> Load Tools -> Delegate -> Evaluate -> Save Skill
                 """,
                 prompt_templates=rendered_templates,  # Use rendered templates
             )
@@ -2027,15 +1828,28 @@ def main():
             # Use default templates
             manager_agent = CodeAgent(
                 tools=manager_tool_management,  
-                model=grok_model,
-                managed_agents=[dev_agent, critic_agent, tool_creation_agent],
+                model=gpt_model,
+                managed_agents=managed_agents_list,
                 additional_authorized_imports=[
-                    "time", "datetime", "os", "sys", "json", "csv", "pickle", "pathlib",
-                    "math", "statistics", "random", "numpy", "pandas",
-                    "collections", "itertools", "functools", "operator",
-                    "typing", "dataclasses", "enum", "xml", "xml.etree", "xml.etree.ElementTree",
-                    "requests", "urllib", "urllib.parse", "http", "re", "unicodedata", "string"
-                ],
+        # 基于环境检测的已安装模块
+        "sys", "os", "subprocess", "pathlib", "shutil", "glob", "fnmatch", "tempfile",
+        "io", "json", "csv", "pickle", "sqlite3", "gzip", "zipfile", "tarfile",
+        "math", "statistics", "random", "decimal", "fractions", "cmath",
+        "time", "datetime", "calendar", "locale", "re", "string", "unicodedata", 
+        "difflib", "textwrap", "collections", "itertools", "functools", "operator", 
+        "heapq", "bisect", "queue", "threading", "multiprocessing", "concurrent", 
+        "asyncio", "typing", "dataclasses", "enum", "abc", "contextlib", "inspect", 
+        "argparse", "configparser", "logging", "warnings", "traceback", "xml", 
+        "html", "urllib", "http", "socket", "ssl", "ftplib", "email", "numpy", 
+        "pandas", "matplotlib", "scipy", "sklearn", "requests", "Bio", "yaml", 
+        "tqdm", "joblib", "torch", "torchvision", "huggingface_hub", "seaborn", 
+        "plotly", "PIL", "rdkit", "statsmodels", "esm", "transformers", "posixpath"
+    ],
+                executor_kwargs={
+                    "additional_functions": {
+                        "globals": lambda: {"__name__": "__main__"},  # Safe globals replacement
+                    }
+                },
                 name="manager_agent", 
                 description="""The main coordinator agent with self-evolution capabilities and tool management.""",
             )
@@ -2052,47 +1866,52 @@ def main():
         print("🔄 Creating basic manager agent without custom prompts...")
         manager_agent = CodeAgent(
             tools=manager_tool_management,
-            model=grok_model,
-            managed_agents=[dev_agent, critic_agent, tool_creation_agent],
+            model=gpt_model,
+            managed_agents=managed_agents_list,
+            executor_kwargs={
+                "additional_functions": {
+                    "globals": lambda: {"__name__": "__main__"},  # Safe globals replacement
+                }
+            },
             name="manager_agent",
             description="Basic manager agent"
         )
         manager_agent = create_memory_enabled_agent(manager_agent, "manager_agent")
     
-    # Initialize knowledge base if templates are enabled
+    # Initialize Skill Management System
+    global global_skill_manager
     if use_templates:
-        print("📚 Initializing knowledge base...")
+        print("🧠 Initializing Skill Management System...")
         try:
-            # 初始化新的统一内存管理系统
-            print("🧠 Initializing memory system...")
-            global_memory_manager = MemoryManager(
-                gemini_model=gemini_model,
-                use_mem0=args.use_mem0,
-                mem0_api_key=MEM0_API_KEY,
-                openrouter_api_key=OPENROUTER_API_KEY_STRING
-            )
-            
-            # 获取整体统计
-            stats = global_memory_manager.get_overall_stats()
-            print(f"📊 System status: Knowledge({stats['knowledge']['backend']}) | "
-                  f"Collaboration({'enabled' if stats['collaboration_enabled'] else 'disabled'}) | "
-                  f"Session({'enabled' if stats['session_enabled'] else 'disabled'})")
-            
-            print("🧠 Keyword extraction with Gemini enhancement enabled")
+            # Create LLM call function for skill summarizer
+            from new_tools.llm import simple_llm_call
+            llm_call_fn = lambda prompt: simple_llm_call(prompt, model_name="gemini-3-pro")
+
+            global_skill_manager = SkillManager(llm_call=llm_call_fn)
+            print(f"✅ Skill system initialized: {len(global_skill_manager.store.list_all())} skills, "
+                  f"{len(global_skill_manager.tool_index.list_all())} tools indexed")
+
+            # Migrate old templates if they exist and skill store is empty
+            old_kb_path = "/home/ubuntu/agent_outputs/agent_knowledge_base.json"
+            if (os.path.exists(old_kb_path)
+                and len(global_skill_manager.store.list_all()) <= 10):
+                print("📋 Migrating old templates to skill system...")
+                migrated = global_skill_manager.migrate_from_knowledge_base(old_kb_path)
+                if migrated > 0:
+                    print(f"✅ Migrated {migrated} templates to skills")
+
         except Exception as e:
-            print(f"❌ Knowledge base initialization failed: {str(e)}")
-            print("⚠️ Continuing without knowledge base")
+            print(f"⚠️ Skill system initialization failed: {str(e)}")
+            print("⚠️ Continuing without skill system")
+            global_skill_manager = None
             use_templates = False
     else:
-        print("📋 Knowledge base disabled, use --use_template to enable")
-        if args.use_mem0:
-            print("💡 Mem0 option requires --use_template")
-    
+        print("📋 Skill system disabled, use --use_template to enable")
+
     print(f"   Prompt Templates: {'Custom' if custom_prompt_templates else 'Default'}")
-    
-    if use_templates:
-        backend = "Mem0 Enhanced" if args.use_mem0 else "Traditional KB"
-        print(f"   Memory System: {backend}")
+
+    if use_templates and global_skill_manager:
+        print(f"   Skill System: Active")
     
     # Final check before creating Gradio UI
     if manager_agent is None:
@@ -2100,8 +1919,13 @@ def main():
         print("🔧 Creating emergency fallback manager agent...")
         manager_agent = CodeAgent(
             tools=manager_tool_management[:3],  # Use only first 3 tools to avoid issues
-            model=grok_model,
-            managed_agents=[dev_agent],  # Minimal agents
+            model=gpt_model,
+            managed_agents=[dev_agent, critic_agent],  # Minimal agents (no tool creation)
+            executor_kwargs={
+                "additional_functions": {
+                    "globals": lambda: {"__name__": "__main__"},  # Safe globals replacement
+                }
+            },
             name="emergency_manager",
             description="Emergency fallback manager agent"
         )
@@ -2120,7 +1944,7 @@ def main():
     )
 
 # --- Initialize function for external usage ---
-def initialize_stella(use_template=True, use_mem0=True):
+def initialize_stella(use_template=True, use_mem0=True, enable_tool_creation=True):
     """Initialize Stella without launching Gradio interface - for use by other UIs"""
     global global_memory_manager, use_templates, custom_prompt_templates, manager_agent, gemini_model
     
@@ -2131,7 +1955,7 @@ def initialize_stella(use_template=True, use_mem0=True):
         custom_prompt_templates = None
     else:
         try:
-            prompt_templates_path = os.path.join(os.path.dirname(__file__), "prompts", "Stella_prompt_modified.yaml")
+            prompt_templates_path = os.path.join(os.path.dirname(__file__), "prompts", "Stella_prompt_bioml.yaml")
             with open(prompt_templates_path, 'r', encoding='utf-8') as stream:
                 custom_prompt_templates = yaml.safe_load(stream)
             print(f"✅ Custom prompts loaded: {prompt_templates_path}")
@@ -2142,12 +1966,21 @@ def initialize_stella(use_template=True, use_mem0=True):
             print(f"⚠️ Error loading custom prompts: {str(e)}")
             custom_prompt_templates = None
     
+    # Build manager tools and agents list based on configuration
+    manager_tool_management = build_manager_tools(enable_tool_creation=enable_tool_creation)
+    
+    managed_agents_list = [dev_agent, critic_agent]
+    if enable_tool_creation:
+        managed_agents_list.append(tool_creation_agent)
+        print(f"🤖 Managed agents: dev_agent, critic_agent, tool_creation_agent")
+    else:
+        print(f"🤖 Managed agents: dev_agent, critic_agent (tool_creation_agent disabled)")
+    
     # Create the manager agent
     print("🚀 Creating manager agent with custom prompts...")
     print(f"📋 Available tools: {len(manager_tool_management)}")
     
     try:
-        # 为自定义模板提供Jinja模板变量支持（initialize_stella版本）
         if custom_prompt_templates:
             from jinja2 import Template
             template_variables = {
@@ -2161,11 +1994,7 @@ def initialize_stella(use_template=True, use_mem0=True):
                     "typing", "dataclasses", "enum", "xml", "xml.etree", "xml.etree.ElementTree",
                     "requests", "urllib", "urllib.parse", "http", "re", "unicodedata", "string"
                 ]),
-                'managed_agents': {
-                    'dev_agent': dev_agent,
-                    'critic_agent': critic_agent,
-                    'tool_creation_agent': tool_creation_agent
-                },
+                'managed_agents': {agent.name if hasattr(agent, 'name') else f'agent_{i}': agent for i, agent in enumerate(managed_agents_list)},
                 'tools': {tool.name if hasattr(tool, 'name') else str(tool): tool for tool in manager_tool_management}
             }
             
@@ -2190,43 +2019,43 @@ def initialize_stella(use_template=True, use_mem0=True):
             print("✅ Custom prompt templates rendered with Jinja variables")
             manager_agent = CodeAgent(
                 tools=manager_tool_management,
-                model=grok_model,
-                managed_agents=[dev_agent, critic_agent, tool_creation_agent],
+                model=gpt_model,
+                managed_agents=managed_agents_list,
                 additional_authorized_imports=[
-                    "time", "datetime", "os", "sys", "json", "csv", "pickle", "pathlib",
-                    "math", "statistics", "random", 
-                    "numpy", "pandas",
-                    "collections", "itertools", "functools", "operator",
-                    "typing", "dataclasses", "enum",
-                    "xml", "xml.etree", "xml.etree.ElementTree",
-                    "requests", "urllib", "urllib.parse", "http",
-                    "re", "unicodedata", "string"
-                ],
+        # 基于环境检测的已安装模块
+        "sys", "os", "subprocess", "pathlib", "shutil", "glob", "fnmatch", "tempfile",
+        "io", "json", "csv", "pickle", "sqlite3", "gzip", "zipfile", "tarfile",
+        "math", "statistics", "random", "decimal", "fractions", "cmath",
+        "time", "datetime", "calendar", "locale", "re", "string", "unicodedata", 
+        "difflib", "textwrap", "collections", "itertools", "functools", "operator", 
+        "heapq", "bisect", "queue", "threading", "multiprocessing", "concurrent", 
+        "asyncio", "typing", "dataclasses", "enum", "abc", "contextlib", "inspect", 
+        "argparse", "configparser", "logging", "warnings", "traceback", "xml", 
+        "html", "urllib", "http", "socket", "ssl", "ftplib", "email", "numpy", 
+        "pandas", "matplotlib", "scipy", "sklearn", "requests", "Bio", "yaml", 
+        "tqdm", "joblib", "torch", "torchvision", "huggingface_hub", "seaborn", 
+        "plotly", "PIL", "rdkit", "statsmodels",
+    ],
+                executor_kwargs={
+                    "additional_functions": {
+                        "globals": lambda: {"__name__": "__main__"},  # Safe globals replacement
+                    }
+                },
                 name="manager_agent", 
-                description="""STELLA - Self-Evolving Laboratory Assistant with Simplified Workflow.
+                description=f"""STELLA Manager Agent - Problem Analysis & Task Coordination Center
 
-                🎯 SIMPLIFIED WORKFLOW (MANDATORY):
-                1. Task Planning: Create detailed action plan with clear objectives
-                2. Tool Preparation: Use analyze_query_and_load_relevant_tools() after planning (includes signatures)
-                3. Execution: Use tools with exact parameter names; use execute_tools_in_parallel() for parallel calls
-                4. Quality Evaluation: Assess results with critic_agent
-                5. Self-Evolution: Create new tools if needed (templates disabled)
-                6. Knowledge Storage: Save successful approaches to memory (when enabled)
-                
-                🔍 UNIFIED SEARCH CAPABILITY:
-                - multi_source_search: Unified search tool with flexible source combinations
-                  • "google": Basic Google search (0.3s)
-                  • "google,serpapi": Enhanced Google search (1-2s, DEFAULT)
-                  • "google,knowledge": Deep research search (30s)
-                  • "google,knowledge,serpapi": Full-featured search combination (45s)
-                
-                🤖 Available agents:
-                - dev_agent: Code execution and environment management (with unified search)
-                - critic_agent: Quality evaluation  
-                - tool_creation_agent: New tool creation (with unified search)
-                
-                📋 60+ specialized tools available on-demand (PubMed, UniProt, ChEMBL, KEGG, etc.)
-                💡 Template retrieval disabled for simplified workflow - focus on direct problem solving
+                Core Responsibilities:
+                1. Problem Analysis - Deep understanding of user requirements
+                2. Skill Retrieval - Find reusable skills (retrieve_similar_skills)
+                3. Strategic Planning - Plan solution strategies with skill workflows
+                4. Tool Management - Load tools (analyze_query_and_load_relevant_tools), check availability (check_tools_for_task)
+                5. Task Delegation - Assign tasks to specialized agents
+                6. Quality & Learning - Evaluate with critic, save successful runs as skills
+
+                Search: multi_source_search, search_github_repositories, PubMed, ArXiv
+                Skills: retrieve_similar_skills, save_successful_skill, check_tools_for_task, export_skill_environment
+                Agents: dev_agent (code/env), critic_agent (evaluation) {'tool_creation_agent (new tools)' if enable_tool_creation else ''}
+                Workflow: Analyze -> Retrieve Skills -> Load Tools -> Delegate -> Evaluate -> Save Skill
                 """,
                 prompt_templates=rendered_templates,
             )
@@ -2234,15 +2063,28 @@ def initialize_stella(use_template=True, use_mem0=True):
             # Use default templates
             manager_agent = CodeAgent(
                 tools=manager_tool_management,
-                model=grok_model,
-                managed_agents=[dev_agent, critic_agent, tool_creation_agent],
+                model=gpt_model,
+                managed_agents=managed_agents_list,
                 additional_authorized_imports=[
-                    "time", "datetime", "os", "sys", "json", "csv", "pickle", "pathlib",
-                    "math", "statistics", "random", "numpy", "pandas",
-                    "collections", "itertools", "functools", "operator",
-                    "typing", "dataclasses", "enum", "xml", "xml.etree", "xml.etree.ElementTree",
-                    "requests", "urllib", "urllib.parse", "http", "re", "unicodedata", "string"
-                ],
+        # 基于环境检测的已安装模块
+        "sys", "os", "subprocess", "pathlib", "shutil", "glob", "fnmatch", "tempfile",
+        "io", "json", "csv", "pickle", "sqlite3", "gzip", "zipfile", "tarfile",
+        "math", "statistics", "random", "decimal", "fractions", "cmath",
+        "time", "datetime", "calendar", "locale", "re", "string", "unicodedata", 
+        "difflib", "textwrap", "collections", "itertools", "functools", "operator", 
+        "heapq", "bisect", "queue", "threading", "multiprocessing", "concurrent", 
+        "asyncio", "typing", "dataclasses", "enum", "abc", "contextlib", "inspect", 
+        "argparse", "configparser", "logging", "warnings", "traceback", "xml", 
+        "html", "urllib", "http", "socket", "ssl", "ftplib", "email", "numpy", 
+        "pandas", "matplotlib", "scipy", "sklearn", "requests", "Bio", "yaml", 
+        "tqdm", "joblib", "torch", "torchvision", "huggingface_hub", "seaborn", 
+        "plotly", "PIL", "rdkit", "statsmodels",
+    ],
+                executor_kwargs={
+                    "additional_functions": {
+                        "globals": lambda: {"__name__": "__main__"},  # Safe globals replacement
+                    }
+                },
                 name="manager_agent", 
                 description="""The main coordinator agent with self-evolution capabilities and tool management.""",
             )
@@ -2258,21 +2100,20 @@ def initialize_stella(use_template=True, use_mem0=True):
         manager_agent = None
         return False
     
-    # Initialize memory system if requested
+    # Initialize Skill Management System
+    global global_skill_manager
     if use_template:
-        print("📚 Initializing knowledge base...")
+        print("🧠 Initializing Skill Management System...")
         try:
-            global_memory_manager = MemoryManager(
-                gemini_model=gemini_model,
-                use_mem0=use_mem0,
-                mem0_api_key=MEM0_API_KEY,
-                openrouter_api_key=OPENROUTER_API_KEY_STRING
-            )
-            print("✅ Memory system initialized")
+            from new_tools.llm import simple_llm_call
+            llm_call_fn = lambda prompt: simple_llm_call(prompt, model_name="gemini-3-pro")
+            global_skill_manager = SkillManager(llm_call=llm_call_fn)
+            print(f"✅ Skill system initialized: {len(global_skill_manager.store.list_all())} skills")
         except Exception as e:
-            print(f"❌ Memory system initialization failed: {str(e)}")
-    
-    return manager_agent is not None
+            print(f"⚠️ Skill system initialization failed: {str(e)}")
+            global_skill_manager = None
+
+    return manager_agent
 
 if __name__ == "__main__":
     main()

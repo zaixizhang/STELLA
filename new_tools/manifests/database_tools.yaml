@@ -1,0 +1,1865 @@
+tools:
+  - tool_id: query_uniprot
+    version: "1.0.0"
+    name: Query UniProt
+    description: "Query the UniProt REST API using either natural language or a direct endpoint for protein information."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_uniprot
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about proteins (e.g., 'Find information about human insulin')"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Full or partial UniProt API endpoint URL to query directly"
+        - name: max_results
+          type: int
+          required: false
+          default: 5
+          description: "Maximum number of results to return"
+      return_type: dict
+      return_description: "Dictionary containing the query information and the UniProt API results"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_alphafold
+    version: "1.0.0"
+    name: Query AlphaFold
+    description: "Query the AlphaFold Database API for protein structure predictions. Supports downloading structure files."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_alphafold
+      module_path: new_tools/database_tools
+      parameters:
+        - name: uniprot_id
+          type: str
+          required: true
+          default: null
+          description: "UniProt accession ID (e.g., 'P12345')"
+        - name: endpoint
+          type: str
+          required: false
+          default: "prediction"
+          description: "Specific AlphaFold API endpoint: 'prediction', 'summary', or 'annotations'"
+        - name: residue_range
+          type: str
+          required: false
+          default: null
+          description: "Specific residue range in format 'start-end' (e.g., '1-100')"
+        - name: download
+          type: bool
+          required: false
+          default: false
+          description: "Whether to download structure files"
+        - name: output_dir
+          type: str
+          required: false
+          default: null
+          description: "Directory to save downloaded files"
+        - name: file_format
+          type: str
+          required: false
+          default: "pdb"
+          description: "Format of the structure file to download - 'pdb' or 'cif'"
+        - name: model_version
+          type: str
+          required: false
+          default: "v4"
+          description: "AlphaFold model version - 'v4' (latest) or 'v3', 'v2', 'v1'"
+        - name: model_number
+          type: int
+          required: false
+          default: 1
+          description: "Model number (1-5, with 1 being the highest confidence model)"
+      return_type: dict
+      return_description: "Dictionary containing the query information and the AlphaFold results"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_interpro
+    version: "1.0.0"
+    name: Query InterPro
+    description: "Query the InterPro REST API using natural language or a direct endpoint for protein domain and family information."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_interpro
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about protein domains or families"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Direct endpoint path or full URL"
+        - name: max_results
+          type: int
+          required: false
+          default: 3
+          description: "Maximum number of results to return per page"
+      return_type: dict
+      return_description: "Dictionary containing the query information and the InterPro API results"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_pdb
+    version: "1.0.0"
+    name: Query PDB
+    description: "Query the RCSB PDB database using natural language or a direct structured query for protein structures."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_pdb
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about protein structures"
+        - name: query
+          type: dict
+          required: false
+          default: null
+          description: "Direct structured query in RCSB Search API format (overrides prompt)"
+        - name: max_results
+          type: int
+          required: false
+          default: 3
+          description: "Maximum number of results to return"
+      return_type: dict
+      return_description: "Dictionary containing the structured query, search results, and identifiers"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_pdb_identifiers
+    version: "1.0.0"
+    name: Query PDB Identifiers
+    description: "Retrieve detailed data and/or download files for PDB identifiers."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_pdb_identifiers
+      module_path: new_tools/database_tools
+      parameters:
+        - name: identifiers
+          type: "List[str]"
+          required: true
+          default: null
+          description: "List of PDB identifiers (from query_pdb)"
+        - name: return_type
+          type: str
+          required: false
+          default: "entry"
+          description: "Type of results: 'entry', 'assembly', 'polymer_entity', etc."
+        - name: download
+          type: bool
+          required: false
+          default: false
+          description: "Whether to download PDB structure files"
+        - name: attributes
+          type: "List[str]"
+          required: false
+          default: null
+          description: "List of specific attributes to retrieve"
+      return_type: dict
+      return_description: "Dictionary containing the detailed data and file paths if downloaded"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_kegg
+    version: "1.0.0"
+    name: Query KEGG
+    description: "Convert a natural language prompt to a structured KEGG API query for pathway and gene data."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_kegg
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: true
+          default: null
+          description: "Natural language query about KEGG data (e.g., 'Find human pathways related to glycolysis')"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Direct KEGG API endpoint to query"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing both the structured query and the KEGG results"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_stringdb
+    version: "1.0.0"
+    name: Query STRING DB
+    description: "Query the STRING protein interaction database using natural language or direct endpoint."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_stringdb
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about protein interactions"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Full URL to query directly (overrides prompt)"
+        - name: api_key
+          type: str
+          required: false
+          default: null
+          description: "Anthropic API key for processing"
+        - name: download_image
+          type: bool
+          required: false
+          default: false
+          description: "Whether to download image results"
+        - name: output_dir
+          type: str
+          required: false
+          default: null
+          description: "Directory to save downloaded files"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_paleobiology
+    version: "1.0.0"
+    name: Query Paleobiology Database
+    description: "Query the Paleobiology Database (PBDB) API for fossil records using natural language or direct endpoint."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_paleobiology
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about fossil records"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "API endpoint name or full URL"
+        - name: api_key
+          type: str
+          required: false
+          default: null
+          description: "Anthropic API key"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_jaspar
+    version: "1.0.0"
+    name: Query JASPAR
+    description: "Query the JASPAR REST API for transcription factor binding profiles using natural language or direct endpoint."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_jaspar
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about transcription factor binding profiles"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "API endpoint path or full URL"
+        - name: api_key
+          type: str
+          required: false
+          default: null
+          description: "Anthropic API key"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_worms
+    version: "1.0.0"
+    name: Query WoRMS
+    description: "Query the World Register of Marine Species (WoRMS) REST API using natural language or direct endpoint."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_worms
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about marine species"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Full URL or endpoint specification"
+        - name: api_key
+          type: str
+          required: false
+          default: null
+          description: "Anthropic API key"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_cbioportal
+    version: "1.0.0"
+    name: Query cBioPortal
+    description: "Query the cBioPortal REST API for cancer genomics data using natural language or direct endpoint."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_cbioportal
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about cancer genomics data"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "API endpoint path or full URL"
+        - name: api_key
+          type: str
+          required: false
+          default: null
+          description: "Anthropic API key"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_clinvar
+    version: "1.0.0"
+    name: Query ClinVar
+    description: "Convert a natural language prompt to a structured ClinVar query for genetic variant information."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_clinvar
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about genetic variants"
+        - name: search_term
+          type: str
+          required: false
+          default: null
+          description: "Direct search term for ClinVar"
+        - name: max_results
+          type: int
+          required: false
+          default: 3
+          description: "Maximum number of results to return"
+      return_type: dict
+      return_description: "Dictionary containing the structured query and ClinVar results"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_geo
+    version: "1.0.0"
+    name: Query GEO
+    description: "Query the NCBI Gene Expression Omnibus (GEO) for RNA-seq, microarray, and expression data."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_geo
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about RNA-seq, microarray, or other expression data"
+        - name: search_term
+          type: str
+          required: false
+          default: null
+          description: "Direct search term in GEO syntax"
+        - name: max_results
+          type: int
+          required: false
+          default: 3
+          description: "Maximum number of results to return"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_dbsnp
+    version: "1.0.0"
+    name: Query dbSNP
+    description: "Query the NCBI dbSNP database for genetic variants and SNPs using natural language or direct search."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_dbsnp
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about genetic variants/SNPs"
+        - name: search_term
+          type: str
+          required: false
+          default: null
+          description: "Direct search term in dbSNP syntax"
+        - name: max_results
+          type: int
+          required: false
+          default: 3
+          description: "Maximum number of results to return"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_ucsc
+    version: "1.0.0"
+    name: Query UCSC Genome Browser
+    description: "Query the UCSC Genome Browser API for genomic data using natural language or direct endpoint."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_ucsc
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about genomic data"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Full URL or endpoint specification with parameters"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_ensembl
+    version: "1.0.0"
+    name: Query Ensembl
+    description: "Query the Ensembl REST API for genomic data using natural language or direct endpoint."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_ensembl
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about genomic data"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Direct API endpoint to query or full URL"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_opentarget_genetics
+    version: "1.0.0"
+    name: Query OpenTargets Genetics
+    description: "Query the OpenTargets Genetics API using natural language or a direct GraphQL query for genetic targets and variants."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_opentarget_genetics
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about genetic targets and variants"
+        - name: query
+          type: str
+          required: false
+          default: null
+          description: "Direct GraphQL query string"
+        - name: variables
+          type: dict
+          required: false
+          default: null
+          description: "Variables for the GraphQL query"
+        - name: api_key
+          type: str
+          required: false
+          default: null
+          description: "Anthropic API key"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_opentarget
+    version: "1.0.0"
+    name: Query OpenTargets Platform
+    description: "Query the OpenTargets Platform API for drug targets, diseases, and mechanisms using natural language or GraphQL."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_opentarget
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about drug targets, diseases, and mechanisms"
+        - name: query
+          type: str
+          required: false
+          default: null
+          description: "Direct GraphQL query string"
+        - name: variables
+          type: dict
+          required: false
+          default: null
+          description: "Variables for the GraphQL query"
+        - name: verbose
+          type: bool
+          required: false
+          default: false
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_gwas_catalog
+    version: "1.0.0"
+    name: Query GWAS Catalog
+    description: "Query the GWAS Catalog API for genome-wide association study data using natural language or direct endpoint."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_gwas_catalog
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about GWAS data"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Full API endpoint to query"
+        - name: max_results
+          type: int
+          required: false
+          default: 3
+          description: "Maximum number of results to return"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_gnomad
+    version: "1.0.0"
+    name: Query gnomAD
+    description: "Query gnomAD for variants in a gene using natural language or direct gene symbol."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_gnomad
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about genetic variants"
+        - name: gene_symbol
+          type: str
+          required: false
+          default: null
+          description: "Gene symbol (e.g., 'BRCA1')"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: blast_sequence
+    version: "1.0.0"
+    name: BLAST Sequence
+    description: "Identifies a DNA or protein sequence using NCBI BLAST with improved error handling and timeout management."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: blast_sequence
+      module_path: new_tools/database_tools
+      parameters:
+        - name: sequence
+          type: str
+          required: true
+          default: null
+          description: "The sequence to identify (DNA or protein)"
+        - name: database
+          type: str
+          required: true
+          default: null
+          description: "The BLAST database to search against (e.g., 'core_nt' for DNA, 'nr' for protein)"
+        - name: program
+          type: str
+          required: true
+          default: null
+          description: "The BLAST program to use (e.g., 'blastn' for DNA, 'blastp' for protein)"
+      return_type: "Union[Dict[str, Union[str, float]], str]"
+      return_description: "Dictionary containing title, e-value, identity percentage, and coverage percentage of the best alignment"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_reactome
+    version: "1.0.0"
+    name: Query Reactome
+    description: "Query the Reactome database for biological pathway data using natural language or direct endpoint."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_reactome
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about biological pathways"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Direct API endpoint or full URL"
+        - name: download
+          type: bool
+          required: false
+          default: false
+          description: "Whether to download pathway diagrams"
+        - name: output_dir
+          type: str
+          required: false
+          default: null
+          description: "Directory to save downloaded files"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_regulomedb
+    version: "1.0.0"
+    name: Query RegulomeDB
+    description: "Query the RegulomeDB database for regulatory elements and variant annotation."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_regulomedb
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about regulatory elements"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Direct endpoint URL or variant/coordinate specification"
+        - name: api_key
+          type: str
+          required: false
+          default: null
+          description: "Anthropic API key"
+        - name: verbose
+          type: bool
+          required: false
+          default: false
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_pride
+    version: "1.0.0"
+    name: Query PRIDE
+    description: "Query the PRIDE (PRoteomics IDEntifications) database for proteomics data."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_pride
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about proteomics data"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "The full endpoint to query"
+        - name: api_key
+          type: str
+          required: false
+          default: null
+          description: "Anthropic API key"
+        - name: max_results
+          type: int
+          required: false
+          default: 3
+          description: "Maximum number of results to return"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_gtopdb
+    version: "1.0.0"
+    name: Query GtoPdb
+    description: "Query the Guide to PHARMACOLOGY database (GtoPdb) for drug targets, ligands, and interactions."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_gtopdb
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about drug targets, ligands, and interactions"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Full API endpoint to query"
+        - name: api_key
+          type: str
+          required: false
+          default: null
+          description: "Anthropic API key"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: region_to_ccre_screen
+    version: "1.0.0"
+    name: Region to cCRE SCREEN
+    description: "Given starting and ending coordinates, retrieves information of intersecting candidate cis-Regulatory Elements (cCREs)."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: region_to_ccre_screen
+      module_path: new_tools/database_tools
+      parameters:
+        - name: coord_chrom
+          type: str
+          required: true
+          default: null
+          description: "Chromosome of the gene, formatted like 'chr12'"
+        - name: coord_start
+          type: int
+          required: true
+          default: null
+          description: "Starting chromosome coordinate"
+        - name: coord_end
+          type: int
+          required: true
+          default: null
+          description: "Ending chromosome coordinate"
+        - name: assembly
+          type: str
+          required: false
+          default: "GRCh38"
+          description: "Assembly of the genome"
+      return_type: str
+      return_description: "Detailed string explaining steps and intersecting cCRE data"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: get_genes_near_ccre
+    version: "1.0.0"
+    name: Get Genes Near cCRE
+    description: "Given a cCRE (Candidate cis-Regulatory Element), returns the k nearest genes sorted by distance."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: get_genes_near_ccre
+      module_path: new_tools/database_tools
+      parameters:
+        - name: accession
+          type: str
+          required: true
+          default: null
+          description: "ENCODE Accession ID of query cCRE (e.g., EH38E1516980)"
+        - name: assembly
+          type: str
+          required: true
+          default: null
+          description: "Assembly of the gene (e.g., 'GRCh38')"
+        - name: chromosome
+          type: str
+          required: true
+          default: null
+          description: "Chromosome of the gene (e.g., 'chr12')"
+        - name: k
+          type: int
+          required: false
+          default: 10
+          description: "Number of nearby genes to return, sorted by distance"
+      return_type: str
+      return_description: "Steps performed and the nearest gene results"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_remap
+    version: "1.0.0"
+    name: Query ReMap
+    description: "Query the ReMap database for regulatory elements and transcription factor binding sites."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_remap
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about transcription factors and binding sites"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Full API endpoint to query"
+        - name: api_key
+          type: str
+          required: false
+          default: null
+          description: "Anthropic API key"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_mpd
+    version: "1.0.0"
+    name: Query Mouse Phenome Database
+    description: "Query the Mouse Phenome Database (MPD) for mouse strain phenotype data."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_mpd
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about mouse phenotypes, strains, or measurements"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Full API endpoint to query"
+        - name: api_key
+          type: str
+          required: false
+          default: null
+          description: "Anthropic API key"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_emdb
+    version: "1.0.0"
+    name: Query EMDB
+    description: "Query the Electron Microscopy Data Bank (EMDB) for 3D macromolecular structures."
+    category: database
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_emdb
+      module_path: new_tools/database_tools
+      parameters:
+        - name: prompt
+          type: str
+          required: false
+          default: null
+          description: "Natural language query about EM structures and associated data"
+        - name: endpoint
+          type: str
+          required: false
+          default: null
+          description: "Full API endpoint to query"
+        - name: api_key
+          type: str
+          required: false
+          default: null
+          description: "Anthropic API key"
+        - name: verbose
+          type: bool
+          required: false
+          default: true
+          description: "Whether to return detailed results"
+      return_type: dict
+      return_description: "Dictionary containing the query results or error information"
+    dependencies:
+      python_packages:
+        - requests
+        - biopython
+        - pandas
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0

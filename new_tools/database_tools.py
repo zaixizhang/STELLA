@@ -11,9 +11,13 @@ from Bio import Entrez
 import traceback
 import time
 from smolagents import tool, OpenAIServerModel
+from dotenv import load_dotenv
 
 
-OPENROUTER_API_KEY_STRING = ""
+load_dotenv()
+OPENROUTER_API_KEY_STRING = os.getenv("OPENROUTER_API_KEY", "").strip()
+if not OPENROUTER_API_KEY_STRING:
+    raise ValueError("Missing OPENROUTER_API_KEY. Please set it in your .env file.")
 
 # Use absolute path for schema database
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))

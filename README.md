@@ -10,7 +10,7 @@
     <em>A self-evolving multi-agent framework that continuously learns and adapts — integrating dynamic knowledge bases, reasoning templates, and self-correction to accelerate biomedical discovery.</em>
 </p>
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/zaixizhang/STELLA)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/zaixizhang/STELLA)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Paper](https://img.shields.io/badge/bioRxiv-2025.07.01.662467v2-b31b1b.svg)](https://www.biorxiv.org/content/10.1101/2025.07.01.662467v2)
 [![arXiv](https://img.shields.io/badge/arXiv-2507.02004-b31b1b.svg)](https://arxiv.org/abs/2507.02004)
@@ -36,6 +36,7 @@ Ruofan Jin<sup>1</sup>, Mingyang Xu<sup>2</sup>, Fei Meng<sup>3,4</sup>, Guanche
 ## Contents
 
 - [Overview](#overview)
+- [What's New in v2](#whats-new-in-v2)
 - [Demo Video](#demo-video)
 - [Key Results](#key-results)
 - [System Architecture](#system-architecture)
@@ -56,6 +57,17 @@ Recent advancements in Large Language Models (LLMs) have demonstrated their pote
 The agent architecture integrates a dynamic knowledge base, a reasoning module, and a self-correction component, allowing it to perform intricate tasks such as literature analysis, experimental design, and data interpretation. STELLA achieves superior performance over existing state-of-the-art models on comprehensive biomedical benchmarks.
 
 **Try STELLA online at [stella-agent.com](https://stella-agent.com/) — no installation required.**
+
+## What's New in v2
+
+This revision introduces a **structured skill management system** that replaces the previous template/memory architecture:
+
+- **Skill System** — YAML-based skill definitions with 3-stage hybrid retrieval (tag matching → TF-IDF similarity → quality-weighted re-ranking). Skills are auto-created from successful runs and deduplicated.
+- **Tool Governance** — Every tool now has a YAML manifest recording its interface, dependencies, validation rules, and usage statistics. The `ToolIndex` validates tools and detects dependency conflicts.
+- **Expanded Tool Library** — 11 new biomedical tools including molecular docking, ligand-based screening, KEGG pathway search, ESM-2 protein embeddings, and protocol evaluation.
+- **6 Prebuilt Skills** — Curated workflows for gene resistance analysis, protein structure analysis, drug screening, literature review, expression data analysis, and CRISPR experiment design.
+- **Docker Support** — Dockerfile and docker-compose for containerized deployment.
+- **Cleaner Codebase** — Removed legacy memory system, hardcoded API keys, and unused configs. All API keys are now loaded from environment variables.
 
 ## Demo Video
 
@@ -79,16 +91,18 @@ Key achievements:
 
 <img src="asset/stella_illustration.png" width="800"/>
 
-*Overview of the STELLA framework. The framework consists of four main components: a reasoning template, a manager agent, a dev agent, and a critic agent. The tool ocean provides a set of predefined and self-evolving tools for the agents to use.*
+*Overview of the STELLA framework. The framework consists of four main components: a manager agent, a dev agent, a critic agent, and a tool ocean. The skill system provides structured workflows learned from successful runs.*
 
 | Component | Description |
 |-----------|-------------|
-| **Manager Agent** | Decomposes scientific objectives, orchestrates sub-agents, plans multi-step workflows |
+| **Manager Agent** | Decomposes scientific objectives, retrieves relevant skills, orchestrates sub-agents |
 | **Dev Agent** | Executes bioinformatics analyses, runs code, queries databases and literature |
 | **Critic Agent** | Evaluates result quality, identifies gaps, recommends improvements |
-| **Tool Ocean** | Predefined and self-evolving tools for literature search, databases, virtual screening, and more |
+| **Tool Creation Agent** | Dynamically creates new tools when existing ones are insufficient |
+| **Tool Ocean** | 60+ predefined and self-evolving tools for literature search, databases, virtual screening |
+| **Skill System** | Retrieves, applies, and auto-creates structured workflow skills from successful runs |
 
-**Self-Evolution Loop:** STELLA continuously improves by learning from new data, refining its reasoning templates, and autonomously creating new tools when existing ones are insufficient.
+Models are configurable via [OpenRouter](https://openrouter.ai/). Edit model variables in `stella_core.py` to switch between GPT, Claude, Gemini, and other providers.
 
 ## Quick Start
 
@@ -99,23 +113,42 @@ Visit [stella-agent.com](https://stella-agent.com/) to use STELLA directly in yo
 **Option 2: Run locally**
 
 ```bash
-# Simple mode (basic functionality)
+# Clone and install
+git clone https://github.com/zaixizhang/STELLA.git
+cd STELLA
+pip install -r requirements.txt
+
+# Configure API key
+echo "OPENROUTER_API_KEY=your_key_here" > .env
+
+# Launch web UI
 python stella_core.py
-
-# Memory-enhanced mode (recommended)
-python stella_core.py --use_template --use_mem0
-
-# Web interface (user-friendly)
-python start_stella_web.py
 ```
+
+Open http://localhost:7860 in your browser. A public Gradio link is also generated automatically.
 
 ### Usage Options
 
 | Mode | Command | Description |
 |------|---------|-------------|
-| **Basic** | `python stella_core.py` | Core STELLA functionality with standard agents |
-| **Memory Enhanced** | `python stella_core.py --use_template --use_mem0` | Adds template learning and enhanced memory via Mem0 |
-| **Web Interface** | `python start_stella_web.py` | User-friendly Gradio interface |
+| **Web UI** | `python stella_core.py` | Full Gradio interface with skill retrieval (recommended) |
+| **No Skills** | `python stella_core.py --no_template` | Disable skill/template retrieval |
+| **Tool Creation** | `python stella_core.py --enable_tool_creation` | Enable dynamic tool creation agent |
+| **Custom Port** | `python stella_core.py --port 8080` | Run on a different port |
+| **Web Launcher** | `python start_stella_web.py` | Alternative launcher with preset config |
+| **Basic** | `python start_stella_basic.py` | Minimal launcher |
+
+### Programmatic Usage
+
+```python
+from stella_core import initialize_stella
+
+manager_agent = initialize_stella(
+    use_template=True,
+    enable_tool_creation=True,
+)
+result = manager_agent.run("What genes are associated with breast cancer resistance?")
+```
 
 ## Installation
 
@@ -125,7 +158,7 @@ python start_stella_web.py
 git clone https://github.com/zaixizhang/STELLA.git
 cd STELLA
 
-# Create conda environment with Python 3.12
+# Create conda environment
 conda create -n stella python=3.12 -y
 conda activate stella
 
@@ -138,27 +171,24 @@ pip install -r requirements.txt
 
 ### Option 2: Using pip only
 ```bash
-# Python 3.8+ required
-python --version
-
-# Core dependencies
-pip install gradio>=4.0.0
-pip install 'smolagents[mcp]'
-pip install numpy pandas scikit-learn
-pip install requests beautifulsoup4 markdownify
+pip install -r requirements.txt
 ```
+
+### Option 3: Using Docker
+```bash
+cd docker_files
+docker-compose up
+```
+
+See `docker_files/README-Docker.md` for details.
 
 ### Optional Dependencies
 ```bash
-# For Mem0 enhanced memory (recommended)
-pip install mem0ai
-
 # For biomedical analysis
 pip install biopython rdkit-pypi
-pip install pymed arxiv scholarly
 
 # For MCP tools integration
-pip install uvx
+pip install mcp uvx
 ```
 
 ## Resource Download & Setup
@@ -181,29 +211,55 @@ unzip resource_backup_20250719_055729.zip -d resource/
 
 ```
 STELLA/
-├── README.md                       # This documentation
-├── stella_core.py                  # Core multi-agent system
-├── start_stella_web.py             # Web interface launcher
-├── stella_ui_english.py            # Web UI implementation
-├── memory_manager.py               # Memory management system
-├── Knowledge_base.py               # Knowledge base system
-├── predefined_tools.py             # Core system tools
+├── stella_core.py                  # Core multi-agent system & Gradio UI entry point
+├── predefined_tools.py             # Core system tools (search, shell, file I/O)
+├── skill_manager.py                # Unified skill lifecycle management
+├── skill_store.py                  # Skill persistence (YAML files + SQLite run history)
+├── skill_retriever.py              # 3-stage hybrid skill retrieval engine
+├── skill_summarizer.py             # Auto-create skills from successful runs
+├── skill_schema.py                 # Dataclass schemas for skills & tool manifests
+├── tool_governance.py              # Tool validation, versioning, dependency management
 │
-├── new_tools/                      # Professional tool library
-│   ├── literature_tools.py         # Literature search tools
-│   ├── database_tools.py           # Biomedical databases
-│   ├── virtual_screening_tools.py  # Drug discovery tools
-│   ├── enzyme_tools.py             # Biochemical analysis
-│   ├── llm.py                      # LLM integration utilities
-│   └── biosecurity_tool.py         # Safety mechanisms
+├── new_tools/                      # Biomedical tool library (60+ tools)
+│   ├── database_tools.py           # ClinVar, Ensembl, OpenTargets, UniProt, PDB, STRING, etc.
+│   ├── literature_tools.py         # PubMed, ArXiv, Google Scholar
+│   ├── virtual_screening_tools.py  # Molecular descriptors, ADMET, docking
+│   ├── enzyme_tools.py             # Enzyme function & pathway analysis
+│   ├── llm.py                      # LLM client (OpenRouter multi-model)
+│   ├── esm2_embedder.py            # ESM-2 protein embeddings
+│   ├── kegg_pathway_search.py      # KEGG pathway queries
+│   ├── molecular_docking_tool.py   # Molecular docking
+│   ├── ligand_based_screening_tool.py  # Ligand-based virtual screening
+│   ├── protein_seq_featurizer.py   # Protein sequence features
+│   ├── uniprot_query.py            # UniProt protein lookup
+│   ├── biosecurity_tool.py         # Biosafety mechanisms
+│   └── manifests/                  # Tool governance manifests (YAML)
 │
+├── skills/
+│   ├── prebuilt/                   # 6 curated skill definitions (YAML)
+│   └── auto_generated/             # Skills created from successful runs
+│
+├── prompts/                        # Agent prompt templates (YAML)
 ├── asset/                          # Images and figures
-│   ├── stella_logo.png             # STELLA logo
-│   ├── stella_illustration.png     # Framework diagram
-│   └── Stella_result.png           # Performance results
-│
-└── prompts/                        # Prompt templates
+├── start_stella_web.py             # Web launcher with preset config
+├── start_stella_basic.py           # Minimal launcher
+├── stella_ui_english.py            # Gradio web interface
+├── docker_files/                   # Docker deployment configs
+├── Tool_Creation_Benchmark/        # Tool creation evaluation benchmark
+├── resource/                       # Large biomedical datasets (download separately)
+└── requirements.txt                # Python dependencies
 ```
+
+### Key Modules
+
+| File | Role |
+|------|------|
+| `stella_core.py` | Creates Manager/Dev/Critic/ToolCreation agents, wires tools, launches Gradio UI |
+| `predefined_tools.py` | ~20 general-purpose tools: web search, shell commands, file operations, PDF extraction |
+| `new_tools/database_tools.py` | 30+ biomedical database query tools (ClinVar, Ensembl, UniProt, PDB, STRING, ChEMBL, TCGA, GTEx) |
+| `skill_manager.py` | Wraps SkillStore + SkillRetriever + SkillSummarizer + ToolIndex into one interface |
+| `skill_retriever.py` | 3-stage retrieval: tag/pattern match → TF-IDF similarity → quality-weighted re-ranking |
+| `tool_governance.py` | ToolIndex: manifest loading, validation, versioning, dependency conflict detection |
 
 ## API Keys
 
@@ -219,16 +275,13 @@ For local deployment, configure the following API keys:
 
 ```bash
 # Create .env file with your API keys
-touch .env
-echo "OPENROUTER_API_KEY=your_openrouter_api_key_here" >> .env
+echo "OPENROUTER_API_KEY=your_openrouter_api_key_here" > .env
 echo "SERPAPI_API_KEY=your_serpapi_key_here" >> .env
-echo "PAPERQA_API_KEY=your_paperqa_key_here" >> .env
 ```
 
 **Get API Keys:**
 - OpenRouter: https://openrouter.ai/
 - SERPAPI: https://serpapi.com/
-- PaperQA: https://paperqa.ai/
 
 ## Updates & Collaboration
 
