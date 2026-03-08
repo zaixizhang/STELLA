@@ -1,0 +1,510 @@
+tools:
+  - tool_id: run_shell_command
+    version: "1.0.0"
+    name: Run Shell Command
+    description: "Execute a shell command and return the output. Has a 30-minute timeout for ML tasks."
+    category: environment
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_shell_command
+      module_path: predefined_tools
+      parameters:
+        - name: command
+          type: str
+          required: true
+          default: null
+          description: "The shell command to execute"
+        - name: working_directory
+          type: str
+          required: false
+          default: "."
+          description: "Optional working directory for the command"
+      return_type: str
+      return_description: "Command output or error message"
+    dependencies:
+      python_packages: []
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: create_conda_environment
+    version: "1.0.0"
+    name: Create Conda Environment
+    description: "Create a new conda environment with a specified Python version."
+    category: environment
+    author: stella_team
+    status: active
+    interface:
+      function_name: create_conda_environment
+      module_path: predefined_tools
+      parameters:
+        - name: env_name
+          type: str
+          required: true
+          default: null
+          description: "Name of the conda environment"
+        - name: python_version
+          type: str
+          required: false
+          default: "3.9"
+          description: "Python version for the environment"
+      return_type: str
+      return_description: "Result of the conda environment creation"
+    dependencies:
+      python_packages: []
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: install_packages_conda
+    version: "1.0.0"
+    name: Install Packages (Conda)
+    description: "Install packages in a conda environment using conda install."
+    category: environment
+    author: stella_team
+    status: active
+    interface:
+      function_name: install_packages_conda
+      module_path: predefined_tools
+      parameters:
+        - name: env_name
+          type: str
+          required: true
+          default: null
+          description: "Name of the conda environment"
+        - name: packages
+          type: str
+          required: true
+          default: null
+          description: "Space-separated list of packages to install"
+      return_type: str
+      return_description: "Result of the package installation"
+    dependencies:
+      python_packages: []
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: install_packages_pip
+    version: "1.0.0"
+    name: Install Packages (Pip)
+    description: "Install pip packages in a conda environment."
+    category: environment
+    author: stella_team
+    status: active
+    interface:
+      function_name: install_packages_pip
+      module_path: predefined_tools
+      parameters:
+        - name: env_name
+          type: str
+          required: true
+          default: null
+          description: "Name of the conda environment"
+        - name: packages
+          type: str
+          required: true
+          default: null
+          description: "Space-separated list of pip packages to install"
+      return_type: str
+      return_description: "Result of the pip installation"
+    dependencies:
+      python_packages: []
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: check_gpu_status
+    version: "1.0.0"
+    name: Check GPU Status
+    description: "Check GPU status and availability using nvidia-smi."
+    category: environment
+    author: stella_team
+    status: active
+    interface:
+      function_name: check_gpu_status
+      module_path: predefined_tools
+      parameters:
+        - name: dummy_param
+          type: str
+          required: false
+          default: ""
+          description: "Unused parameter to handle smolagents automatic parameter passing"
+      return_type: str
+      return_description: "GPU status information or error if no GPUs available"
+    dependencies:
+      python_packages: []
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: create_script
+    version: "1.0.0"
+    name: Create Script
+    description: "Create a script file (Python, bash, etc.) in the specified directory."
+    category: environment
+    author: stella_team
+    status: active
+    interface:
+      function_name: create_script
+      module_path: predefined_tools
+      parameters:
+        - name: script_name
+          type: str
+          required: true
+          default: null
+          description: "Name of the script file (should include appropriate extension)"
+        - name: script_content
+          type: str
+          required: true
+          default: null
+          description: "Content of the script"
+        - name: directory
+          type: str
+          required: false
+          default: "."
+          description: "Directory to create the script in"
+        - name: script_type
+          type: str
+          required: false
+          default: "python"
+          description: "Type of script (python, bash, etc.) for informational purposes"
+      return_type: str
+      return_description: "Result of script creation"
+    dependencies:
+      python_packages: []
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: create_and_run_script
+    version: "1.0.0"
+    name: Create and Run Script
+    description: "Create and immediately run a script file with validation."
+    category: environment
+    author: stella_team
+    status: active
+    interface:
+      function_name: create_and_run_script
+      module_path: predefined_tools
+      parameters:
+        - name: script_name
+          type: str
+          required: true
+          default: null
+          description: "Name of the script file (should include appropriate extension)"
+        - name: script_content
+          type: str
+          required: true
+          default: null
+          description: "Content of the script"
+        - name: directory
+          type: str
+          required: false
+          default: "."
+          description: "Directory to create the script in"
+        - name: env_name
+          type: str
+          required: false
+          default: null
+          description: "Name of the conda environment (optional)"
+        - name: interpreter
+          type: str
+          required: false
+          default: "python"
+          description: "Script interpreter (python, bash, etc.)"
+      return_type: str
+      return_description: "Result of script creation and execution"
+    dependencies:
+      python_packages: []
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_script
+    version: "1.0.0"
+    name: Run Script
+    description: "Run a script with optional conda environment activation."
+    category: environment
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_script
+      module_path: predefined_tools
+      parameters:
+        - name: script_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the script to run"
+        - name: env_name
+          type: str
+          required: false
+          default: null
+          description: "Name of the conda environment (optional)"
+        - name: working_directory
+          type: str
+          required: false
+          default: null
+          description: "Working directory for the script execution (optional)"
+        - name: interpreter
+          type: str
+          required: false
+          default: "python"
+          description: "Script interpreter (python, bash, etc.)"
+      return_type: str
+      return_description: "Output from the script execution"
+    dependencies:
+      python_packages: []
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: create_requirements_file
+    version: "1.0.0"
+    name: Create Requirements File
+    description: "Create a requirements.txt file in the specified directory."
+    category: environment
+    author: stella_team
+    status: active
+    interface:
+      function_name: create_requirements_file
+      module_path: predefined_tools
+      parameters:
+        - name: requirements
+          type: str
+          required: true
+          default: null
+          description: "Content of the requirements file (one package per line)"
+        - name: directory
+          type: str
+          required: false
+          default: "."
+          description: "Directory to create the file in"
+      return_type: str
+      return_description: "Result of file creation"
+    dependencies:
+      python_packages: []
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: monitor_training_logs
+    version: "1.0.0"
+    name: Monitor Training Logs
+    description: "Monitor training logs by reading the last N lines of a log file."
+    category: environment
+    author: stella_team
+    status: active
+    interface:
+      function_name: monitor_training_logs
+      module_path: predefined_tools
+      parameters:
+        - name: log_file_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the log file"
+        - name: lines
+          type: int
+          required: false
+          default: 50
+          description: "Number of lines to read from the end"
+      return_type: str
+      return_description: "Last N lines of the log file"
+    dependencies:
+      python_packages: []
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0

@@ -5,6 +5,7 @@ from pathlib import Path
 import subprocess
 from requests.exceptions import RequestException
 from smolagents import tool
+from dotenv import load_dotenv
 import pandas as pd
 import os
 import sys
@@ -21,6 +22,9 @@ os.chdir(main_dir)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 from llm import json_llm_call
+
+# Load environment variables from .env
+load_dotenv()
 
 
 def validate_genes(genes: List[str], species: str = "human") -> Tuple[List[str], List[str]]:
@@ -1636,7 +1640,9 @@ def omim_disease_search(disease_terms: List[str], model_name: str = "gemini-2.5-
     """
     try:
         base_url = "https://api.omim.org/api"
-        api_key = '7TcdVyyhRWOtu58HFHJeOw'
+        api_key = os.getenv('OMIM_API_KEY', '').strip()
+        if not api_key:
+            raise ValueError("Missing OMIM_API_KEY. Please set it in your .env file.")
         final_results = {}
         raw_results = {}
         

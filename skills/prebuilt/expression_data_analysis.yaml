@@ -1,0 +1,135 @@
+skill_id: expression_data_analysis
+version: "1.0.0"
+name: Gene Expression Data Analysis
+domain: transcriptomics
+description: >
+  Analyzes gene expression data including RNA-seq and microarray datasets.
+  Performs differential expression analysis, generates publication-quality
+  visualizations (volcano plots, heatmaps, PCA), and identifies enriched
+  pathways and biological processes via scripted analysis pipelines.
+
+workflow:
+  - step: 1
+    action: load_and_preprocess
+    description: >
+      Load expression data from provided files or public repositories (GEO, TCGA).
+      Perform quality control, normalization (TPM, FPKM, or DESeq2 normalization),
+      and filtering of low-expression genes.
+    tools_required:
+      - create_and_run_script
+    parameters:
+      normalization: deseq2
+      min_expression_threshold: 1.0
+      script_language: python
+    agent: dev
+
+  - step: 2
+    action: differential_expression
+    description: >
+      Perform differential expression analysis between experimental conditions.
+      Calculate log2 fold changes, p-values, and adjusted p-values (FDR).
+      Identify significantly up-regulated and down-regulated genes.
+    tools_required:
+      - create_and_run_script
+      - run_shell_command
+    parameters:
+      method: deseq2
+      fdr_threshold: 0.05
+      log2fc_threshold: 1.0
+    agent: dev
+
+  - step: 3
+    action: generate_visualizations
+    description: >
+      Create publication-quality visualizations including volcano plots,
+      MA plots, heatmaps of top differentially expressed genes, and PCA
+      plots for sample clustering. Save as high-resolution figures.
+    tools_required:
+      - create_and_run_script
+    parameters:
+      plot_types:
+        - volcano
+        - heatmap
+        - pca
+        - ma_plot
+      figure_format: png
+      dpi: 300
+    agent: dev
+
+  - step: 4
+    action: pathway_enrichment
+    description: >
+      Perform gene set enrichment analysis (GSEA) and over-representation
+      analysis (ORA) on differentially expressed genes. Search for enriched
+      GO terms, KEGG pathways, and Reactome pathways.
+    tools_required:
+      - create_and_run_script
+      - multi_source_search
+    parameters:
+      enrichment_databases:
+        - GO_BP
+        - GO_MF
+        - KEGG
+        - Reactome
+      fdr_threshold: 0.05
+    agent: dev
+
+  - step: 5
+    action: interpret_and_report
+    description: >
+      Interpret the biological significance of expression changes and enriched
+      pathways. Generate a comprehensive report with key findings, figures,
+      gene lists, and suggested follow-up experiments.
+    tools_required: []
+    parameters:
+      output_format: markdown
+      include_gene_tables: true
+    agent: critic
+
+tools_required:
+  - tool_id: create_and_run_script
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: run_shell_command
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: multi_source_search
+    version: ">=1.0.0"
+    optional: true
+
+tags:
+  - gene expression
+  - RNA-seq
+  - differential expression
+  - transcriptomics
+  - pathway enrichment
+  - visualization
+  - DESeq2
+  - GSEA
+
+applicable_queries:
+  - "*gene*expression*analys*"
+  - "*differential*expression*"
+  - "*RNA-seq*analys*"
+  - "*transcriptom*analys*"
+  - "*expression*data*"
+
+quality_metrics:
+  success_count: 9
+  failure_count: 2
+  avg_completion_time_sec: 250.0
+  avg_critic_score: 0.78
+  last_used: "2026-03-08"
+  created_at: "2026-03-08"
+  last_updated: "2026-03-08"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-03-08"
+      changes: "Initial prebuilt skill for gene expression data analysis with differential expression, visualization, and pathway enrichment."
+
+status: active

@@ -360,6 +360,8 @@ def search_github_repositories(query: str, language: str = "", sort: str = "star
     
     Args:
         query: Search query (e.g., "transformer model", "pytorch CNN", "machine learning")
+               TIP: Use simple, focused keywords for better results (restrict to 1-2 keywords). Avoid overly complex compound queries.
+               Examples: "ESM protein" vs "ESM-2 ProteinGym DMS prediction embeddings"
         language: Programming language filter (e.g., "Python", "JavaScript")
         sort: Sort results by "stars", "forks", "updated", or "created"
         order: Order results "desc" or "asc"
@@ -426,7 +428,7 @@ def search_github_code(query: str, language: str = "", filename: str = "", exten
     """Search for code snippets in GitHub repositories.
     
     Args:
-        query: Code search query (e.g., "def train_model", "class CNN")
+        query: Code search query (e.g., "def train_model", "class CNN"), TIP: Use simple, focused keywords for better results (restrict to 1-2 keywords). Avoid overly complex compound queries.
         language: Programming language filter
         filename: Specific filename to search in
         extension: File extension filter (e.g., "py", "js")
@@ -556,12 +558,12 @@ def get_github_repository_info(repo_owner: str, repo_name: str) -> str:
         return f"处理GitHub仓库信息时发生错误: {str(e)}"
 
 @tool
-def run_shell_command(command: str, working_directory: str = None) -> str:
+def run_shell_command(command: str, working_directory: str = ".") -> str:
     """Execute a shell command and return the output.
     
     Args:
         command: The shell command to execute
-        working_directory: Optional working directory for the command
+        working_directory: Optional working directory for the command (default: ".")
         
     Returns:
         Command output or error message
@@ -573,7 +575,7 @@ def run_shell_command(command: str, working_directory: str = None) -> str:
             capture_output=True,
             text=True,
             cwd=working_directory,
-            timeout=300  # 5 minute timeout
+            timeout=1800  # 30 minute timeout for ML tasks
         )
         
         output = f"Command: {command}\n"
@@ -585,7 +587,7 @@ def run_shell_command(command: str, working_directory: str = None) -> str:
         return output
         
     except subprocess.TimeoutExpired:
-        return f"Command timed out after 5 minutes: {command}"
+        return f"Command timed out after 30 minutes: {command}"
     except Exception as e:
         return f"Error executing command '{command}': {str(e)}"
 
@@ -676,8 +678,15 @@ def create_script(script_name: str, script_content: str, directory: str = ".", s
         script_path = Path(directory) / script_name
         script_path.parent.mkdir(parents=True, exist_ok=True)
         
+        # Strip triple quotes if they wrap the entire content
+        cleaned_content = script_content.strip()
+        if cleaned_content.startswith("'''") and cleaned_content.endswith("'''"):
+            cleaned_content = cleaned_content[3:-3].strip()
+        elif cleaned_content.startswith('"""') and cleaned_content.endswith('"""'):
+            cleaned_content = cleaned_content[3:-3].strip()
+        
         with open(script_path, 'w', encoding='utf-8') as f:
-            f.write(script_content)
+            f.write(cleaned_content)
         
         # Make script executable if it's a bash script
         if script_name.endswith('.sh') or script_type.lower() in ['bash', 'shell']:
@@ -688,6 +697,35 @@ def create_script(script_name: str, script_content: str, directory: str = ".", s
         
     except Exception as e:
         return f"Error creating script '{script_name}': {str(e)}"
+
+@tool
+def create_and_run_script(script_name: str, script_content: str, directory: str = ".", env_name: str = None, interpreter: str = "python") -> str:
+    """Create and immediately run a script file with validation.
+    
+    Args:
+        script_name: Name of the script file (should include appropriate extension)
+        script_content: Content of the script
+        directory: Directory to create the script in (default: current directory)
+        env_name: Name of the conda environment (optional)
+        interpreter: Script interpreter (python, bash, etc.) - default: python
+        
+    Returns:
+        Result of script creation and execution
+    """
+    try:
+        # First create the script
+        create_result = create_script(script_name, script_content, directory, interpreter)
+        if "Error" in create_result:
+            return create_result
+            
+        # Then run it
+        script_path = Path(directory) / script_name
+        run_result = run_script(str(script_path), env_name, directory, interpreter)
+        
+        return f"{create_result}\n\nExecution result:\n{run_result}"
+        
+    except Exception as e:
+        return f"Error creating and running script '{script_name}': {str(e)}"
 
 @tool
 def run_script(script_path: str, env_name: str = None, working_directory: str = None, interpreter: str = "python") -> str:
@@ -865,27 +903,70 @@ def query_arxiv(query: str, max_papers: int = 10) -> str:
 
 
 @tool
-def query_scholar(query: str) -> str:
+def query_scholar(query: str, timeout_seconds: int = 30) -> str:
     """
-    Query Google Scholar for papers based on the provided search query.
+    Query Google Scholar for papers based on the provided search query with timeout handling.
 
     Args:
         query: The search query string
+        timeout_seconds: Maximum seconds to wait before timing out (default: 30)
 
     Returns:
-        The first search result formatted or an error message
+        A formatted result string, a timeout/rate-limit notice with fallback, or an error message
     """
-    from scholarly import scholarly
-
     try:
-        search_query = scholarly.search_pubs(query)
-        result = next(search_query, None)
-        if result:
-            return f"Title: {result['bib']['title']}\nYear: {result['bib']['pub_year']}\nVenue: {result['bib']['venue']}\nAbstract: {result['bib']['abstract']}"
-        else:
-            return "No results found on Google Scholar."
+        from scholarly import scholarly
     except Exception as e:
-        return f"Error querying Google Scholar: {e}"
+        # Library not available; fallback to enhanced Google search
+        try:
+            return enhanced_google_search(query, num_results=3)
+        except Exception:
+            return f"Error loading scholarly: {e}"
+
+    # Run the potentially blocking call in a thread to enforce timeout
+    import threading
+
+    result_container = {"text": None}
+
+    def worker():
+        try:
+            search_query = scholarly.search_pubs(query)
+            result = next(search_query, None)
+            if result:
+                title = result.get('bib', {}).get('title', 'N/A')
+                year = result.get('bib', {}).get('pub_year', 'N/A')
+                venue = result.get('bib', {}).get('venue', 'N/A')
+                abstract = result.get('bib', {}).get('abstract', 'N/A')
+                result_container["text"] = f"Title: {title}\nYear: {year}\nVenue: {venue}\nAbstract: {abstract}"
+            else:
+                result_container["text"] = "No results found on Google Scholar."
+        except Exception as e:
+            msg = str(e)
+            # Handle common rate-limit/captcha signals
+            if "429" in msg or "captcha" in msg.lower() or "Too Many Requests" in msg:
+                result_container["text"] = (
+                    "⚠️ Google Scholar rate-limited or CAPTCHA detected. "
+                    "Falling back to web search results.\n" + enhanced_google_search(query, num_results=3)
+                )
+            else:
+                result_container["text"] = f"Error querying Google Scholar: {e}"
+
+    thread = threading.Thread(target=worker, daemon=True)
+    thread.start()
+    thread.join(timeout_seconds)
+
+    if thread.is_alive():
+        # Timeout: best-effort fallback
+        try:
+            fallback = enhanced_google_search(query, num_results=3)
+        except Exception:
+            fallback = ""
+        return (
+            f"⚠️ Google Scholar timed out after {timeout_seconds}s. "
+            + ("Fallback results:\n" + fallback if fallback else "Please try again later.")
+        )
+
+    return result_container["text"] or "No results found."
 
 @tool
 def query_pubmed(query: str, max_papers: int = 10, max_retries: int = 3) -> str:

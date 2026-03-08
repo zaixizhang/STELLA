@@ -1,0 +1,379 @@
+tools:
+  - tool_id: kegg_pathway_search
+    version: "1.0.0"
+    name: KEGG Pathway Search
+    description: "Search and extract biological pathway information from the KEGG database. Returns gene lists associated with each pathway and normalized relevance scores."
+    category: drug_discovery
+    author: stella_team
+    status: active
+    interface:
+      function_name: kegg_pathway_search
+      module_path: new_tools/virtual_screening_tools
+      parameters:
+        - name: query_list
+          type: "List[str]"
+          required: true
+          default: null
+          description: "List of pathway names related to biological processes or diseases"
+        - name: model_name
+          type: str
+          required: false
+          default: "gemini-2.5-pro"
+          description: "Model name for LLM analysis"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing gene lists associated with each pathway and normalized relevance scores"
+    dependencies:
+      python_packages:
+        - requests
+        - pandas
+        - rapidfuzz
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: disease_gene_search
+    version: "1.0.0"
+    name: Disease Gene Search
+    description: "Search for genes associated with specific diseases using the DISEASES database. Integrates evidence from text mining, curated literature, cancer mutation data, and GWAS."
+    category: drug_discovery
+    author: stella_team
+    status: active
+    interface:
+      function_name: disease_gene_search
+      module_path: new_tools/virtual_screening_tools
+      parameters:
+        - name: disease_list
+          type: "List[str]"
+          required: true
+          default: null
+          description: "List of disease names to search for associated genes"
+        - name: confidence_cutoff
+          type: float
+          required: false
+          default: 2.0
+          description: "Minimum confidence score threshold"
+        - name: top_n
+          type: "Optional[int]"
+          required: false
+          default: null
+          description: "Maximum number of top genes to return by confidence score (None means return all)"
+        - name: similarity_threshold
+          type: int
+          required: false
+          default: 80
+          description: "Minimum similarity score (0-100) for fuzzy matching"
+        - name: file_path
+          type: str
+          required: false
+          default: "resource/diseases/human_disease_integrated_full.tsv"
+          description: "Path to the disease mapping TSV file"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing gene lists associated with each disease and normalized confidence scores"
+    dependencies:
+      python_packages:
+        - requests
+        - pandas
+        - rapidfuzz
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: string_database_search
+    version: "1.0.0"
+    name: STRING Database Search
+    description: "Search for protein-protein interactions using the STRING database. Finds interaction partners with normalized confidence scores."
+    category: drug_discovery
+    author: stella_team
+    status: active
+    interface:
+      function_name: string_database_search
+      module_path: new_tools/virtual_screening_tools
+      parameters:
+        - name: gene_list
+          type: "List[str]"
+          required: true
+          default: null
+          description: "List of gene names to find interaction partners for"
+        - name: score_cutoff
+          type: float
+          required: false
+          default: 0.9
+          description: "Minimum combined score threshold"
+        - name: species_id
+          type: int
+          required: false
+          default: 9606
+          description: "NCBI species identifier (default: 9606 for human)"
+        - name: limit
+          type: int
+          required: false
+          default: 1000
+          description: "Maximum number of interaction partners per gene"
+        - name: model_name
+          type: str
+          required: false
+          default: "gemini-2.5-pro"
+          description: "Model name for LLM analysis"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing interaction partners and normalized confidence scores"
+    dependencies:
+      python_packages:
+        - requests
+        - pandas
+        - rapidfuzz
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: go_terms_search
+    version: "1.0.0"
+    name: GO Terms Search
+    description: "Search for genes associated with Gene Ontology (GO) terms. Provides a controlled vocabulary of terms describing gene product characteristics."
+    category: drug_discovery
+    author: stella_team
+    status: active
+    interface:
+      function_name: go_terms_search
+      module_path: new_tools/virtual_screening_tools
+      parameters:
+        - name: query_list
+          type: "List[str]"
+          required: true
+          default: null
+          description: "List of biological processes, molecular functions, or cellular components to search for"
+        - name: max_candidates
+          type: int
+          required: false
+          default: 100
+          description: "Maximum number of GO term candidates to consider"
+        - name: similarity_threshold
+          type: int
+          required: false
+          default: 10
+          description: "Minimum similarity score (0-100) for fuzzy matching"
+        - name: model_name
+          type: str
+          required: false
+          default: "gemini-2.5-pro"
+          description: "Model name for LLM analysis"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing genes associated with each GO term query and normalized relevance scores"
+    dependencies:
+      python_packages:
+        - requests
+        - pandas
+        - rapidfuzz
+        - numpy
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: screen_data_analysis
+    version: "1.0.0"
+    name: Screen Data Analysis
+    description: "Process and filter genetic screen data to identify significant genes based on statistical measures. Supports p-values, effect sizes, or custom scoring."
+    category: drug_discovery
+    author: stella_team
+    status: active
+    interface:
+      function_name: screen_data_analysis
+      module_path: new_tools/virtual_screening_tools
+      parameters:
+        - name: input_file
+          type: str
+          required: true
+          default: null
+          description: "Path to the input CSV file containing screen results"
+        - name: p_value_threshold
+          type: float
+          required: false
+          default: 0.05
+          description: "Threshold for p-values"
+        - name: effect_size_threshold
+          type: "Optional[float]"
+          required: false
+          default: null
+          description: "Threshold for effect sizes (optional)"
+        - name: top_n
+          type: "Optional[int]"
+          required: false
+          default: null
+          description: "Number of top genes to return (optional)"
+        - name: score_column
+          type: "Optional[str]"
+          required: false
+          default: null
+          description: "Optional specific column to use for scoring"
+        - name: model_name
+          type: str
+          required: false
+          default: "gemini-2.5-pro"
+          description: "Model name for LLM analysis"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing filtered genes with normalized relevance scores and processing metadata"
+    dependencies:
+      python_packages:
+        - requests
+        - pandas
+        - numpy
+        - rapidfuzz
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: tcga_survival_analysis
+    version: "1.0.0"
+    name: TCGA Survival Analysis
+    description: "Identify genes associated with cancer survival from The Cancer Genome Atlas (TCGA) data. Analyzes CNA, methylation, gene expression, miRNA, and mutation data."
+    category: drug_discovery
+    author: stella_team
+    status: active
+    interface:
+      function_name: tcga_survival_analysis
+      module_path: new_tools/virtual_screening_tools
+      parameters:
+        - name: cancer_types
+          type: "List[str]"
+          required: true
+          default: null
+          description: "List of cancer types (common names like 'Breast Cancer' or 'Chronic Myeloid Leukemia')"
+        - name: threshold
+          type: float
+          required: false
+          default: 1.96
+          description: "Z-score threshold for statistical significance"
+        - name: model_name
+          type: str
+          required: false
+          default: "gemini-2.5-pro"
+          description: "Model name for LLM analysis"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing genes associated with survival for each cancer type with normalized relevance scores"
+    dependencies:
+      python_packages:
+        - requests
+        - pandas
+        - numpy
+        - rapidfuzz
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0

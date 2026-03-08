@@ -1,0 +1,79 @@
+# STELLA Complete Docker Image - 最全面版本
+FROM python:3.12-slim
+
+# 设置工作目录
+WORKDIR /app
+
+# 安装系统依赖
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    wget \
+    build-essential \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# 复制所有核心文件
+COPY stella_core.py .
+COPY start_stella_web.py .
+COPY stella_ui_english.py .
+COPY memory_manager.py .
+COPY Knowledge_base.py .
+COPY predefined_tools.py .
+COPY requirements.txt .
+COPY Stella.png .
+COPY small_logo_b64.txt .
+COPY stella_base64.tmp .
+
+# 复制工具目录
+COPY new_tools/ ./new_tools/
+
+# 复制prompts目录
+COPY prompts/ ./prompts/
+
+# 复制README文件（如果存在）
+COPY README.md* ./
+
+# 安装 Python 依赖
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 安装所有关键依赖
+RUN pip install --no-cache-dir \
+    torch \
+    torchvision \
+    torchaudio \
+    statsmodels \
+    rdkit \
+    plotly \
+    opencv-python \
+    scikit-learn \
+    pandas \
+    numpy \
+    scipy \
+    matplotlib \
+    seaborn \
+    jupyter \
+    ipykernel
+
+# 创建必要的目录
+RUN mkdir -p /app/logs /app/cache /app/agent_outputs /app/data
+
+# 设置环境变量
+ENV PYTHONPATH=/app
+ENV STELLA_HOME=/app
+ENV CUDA_VISIBLE_DEVICES=""
+
+# 暴露端口
+EXPOSE 7860
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:7860/ || exit 1
+
+# 默认启动命令
+CMD ["python", "start_stella_web.py"]

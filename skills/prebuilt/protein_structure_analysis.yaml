@@ -1,0 +1,125 @@
+skill_id: protein_structure_analysis
+version: "1.0.0"
+name: Protein Structure and Function Analysis
+domain: structural_biology
+description: >
+  Analyzes protein 3D structure and function by fetching PDB structures,
+  identifying binding pockets, performing sequence alignment, and characterizing
+  functional domains. Useful for drug target assessment, protein engineering,
+  and structure-activity relationship studies.
+
+workflow:
+  - step: 1
+    action: fetch_structure
+    description: >
+      Retrieve the protein 3D structure from the Protein Data Bank using PDB ID
+      or UniProt accession. Parse chain information, resolution, and experimental
+      method metadata.
+    tools_required:
+      - fetch_pdb_structure
+    parameters:
+      format: pdb
+      include_metadata: true
+    agent: dev
+
+  - step: 2
+    action: extract_and_align_sequence
+    description: >
+      Extract the amino acid sequence from the structure file and perform
+      sequence alignment against reference sequences or homologs to identify
+      conserved regions and mutations.
+    tools_required:
+      - extract_protein_sequence
+      - sequence_alignment
+    parameters:
+      alignment_method: pairwise
+      include_conservation_scores: true
+    agent: dev
+
+  - step: 3
+    action: analyze_binding_sites
+    description: >
+      Identify and characterize binding pockets in the protein structure.
+      Compute pocket volume, druggability score, and list residues lining
+      each pocket with their physicochemical properties.
+    tools_required:
+      - analyze_binding_pocket
+    parameters:
+      min_pocket_volume: 100
+      druggability_threshold: 0.5
+    agent: dev
+
+  - step: 4
+    action: functional_annotation
+    description: >
+      Annotate functional domains, active sites, post-translational modification
+      sites, and protein-protein interaction interfaces based on structural
+      features and sequence conservation patterns.
+    tools_required: []
+    parameters:
+      annotation_sources:
+        - pfam
+        - prosite
+        - interpro
+    agent: manager
+
+  - step: 5
+    action: compile_structure_report
+    description: >
+      Generate a comprehensive structure-function report with binding pocket
+      rankings, druggability assessments, sequence conservation highlights,
+      and recommendations for downstream experiments.
+    tools_required: []
+    parameters:
+      output_format: markdown
+    agent: critic
+
+tools_required:
+  - tool_id: fetch_pdb_structure
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: extract_protein_sequence
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: analyze_binding_pocket
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: sequence_alignment
+    version: ">=1.0.0"
+    optional: false
+
+tags:
+  - protein structure
+  - PDB
+  - binding pocket
+  - sequence alignment
+  - druggability
+  - structural biology
+  - functional domains
+
+applicable_queries:
+  - "*protein*structure*"
+  - "*binding*pocket*analys*"
+  - "*PDB*structure*"
+  - "*protein*function*domain*"
+  - "*sequence*alignment*protein*"
+
+quality_metrics:
+  success_count: 10
+  failure_count: 1
+  avg_completion_time_sec: 120.0
+  avg_critic_score: 0.82
+  last_used: "2026-03-08"
+  created_at: "2026-03-08"
+  last_updated: "2026-03-08"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-03-08"
+      changes: "Initial prebuilt skill for protein structure retrieval, binding pocket analysis, and functional annotation."
+
+status: active

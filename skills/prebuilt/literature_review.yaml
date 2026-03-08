@@ -1,0 +1,131 @@
+skill_id: literature_review
+version: "1.0.0"
+name: Systematic Literature Review
+domain: literature
+description: >
+  Conducts a systematic literature review across multiple academic databases
+  including PubMed, ArXiv, and Google Scholar. Retrieves full-text content
+  from PDFs and web sources, extracts key findings, and synthesizes a
+  structured summary with citation management.
+
+workflow:
+  - step: 1
+    action: multi_database_search
+    description: >
+      Execute parallel searches across PubMed, ArXiv, and Google Scholar
+      using the research query. Collect titles, abstracts, authors, DOIs,
+      and publication dates. Deduplicate results across databases.
+    tools_required:
+      - query_pubmed
+      - query_arxiv
+      - query_scholar
+    parameters:
+      max_results_per_source: 15
+      date_range_years: 5
+      sort_by: relevance
+    agent: dev
+
+  - step: 2
+    action: retrieve_full_text
+    description: >
+      For the top-ranked papers, attempt to retrieve full-text content
+      by extracting PDF files and parsing web-accessible versions.
+      Fall back to abstracts when full text is unavailable.
+    tools_required:
+      - extract_pdf_content
+      - extract_url_content
+    parameters:
+      max_papers: 10
+      prefer_open_access: true
+    agent: dev
+
+  - step: 3
+    action: extract_key_findings
+    description: >
+      Parse each paper to extract key findings, methodology, sample sizes,
+      statistical results, and conclusions. Organize by thematic categories
+      relevant to the research question.
+    tools_required: []
+    parameters:
+      extraction_fields:
+        - objective
+        - methods
+        - key_results
+        - conclusions
+    agent: dev
+
+  - step: 4
+    action: synthesize_review
+    description: >
+      Synthesize findings across all papers into a structured literature
+      review. Identify consensus findings, contradictions, research gaps,
+      and emerging trends. Generate a narrative summary with proper citations.
+    tools_required: []
+    parameters:
+      synthesis_style: narrative
+      include_gap_analysis: true
+    agent: manager
+
+  - step: 5
+    action: quality_assessment
+    description: >
+      Assess the quality and completeness of the review. Verify citation
+      accuracy, check for coverage of major research groups, and flag
+      potential biases in the literature sample.
+    tools_required: []
+    parameters:
+      check_citation_accuracy: true
+    agent: critic
+
+tools_required:
+  - tool_id: query_pubmed
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: query_arxiv
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: query_scholar
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: extract_pdf_content
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: extract_url_content
+    version: ">=1.0.0"
+    optional: false
+
+tags:
+  - literature review
+  - PubMed
+  - ArXiv
+  - Google Scholar
+  - systematic review
+  - citation analysis
+  - research synthesis
+
+applicable_queries:
+  - "*literature*review*"
+  - "*systematic*review*"
+  - "*survey*papers*"
+  - "*research*summary*publications*"
+  - "*review*recent*studies*"
+
+quality_metrics:
+  success_count: 15
+  failure_count: 2
+  avg_completion_time_sec: 200.0
+  avg_critic_score: 0.88
+  last_used: "2026-03-08"
+  created_at: "2026-03-08"
+  last_updated: "2026-03-08"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-03-08"
+      changes: "Initial prebuilt skill for systematic literature review across PubMed, ArXiv, and Google Scholar with full-text extraction and synthesis."
+
+status: active

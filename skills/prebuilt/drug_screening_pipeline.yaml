@@ -1,0 +1,134 @@
+skill_id: drug_screening_pipeline
+version: "1.0.0"
+name: Virtual Drug Screening Pipeline
+domain: drug_discovery
+description: >
+  End-to-end virtual drug screening pipeline that calculates molecular descriptors,
+  predicts ADMET properties and toxicity profiles, and filters compound libraries
+  by drug-likeness criteria (Lipinski, Veber, PAINS). Designed for hit-to-lead
+  prioritization and early-stage drug discovery.
+
+workflow:
+  - step: 1
+    action: compute_descriptors
+    description: >
+      Calculate molecular descriptors for all input compounds including
+      molecular weight, LogP, hydrogen bond donors/acceptors, topological
+      polar surface area, and rotatable bond count.
+    tools_required:
+      - calculate_molecular_descriptors
+    parameters:
+      descriptor_set: full
+      input_format: smiles
+    agent: dev
+
+  - step: 2
+    action: predict_admet
+    description: >
+      Predict ADMET (Absorption, Distribution, Metabolism, Excretion, Toxicity)
+      properties for each compound. Evaluate oral bioavailability, blood-brain
+      barrier permeability, CYP inhibition, and clearance rates.
+    tools_required:
+      - predict_admet_properties
+    parameters:
+      models:
+        - oral_bioavailability
+        - bbb_permeability
+        - cyp_inhibition
+        - clearance
+    agent: dev
+
+  - step: 3
+    action: assess_toxicity
+    description: >
+      Run toxicity prediction models to flag compounds with potential
+      hepatotoxicity, cardiotoxicity (hERG liability), mutagenicity (Ames test),
+      and skin sensitization risks.
+    tools_required:
+      - predict_toxicity
+    parameters:
+      toxicity_endpoints:
+        - hepatotoxicity
+        - herg_inhibition
+        - ames_mutagenicity
+        - skin_sensitization
+    agent: dev
+
+  - step: 4
+    action: apply_drug_likeness_filters
+    description: >
+      Filter the compound set by drug-likeness rules including Lipinski Rule
+      of Five, Veber rules for oral bioavailability, and PAINS (pan-assay
+      interference compounds) substructure filters. Remove flagged compounds.
+    tools_required:
+      - filter_by_drug_likeness
+    parameters:
+      filters:
+        - lipinski
+        - veber
+        - pains
+      strict_mode: false
+    agent: dev
+
+  - step: 5
+    action: rank_and_report
+    description: >
+      Rank surviving compounds by a composite score incorporating ADMET
+      favorability, low toxicity risk, and drug-likeness compliance. Generate
+      a prioritized hit list with detailed property profiles.
+    tools_required: []
+    parameters:
+      ranking_method: composite_score
+      output_format: markdown
+    agent: critic
+
+tools_required:
+  - tool_id: calculate_molecular_descriptors
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: predict_admet_properties
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: predict_toxicity
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: filter_by_drug_likeness
+    version: ">=1.0.0"
+    optional: false
+
+tags:
+  - virtual screening
+  - drug discovery
+  - ADMET
+  - toxicity prediction
+  - drug-likeness
+  - Lipinski
+  - molecular descriptors
+  - hit prioritization
+
+applicable_queries:
+  - "*drug*screening*"
+  - "*virtual*screening*compound*"
+  - "*ADMET*predict*"
+  - "*drug*likeness*filter*"
+  - "*compound*toxicity*screen*"
+
+quality_metrics:
+  success_count: 8
+  failure_count: 1
+  avg_completion_time_sec: 180.0
+  avg_critic_score: 0.80
+  last_used: "2026-03-08"
+  created_at: "2026-03-08"
+  last_updated: "2026-03-08"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-03-08"
+      changes: "Initial prebuilt skill for virtual drug screening with ADMET prediction, toxicity assessment, and drug-likeness filtering."
+
+status: active

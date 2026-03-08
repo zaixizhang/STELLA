@@ -13,8 +13,8 @@ from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 from datetime import datetime
 
-# Import from stella_core_optimized.py
-import stella_core_optimized
+# Import from stella_core.py
+import stella_core
 
 class StellaEnglishUI:
     def __init__(self):
@@ -903,7 +903,7 @@ class StellaEnglishUI:
                             sys.stdout = capture
                             start_time = time.time()
                             print(f"🚀 Processing request: {message}")
-                            response = stella_core_optimized.manager_agent.run(message, reset=False)
+                            response = stella_core.manager_agent.run(message, reset=False)
                             execution_time = time.time() - start_time
                             output_queue.put(('response', response, execution_time))
                         except Exception as e:
@@ -1077,7 +1077,7 @@ def main():
     
     # Initialize Stella core without launching its Gradio interface
     print("🔧 Initializing Stella core...")
-    success = stella_core_optimized.initialize_stella(use_template=True, use_mem0=True)
+    success = stella_core.initialize_stella(use_template=True, use_mem0=True)
     if not success:
         print("❌ Failed to initialize Stella core!")
         return

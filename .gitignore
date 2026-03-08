@@ -1,0 +1,52 @@
+# Environment variables with API keys
+.env
+.env.backup
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg-info/
+dist/
+build/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Large data (hosted on Google Drive)
+resource/
+preprocessed_data/
+esm2_cache/
+
+# Runtime outputs
+agent_outputs/
+work/
+runs/
+cache/
+data/skill_runs.db
+
+# Gradio
+.gradio/
+
+# Docker build artifacts
+docker_files/*.tar.gz
+docker_files/*.zip
+docker_files/*.npz
+
+# Temporary files
+*.tmp
+*.bak

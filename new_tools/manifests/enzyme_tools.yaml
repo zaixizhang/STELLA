@@ -1,0 +1,1008 @@
+tools:
+  - tool_id: extract_seq_from_structure
+    version: "1.0.0"
+    name: Extract Sequence from Structure
+    description: "Extract the protein sequence from a protein structure in PDB/MMCIF format and save as FASTA."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: extract_seq_from_structure
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: structure_path
+          type: str
+          required: true
+          default: null
+          description: "The path to the protein structure (PDB or MMCIF format)"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the path to the protein FASTA file"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: extract_pocket
+    version: "1.0.0"
+    name: Extract Binding Pocket
+    description: "Extract the binding pocket given a protein-ligand complex structure based on distance cutoff."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: extract_pocket
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: complex_path
+          type: str
+          required: true
+          default: null
+          description: "The path to the complex structure"
+        - name: distance_cutoff
+          type: float
+          required: false
+          default: 5.0
+          description: "Binding pocket distance cutoff in Angstrom"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing residue IDs of the pocket and paths to protein, ligand, and pocket structures"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: download_uniprot_seq
+    version: "1.0.0"
+    name: Download UniProt Sequence
+    description: "Download the protein sequence with UniProt ID in FASTA format."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: download_uniprot_seq
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: uniprot_id
+          type: str
+          required: true
+          default: null
+          description: "The UniProt ID of the protein"
+        - name: save_dir
+          type: str
+          required: false
+          default: "/home/ubuntu/agents/agent_outputs/enzyme_tool_debug"
+          description: "The directory to save the FASTA file"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the path to the FASTA file"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_mmseqs_cluster
+    version: "1.0.0"
+    name: Run MMseqs Cluster
+    description: "Use MMseqs to cluster entries of a FASTA/FASTQ file based on sequence identity and coverage."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_mmseqs_cluster
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: target_db
+          type: str
+          required: true
+          default: null
+          description: "Path to the FASTA file to be clustered"
+        - name: result_file
+          type: str
+          required: true
+          default: null
+          description: "Path to store the search results"
+        - name: tmp_dir
+          type: str
+          required: true
+          default: null
+          description: "A temporary directory for MMseqs to use"
+        - name: c
+          type: float
+          required: false
+          default: 0.8
+          description: "Minimum fraction of aligned (covered) residues"
+        - name: min_seq_id
+          type: float
+          required: false
+          default: 0.0
+          description: "Minimum sequence identity for clustering (0.0-1.0)"
+        - name: threads
+          type: int
+          required: false
+          default: 32
+          description: "Number of CPU-cores used"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the path to the clustering results"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages:
+        - mmseqs2
+      conda_channels:
+        - conda-forge
+        - bioconda
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_mmseqs_search
+    version: "1.0.0"
+    name: Run MMseqs Search
+    description: "Use MMseqs 'easy-search' to search directly with a FASTA/FASTQ file against another FASTA/FASTQ file."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_mmseqs_search
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: query_fasta
+          type: str
+          required: true
+          default: null
+          description: "Path to the query FASTA file"
+        - name: target_db
+          type: str
+          required: true
+          default: null
+          description: "Path to the target FASTA file"
+        - name: result_file
+          type: str
+          required: true
+          default: null
+          description: "Path to store the search results"
+        - name: tmp_dir
+          type: str
+          required: true
+          default: null
+          description: "A temporary directory for MMseqs to use"
+        - name: s
+          type: float
+          required: false
+          default: 5.7
+          description: "Sensitivity setting (higher is more sensitive but slower)"
+        - name: max_seqs
+          type: int
+          required: false
+          default: 300
+          description: "Maximum results per query sequence in prefilter"
+        - name: min_seq_id
+          type: float
+          required: false
+          default: 0.0
+          description: "Minimum sequence identity (0.0-1.0)"
+        - name: c
+          type: float
+          required: false
+          default: 0.0
+          description: "Minimum fraction of aligned (covered) residues"
+        - name: threads
+          type: int
+          required: false
+          default: 32
+          description: "Number of CPU-cores used"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the path to the searching results"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages:
+        - mmseqs2
+      conda_channels:
+        - conda-forge
+        - bioconda
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: parse_mmseqs_search_results
+    version: "1.0.0"
+    name: Parse MMseqs Search Results
+    description: "Parse a standard MMseqs2 tabular result file (.m8 format) with 12 columns including identity, e-value, and bit scores."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: parse_mmseqs_search_results
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: result_file
+          type: str
+          required: true
+          default: null
+          description: "The path to the MMseqs2/Foldseek result file"
+        - name: target_database
+          type: str
+          required: true
+          default: null
+          description: "The FASTA sequence database for the searching targets"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing parsed hits with targets, sequences, identity percentages, and e-values"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_ephod_prediction
+    version: "1.0.0"
+    name: Run EpHod Prediction
+    description: "Use the deep-learning model EpHod to predict the optimum pH from enzyme sequences."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_ephod_prediction
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: sequence_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the sequence of enzymes"
+        - name: save_dir
+          type: str
+          required: true
+          default: null
+          description: "Directory to store the results"
+        - name: csv_name
+          type: str
+          required: true
+          default: null
+          description: "Name of the output CSV file"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the path to the results and the optimum pH predictions"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages:
+        - ephod
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_boltz_protein_structure_prediction
+    version: "1.0.0"
+    name: Run Boltz2 Protein Structure Prediction
+    description: "Use Boltz2 to predict the 3D structure of protein sequences."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_boltz_protein_structure_prediction
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: sequence_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the protein sequence"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the path to the mmCIF file of the predicted protein structure"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages:
+        - boltz2
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_boltz_complex_structure_prediction
+    version: "1.0.0"
+    name: Run Boltz2 Complex Structure Prediction
+    description: "Use Boltz2 to predict the 3D complex structure given a protein sequence and ligand SMILES."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_boltz_complex_structure_prediction
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: sequence_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the protein sequence"
+        - name: smiles_path
+          type: str
+          required: true
+          default: null
+          description: "Path to SMILES of the ligand"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the path to the mmCIF file of the predicted complex structure"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages:
+        - boltz2
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_clean_ec_prediction
+    version: "1.0.0"
+    name: Run CLEAN EC Prediction
+    description: "Use CLEAN to predict EC number of enzyme (protein) sequences."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_clean_ec_prediction
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: sequence_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the protein sequence"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the EC number and distance to the cluster center"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_catapro_prediction
+    version: "1.0.0"
+    name: Run CataPro Prediction
+    description: "Use CataPro to predict enzyme kinetic parameters including turnover number (kcat), Michaelis constant (Km), and catalytic efficiency (kcat/Km)."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_catapro_prediction
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: sequence_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the protein sequence"
+        - name: smiles_path
+          type: str
+          required: true
+          default: null
+          description: "Path to SMILES of the substrate"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing kcat, Km, and kcat/Km predictions"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+        - pandas
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_prime_ogt_prediction
+    version: "1.0.0"
+    name: Run Prime OGT Prediction
+    description: "Use Prime to predict the optimal growth temperature of enzymes."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_prime_ogt_prediction
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: sequence_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the enzyme (protein) sequence"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the optimal growth temperature of the enzyme"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_chroma_redesign
+    version: "1.0.0"
+    name: Run Chroma Redesign
+    description: "Use Chroma to redesign a known protein or enzyme given its structure."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_chroma_redesign
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: structure_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the protein structure in PDB or MMCIF format"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the path to the redesigned protein structure"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_iqtree_reconstruct_phylogenetic_trees
+    version: "1.0.0"
+    name: Run IQ-TREE Phylogenetic Trees
+    description: "Use IQ-TREE to reconstruct phylogenetic trees from multiple sequence alignment data."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_iqtree_reconstruct_phylogenetic_trees
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: msa_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the multiple sequence alignment file"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the path to the constructed phylogenetic trees"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages:
+        - iqtree
+      conda_channels:
+        - conda-forge
+        - bioconda
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_ligandmpnn_redesign
+    version: "1.0.0"
+    name: Run LigandMPNN Redesign
+    description: "Use LigandMPNN to redesign a known protein or enzyme given its structure."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_ligandmpnn_redesign
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: structure_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the protein structure in PDB or MMCIF format"
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the path to the redesigned protein structure and sequence"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_esm_mutation_prediction
+    version: "1.0.0"
+    name: Run ESM Mutation Prediction
+    description: "Use ESM to predict mutant effects given a protein sequence. Rapidly scores all possible mutations for large-scale virtual screening."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_esm_mutation_prediction
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: sequence_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the protein sequence in FASTA format"
+        - name: top_k
+          type: int
+          required: false
+          default: 20
+          description: "Return the top k mutations"
+        - name: res_list
+          type: "Optional[List[int]]"
+          required: false
+          default: null
+          description: "List of amino acid numbers to be mutated. If not provided, all amino acids are mutated."
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the top k mutations with scores"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_prime_mutation_prediction
+    version: "1.0.0"
+    name: Run Prime Mutation Prediction
+    description: "Use Prime to predict mutant effects given a protein sequence. Designed for rapid evaluation of mutations improving stability and activity at high temperatures."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_prime_mutation_prediction
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: sequence_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the protein sequence in FASTA format"
+        - name: top_k
+          type: int
+          required: false
+          default: 20
+          description: "Return the top k mutations"
+        - name: res_list
+          type: "Optional[List[int]]"
+          required: false
+          default: null
+          description: "List of amino acid numbers to be mutated. If not provided, all amino acids are mutated."
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the top k mutations with scores"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_foldx_mutation_prediction
+    version: "1.0.0"
+    name: Run FoldX Mutation Prediction
+    description: "Use FoldX to predict mutant effects given a known protein structure. Provides good balance of speed and accuracy for ranking mutation candidates."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_foldx_mutation_prediction
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: structure_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the protein structure in PDB format"
+        - name: top_k
+          type: int
+          required: false
+          default: 20
+          description: "Return the top k mutations"
+        - name: res_list
+          type: "Optional[List[int]]"
+          required: false
+          default: null
+          description: "List of amino acid numbers to be mutated. If not provided, all amino acids are mutated."
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the top k mutations with stability scores"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+        - pandas
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: run_rosetta_mutation_prediction
+    version: "1.0.0"
+    name: Run Rosetta Mutation Prediction
+    description: "Use Rosetta to predict mutant effects given a known protein structure. High accuracy for final analysis of top candidate mutations."
+    category: protein_analysis
+    author: stella_team
+    status: active
+    interface:
+      function_name: run_rosetta_mutation_prediction
+      module_path: new_tools/enzyme_tools
+      parameters:
+        - name: structure_path
+          type: str
+          required: true
+          default: null
+          description: "Path to the protein structure in PDB format"
+        - name: top_k
+          type: int
+          required: false
+          default: 20
+          description: "Return the top k mutations"
+        - name: res_list
+          type: "Optional[List[int]]"
+          required: false
+          default: null
+          description: "List of amino acid numbers to be mutated. If not provided, all amino acids are mutated."
+      return_type: "Dict[str, Any]"
+      return_description: "Dictionary containing the top k mutations with ddG values"
+    dependencies:
+      python_packages:
+        - biopython
+        - requests
+        - pandas
+      system_packages:
+        - rosetta
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0

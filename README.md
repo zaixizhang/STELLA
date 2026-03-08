@@ -1,477 +1,305 @@
-# 🌟 STELLA: Self-Evolving Intelligent Laboratory Assistant
+# STELLA: Self-Evolving Intelligent Laboratory Assistant
 
 <div align="center">
 
 ![STELLA Logo](Stella.png)
 
-**Advanced Multi-Agent AI Research Assistant for Biomedical Science**
+**Multi-Agent AI Research Assistant for Biomedical Science**
 
-![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
+![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![Framework](https://img.shields.io/badge/Framework-Smolagents-orange.svg)
 ![AI](https://img.shields.io/badge/AI-Multi--Agent-purple.svg)
-
-[🇺🇸 English](#english-documentation) | [🇨🇳 中文文档](#中文文档)
 
 </div>
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
-### Simple Launch (Recommended)
+### 1. Install dependencies
+
 ```bash
-# Start STELLA with enhanced features
-python3 start_stella_web.py
+pip install -r requirements.txt
 ```
 
-### Access STELLA
-- **Local**: http://localhost:7860
-- **Network**: http://[your-ip]:7860  
-- **Public**: Gradio sharing link (auto-generated)
+### 2. Configure API keys
 
----
+Create a `.env` file in the project root:
 
-## 📖 English Documentation
-
-### 🌟 Overview
-
-**STELLA** (Self-Evolving Intelligent Laboratory Assistant) is a revolutionary multi-agent AI framework designed specifically for biomedical research and scientific discovery. STELLA combines intelligent tool selection, dynamic tool creation, advanced memory management, and multi-agent collaboration to provide unparalleled research assistance.
-
-### ✨ Core Features
-
-#### 🤖 **LLM-Driven Intelligent Tool Selection**
-- **Smart Analysis**: Uses Grok-4 for deep understanding of research queries
-- **Dynamic Loading**: Automatically selects and loads the most relevant tools from **61+ professional biomedical tools**
-- **Parallel Execution**: `execute_tools_in_parallel()` for simultaneous tool operations
-- **Multi-language**: Perfect support for English and Chinese scientific literature
-- **Real-time Optimization**: Continuously improves tool selection based on usage patterns
-
-#### 🧠 **Self-Evolution Capabilities**
-- **Quality Assessment**: Automatic evaluation of task completion quality using critic agent
-- **Dynamic Tool Creation**: Generates specialized tools when existing ones are insufficient
-- **Continuous Learning**: Learns from successful approaches and improves over time
-- **Performance Optimization**: System-wide optimization based on usage analytics
-
-#### 💾 **Advanced Memory System**
-- **Mem0 Enhanced**: Semantic memory search and intelligent knowledge management
-- **Knowledge Templates**: Save and retrieve successful problem-solving patterns
-- **Collaborative Memory**: Shared memory spaces for multi-agent collaboration
-- **Auto-Memory**: Lightweight automatic tracking of agent activities and performance
-- **User Personalization**: Individual memory profiles and preference learning
-
-#### 🤝 **Multi-Agent Architecture**
-- **Manager Agent**: Strategic coordinator with full system permissions (Grok-4)
-- **Dev Agent**: Development and execution specialist (Gemini-2.5-Pro)
-- **Critic Agent**: Quality evaluation and improvement recommendations (Claude Sonnet-4)
-- **Tool Creation Agent**: Dynamic tool development specialist (Claude Sonnet-4)
-
-### 🛠️ Professional Tool Library (61+ Tools)
-
-#### 📚 **Literature & Search Tools**
-- **PubMed**: Advanced medical literature search and analysis
-- **ArXiv**: Academic paper discovery and content extraction
-- **Google Scholar**: Citation analysis and research trends
-- **PDF Extraction**: Intelligent document processing and analysis
-- **Web Search**: Enhanced scientific web search capabilities
-
-#### 🧬 **Database Tools**
-- **UniProt**: Protein sequence and annotation data
-- **PDB**: Protein structure analysis and visualization
-- **KEGG**: Pathway analysis and metabolic networks
-- **Ensembl**: Genomic data access and gene annotation
-- **STRING**: Protein-protein interaction networks
-- **ChEMBL**: Chemical bioactivity database access
-- **TCGA**: Cancer genomics data analysis
-- **GTEx**: Gene expression tissue atlas
-
-#### 💊 **Virtual Screening & Drug Discovery**
-- **Molecular Descriptors**: Chemical property calculation
-- **ADMET Prediction**: Drug-like property assessment
-- **Molecular Docking**: Protein-ligand interaction modeling
-- **Pharmacophore**: Drug design pattern analysis
-- **Toxicity Prediction**: Safety assessment tools
-
-#### 🧪 **Specialized Analysis**
-- **Enzyme Function**: Biochemical pathway analysis
-- **Protein Folding**: Structure prediction and analysis
-- **Gene Expression**: RNA-seq and microarray analysis
-- **Clinical Trials**: Medical research database access
-- **Biosafety**: Research ethics and safety guidelines
-
-### 🏗️ System Architecture
-
-```
-STELLA Framework
-├── 🧠 Manager Agent (Grok-4)
-│   ├── 🎯 analyze_query_and_load_relevant_tools()
-│   ├── 📋 Task coordination and delegation
-│   ├── 🔧 Complete tool management authority
-│   └── 📚 Memory and knowledge base control
-│
-├── 🛠️ Dev Agent (Gemini-2.5-Pro)
-│   ├── 💻 Code execution and environment management
-│   ├── 🐍 Python script generation and testing
-│   ├── 📦 Package installation and dependency management
-│   └── 🔧 Basic tool discovery and loading
-│
-├── 🎯 Critic Agent (Claude Sonnet-4)
-│   ├── 📊 Task completion quality evaluation
-│   ├── 🔍 Gap analysis and improvement recommendations
-│   ├── 🛠️ Tool creation necessity assessment
-│   └── 📈 Performance optimization suggestions
-│
-└── 🧰 Tool Creation Agent (Claude Sonnet-4)
-    ├── 🛠️ Dynamic tool development and testing
-    ├── 📚 Best practice research and implementation
-    ├── 🔧 Tool integration and deployment
-    └── 📖 Documentation and quality assurance
-```
-
-### 📂 Project Structure
-
-```
-STELLA/
-├── 📄 README.md                           # This documentation
-├── 🚀 start_stella_web.py                 # Web launcher (recommended)
-├── 🚀 start_stella_basic.py               # Basic launcher
-├── 🧠 stella_core.py                      # Core multi-agent system
-├── 💾 memory_manager.py                   # Advanced memory management
-├── 📚 Knowledge_base.py                   # Knowledge base system
-├── 🎨 stella_ui_english.py                # English web interface
-├── 🛠️ predefined_tools.py                 # Core system tools
-├── 📊 STELLA_Framework_Introduction_EN.md  # Detailed documentation
-├── 📊 STELLA_Framework_Introduction_CN.md  # Chinese documentation
-├── 🧪 segmented_test_suite.py             # Comprehensive test suite
-│
-├── 📁 new_tools/                          # Professional tool library
-│   ├── 📚 literature_tools.py             # Literature search tools
-│   ├── 🧬 database_tools.py               # Biomedical databases
-│   ├── 💊 virtual_screening_tools.py      # Drug discovery tools
-│   ├── 🧪 enzyme_tools.py                 # Biochemical analysis
-│   ├── 🤖 llm.py                          # LLM integration utilities
-│   └── 🛡️ biosecurity_alignment_guard.py  # Safety mechanisms
-│
-├── 📁 resource/                           # Data resources (9.7GB)
-│   ├── 🧬 OmicsExpressionProteinCodingGenesTPMLogp1_transposed.csv
-│   ├── 🔬 transposed_crispr_gene_effects.csv
-│   ├── 📊 human_COXPRES_db_v8.1/          # Coexpression database
-│   ├── 🗃️ Expression_Atlas/               # Gene expression data
-│   └── 📈 Various biomedical datasets
-│
-└── 🗜️ resource_backup_20250719_055729.zip # Compressed resources (2.0GB)
-```
-
-### 💿 Resource Download
-
-**Large Resource Files**: Due to the size of biomedical datasets (9.7GB), the resource folder has been compressed and made available via Google Drive:
-
-📥 **Download**: [STELLA Resources from Google Drive](https://drive.google.com/file/d/1n8I-gkM58wL1OZysdpYhr-Q9ZApd9yU4/view?usp=sharing)
-- **File**: `resource_backup_20250719_055729.zip` (2.0GB compressed)  
-- **Contents**: Biomedical databases, gene expression datasets, protein networks
-- **Extract to**: `agents/STELLA/resource/`
-
-### ⚡ Performance & Integration Features
-
-#### **Parallel Tool Execution**
-- **Multi-threading**: Execute multiple tools simultaneously for faster results
-- **Load Balancing**: Intelligent task distribution across available resources
-- **Timeout Management**: Automatic timeout handling for robust execution
-
-#### **MCP Server Integration** 
-- **PubMed MCP**: Direct integration with biomedical literature databases
-- **Extensible**: Support for custom MCP servers and protocols
-- **Real-time**: Live data access from external scientific databases
-
-#### **Auto-Memory System**
-- **Performance Tracking**: Automatic monitoring of agent and tool performance
-- **Success Pattern Recognition**: Learn from successful task completions
-- **Adaptive Optimization**: Continuous improvement based on usage analytics
-
-### 🛠️ Installation
-
-#### Prerequisites
 ```bash
-# Python 3.8+ required
-python --version
-
-# Core dependencies
-pip install gradio>=4.0.0
-pip install 'smolagents[mcp]'
-pip install numpy pandas scikit-learn
-pip install requests beautifulsoup4 markdownify
+OPENROUTER_API_KEY=sk-or-v1-...       # Required: OpenRouter API key for LLM access
+SERPAPI_API_KEY=...                    # Optional: SerpAPI for enhanced web search
 ```
 
-#### Optional Enhanced Features
+All LLM calls are routed through [OpenRouter](https://openrouter.ai/), so a single API key gives access to GPT, Gemini, Claude, and other models.
+
+### 3. Download resources (optional)
+
+Large biomedical datasets (~9.7 GB) are hosted on Google Drive. These are only needed for tasks that query local datasets (e.g., gene expression, coexpression networks).
+
+[Download STELLA Resources](https://drive.google.com/file/d/1n8I-gkM58wL1OZysdpYhr-Q9ZApd9yU4/view?usp=sharing)
+
+Extract to `resource/` in the project root.
+
+### 4. Launch STELLA
+
+**Web UI (recommended):**
 ```bash
-# For Mem0 enhanced memory (recommended)
-pip install mem0ai
-
-# For biomedical analysis
-pip install biopython rdkit-pypi
-pip install pymed arxiv scholarly
-
-# For MCP tools integration
-pip install uvx
+python3 stella_core.py
 ```
+Open http://localhost:7860 in your browser. A public Gradio link is also generated automatically.
 
-#### Setup
+**With options:**
 ```bash
-# Clone or download STELLA
-cd agents/STELLA/
+# Disable skill retrieval
+python3 stella_core.py --no_template
 
-# Download and extract resources (optional for basic usage)
-# Extract resource_backup_20250719_055729.zip to ./resource/
-
-# Start STELLA
-python3 start_stella_web.py
-```
-
-#### **Model Configuration**
-STELLA uses different specialized models for optimal performance:
-
-| Agent | Model | Purpose |
-|-------|-------|---------|
-| 🧠 Manager Agent | **Grok-4** | Strategic planning, tool coordination, query analysis |
-| 🛠️ Dev Agent | **Gemini-2.5-Pro** | Code execution, environment management, data analysis |
-| 🎯 Critic Agent | **Claude Sonnet-4** | Quality evaluation, improvement recommendations |
-| 🧰 Tool Creation Agent | **Claude Sonnet-4** | Dynamic tool development, best practices research |
-
-**Why Multiple Models?**
-- **Grok-4**: Excellent at strategic thinking and coordination tasks
-- **Gemini-2.5-Pro**: Superior code generation and scientific analysis capabilities  
-- **Claude Sonnet-4**: Outstanding evaluation, reasoning, and code quality assessment
-
-### 🚀 Usage Guide
-
-#### **Starting STELLA**
-
-##### 1. **Enhanced Mode (Recommended)**
-```bash
-python3 start_stella_web.py
-# Features: Template learning + Mem0 memory + Full tool access
-```
-
-##### 2. **Core System Mode**
-```bash
-python3 stella_core.py --use_template --use_mem0
-# Advanced: Direct core system access with all features
-```
-
-##### 3. **Basic Mode**
-```bash
-python3 start_stella_basic.py
-# Minimal: Basic functionality without enhanced features
-```
-
-#### **Command Line Options**
-```bash
-# Enable knowledge base templates
-python3 stella_core.py --use_template
-
-# Enable Mem0 enhanced memory
-python3 stella_core.py --use_template --use_mem0
-
-# Use Mem0 managed platform
-python3 stella_core.py --use_template --use_mem0 --mem0_platform --mem0_api_key YOUR_KEY
+# Enable dynamic tool creation agent
+python3 stella_core.py --enable_tool_creation
 
 # Custom port
 python3 stella_core.py --port 8080
+
+# Use default smolagents prompts instead of custom STELLA prompts
+python3 stella_core.py --use_default_prompts
 ```
 
-### 📝 Example Use Cases
-
-#### 🔬 **Biomedical Research**
-```
-Analyze the latest CRISPR-Cas9 developments in cancer therapy from PubMed and Nature papers published in 2024
-```
-
-#### 🧬 **Protein Analysis**
-```
-Retrieve the crystal structure of human insulin from PDB, analyze its binding sites, and predict potential drug interactions
+**Alternative launchers:**
+```bash
+python3 start_stella_web.py     # Web launcher with preset config
+python3 start_stella_basic.py   # Minimal launcher
 ```
 
-#### 💊 **Drug Discovery**
-```
-Screen potential inhibitors for EGFR kinase using virtual docking and predict their ADMET properties
+### 5. Use STELLA programmatically
+
+```python
+from stella_core import initialize_stella
+
+manager_agent = initialize_stella(
+    use_template=True,
+    enable_tool_creation=True,
+)
+result = manager_agent.run("What genes are associated with breast cancer resistance?")
 ```
 
-#### 📊 **Data Analysis**
+---
+
+## Architecture
+
 ```
-Create a machine learning pipeline to classify protein functions using sequence embeddings and expression data
+                         User Query
+                             |
+                     +-------v--------+
+                     | Manager Agent  |
+                     |  - query analysis
+                     |  - skill retrieval
+                     |  - tool selection
+                     |  - task delegation
+                     +--+-----+-----+-+
+                        |     |     |
+           +------------+  +--+--+  +------------+
+           |               |     |               |
+    +------v------+  +-----v---+ +------v------+ |
+    |  Dev Agent  |  | Critic  | | Tool Create | |
+    |  - code exec|  | Agent   | |   Agent     | |
+    |  - analysis |  | - eval  | | - new tools | |
+    +------+------+  +----+----+ +------+------+ |
+           |              |             |         |
+    +------v--------------v-------------v---------v----+
+    |                  Tool Ocean                       |
+    |  predefined_tools.py  |  new_tools/*.py           |
+    |  (search, shell, I/O) |  (databases, screening)  |
+    +---------------------------+-----------------------+
+                                |
+    +---------------------------v-----------------------+
+    |               Skill System                        |
+    |  SkillStore -> SkillRetriever -> SkillSummarizer  |
+    |  skills/prebuilt/  |  skills/auto_generated/      |
+    +---------------------------------------------------+
 ```
 
-#### 📚 **Literature Review**
+### Multi-agent roles
+
+| Agent | Default Model | Responsibility |
+|-------|--------------|----------------|
+| Manager | Configurable (OpenRouter) | Query analysis, skill retrieval, tool selection, task delegation |
+| Dev | Configurable (OpenRouter) | Code execution, data analysis, environment management |
+| Critic | Configurable (OpenRouter) | Quality evaluation, scoring, improvement suggestions |
+| Tool Creation | Configurable (OpenRouter) | Dynamic tool development, validation, testing |
+
+Models are configurable via OpenRouter. Edit `stella_core.py` model variables to switch providers (GPT, Claude, Gemini, etc.).
+
+### Skill system
+
+STELLA uses a structured **skill management system** to learn from experience:
+
+1. **Skill retrieval** -- Before each task, the manager retrieves relevant skills from the store using 3-stage hybrid retrieval (tag matching, TF-IDF similarity, quality-weighted re-ranking).
+2. **Skill-guided execution** -- Retrieved skills provide workflow steps, recommended tools, and past success patterns to guide the agent.
+3. **Skill creation** -- After a successful run (critic score >= 0.6), the summarizer auto-extracts a new skill or updates an existing one (dedup threshold 0.85).
+4. **Prebuilt skills** -- Curated YAML skill files in `skills/prebuilt/` cover common biomedical workflows.
+
+### Tool governance
+
+Each tool has a YAML manifest in `new_tools/manifests/` that records:
+- Interface definition (parameters, return type)
+- Dependencies and version constraints
+- Validation rules and test commands
+- Provenance (author, creation date, changelog)
+- Usage statistics
+
+The `ToolIndex` class validates tools against their manifests, detects dependency conflicts, and can export reproducible environments.
+
+---
+
+## Project Structure
+
 ```
-Conduct a comprehensive analysis of single-cell RNA sequencing methods published in the last 2 years
+STELLA/
+|-- stella_core.py                  # Main entry point & multi-agent orchestration
+|-- predefined_tools.py             # Core system tools (search, shell, file I/O)
+|-- skill_manager.py                # Unified skill management interface
+|-- skill_store.py                  # Skill persistence (YAML + SQLite)
+|-- skill_retriever.py              # 3-stage hybrid skill retrieval
+|-- skill_summarizer.py             # Auto-create skills from successful runs
+|-- skill_schema.py                 # Dataclass schemas for skills & tool manifests
+|-- tool_governance.py              # Tool validation, versioning, dependency management
+|
+|-- prompts/
+|   |-- Stella_prompt_bioml.yaml    # Default system prompt (BioML workflow)
+|   |-- Stella_prompt_modified.yaml # Alternative prompt with skill workflow
+|   |-- Stella_prompt.yaml          # Original base prompt
+|   |-- code_agent.yaml             # Code agent prompt template
+|   |-- toolcalling_agent.yaml      # Tool-calling agent prompt template
+|   +-- structured_code_agent.yaml  # Structured code agent prompt
+|
+|-- skills/
+|   |-- prebuilt/                   # Curated skill definitions (YAML)
+|   |   |-- gene_resistance_analysis.yaml
+|   |   |-- protein_structure_analysis.yaml
+|   |   |-- drug_screening_pipeline.yaml
+|   |   |-- literature_review.yaml
+|   |   |-- expression_data_analysis.yaml
+|   |   +-- crispr_experiment_design.yaml
+|   +-- auto_generated/             # Skills created from successful runs
+|
+|-- new_tools/                      # Biomedical tool library (60+ tools)
+|   |-- database_tools.py           # ClinVar, Ensembl, OpenTargets, UniProt, PDB, etc.
+|   |-- literature_tools.py         # PubMed, ArXiv, Google Scholar
+|   |-- virtual_screening_tools.py  # Molecular descriptors, ADMET, docking
+|   |-- enzyme_tools.py             # Enzyme function & pathway analysis
+|   |-- llm.py                      # LLM client (OpenRouter multi-model)
+|   |-- biosecurity_alignment_guard.py  # Biosafety checks
+|   +-- manifests/                  # Tool governance manifests (YAML)
+|
+|-- start_stella_web.py             # Web launcher with preset config
+|-- start_stella_basic.py           # Minimal launcher
+|-- stella_ui_english.py            # Gradio web interface
+|-- requirements.txt                # Python dependencies
+|-- resource/                       # Large biomedical datasets (download separately)
++-- docker_files/                   # Docker deployment configs
 ```
 
-#### 🧮 **Computational Biology**
+### Key modules
+
+| File | Role |
+|------|------|
+| `stella_core.py` | Creates the Manager/Dev/Critic/ToolCreation agents, wires tools, launches Gradio UI |
+| `predefined_tools.py` | ~20 general-purpose tools: web search, shell commands, file operations, PDF extraction |
+| `new_tools/database_tools.py` | 30+ biomedical database query tools (ClinVar, Ensembl, UniProt, PDB, STRING, ChEMBL, TCGA, GTEx, etc.) |
+| `skill_manager.py` | Wraps SkillStore + SkillRetriever + SkillSummarizer + ToolIndex into one interface |
+| `skill_retriever.py` | 3-stage retrieval: tag/pattern match -> TF-IDF similarity -> quality-weighted re-ranking |
+| `tool_governance.py` | ToolIndex: manifest loading, validation, versioning, dependency conflict detection |
+
+---
+
+## Tool Library (60+ Tools)
+
+### Literature & Search
+- **PubMed**: Advanced medical literature search and analysis
+- **ArXiv**: Academic paper discovery and content extraction
+- **Google Scholar**: Citation analysis and research trends
+- **Web Search**: Enhanced scientific web search (Google, SerpAPI)
+
+### Biomedical Databases
+- **UniProt**: Protein sequence and annotation data
+- **PDB**: Protein structure analysis
+- **KEGG**: Pathway analysis and metabolic networks
+- **Ensembl**: Genomic data access and gene annotation
+- **STRING**: Protein-protein interaction networks
+- **ChEMBL**: Chemical bioactivity database
+- **TCGA**: Cancer genomics data analysis
+- **GTEx**: Gene expression tissue atlas
+- **ClinVar**: Clinical variant interpretation
+- **OpenTargets**: Drug target evidence
+
+### Virtual Screening & Drug Discovery
+- **Molecular Descriptors**: Chemical property calculation (RDKit)
+- **ADMET Prediction**: Drug-like property assessment
+- **Molecular Docking**: Protein-ligand interaction modeling
+- **Ligand-based Screening**: Similarity search and pharmacophore analysis
+
+### Specialized Analysis
+- **Enzyme Function**: Biochemical pathway analysis
+- **Protein Embeddings**: ESM-2 protein language model features
+- **Gene Expression**: RNA-seq and microarray analysis
+- **Biosafety**: Research ethics and safety guidelines
+
+---
+
+## Example Queries
+
+```
+Analyze the latest CRISPR-Cas9 developments in cancer therapy from recent PubMed papers
+```
+
+```
+Retrieve the crystal structure of human insulin from PDB, analyze binding sites, and predict drug interactions
+```
+
+```
+Screen potential inhibitors for EGFR kinase using virtual docking and predict ADMET properties
+```
+
+```
+Which genes are associated with intervertebral disc disease according to DisGeNet but not OMIM?
+```
+
 ```
 Analyze gene coexpression networks in cancer datasets and identify potential biomarkers
 ```
 
-### 🎯 Intelligent Workflow
+---
 
-STELLA follows an optimized workflow for maximum efficiency:
+## Benchmark Results
 
-1. **🎯 Query Analysis**: Manager agent analyzes user request using Grok-4
-2. **🛠️ Tool Selection**: `analyze_query_and_load_relevant_tools()` automatically loads relevant professional tools
-3. **📋 Task Delegation**: Manager coordinates with specialized agents for execution
-4. **🔍 Quality Evaluation**: Critic agent assesses completion quality and suggests improvements
-5. **🧠 Self-Evolution**: System creates new tools if needed and learns from successful approaches
-6. **💾 Memory Storage**: Successful patterns saved for future similar tasks
+Evaluated on [LAB-Bench](https://github.com/Future-House/LAB-Bench) DbQA (database question answering):
 
-### 🔧 Advanced Features
-
-#### **Multi-Agent Collaboration**
-- **Shared Workspaces**: `create_shared_workspace()` for team projects
-- **Task Breakdown**: `create_task_breakdown()` for complex multi-step research
-- **Progress Tracking**: `get_task_progress()` for project monitoring
-- **Knowledge Sharing**: `share_agent_discovery()` for cross-team learning
-
-#### **Self-Evolution**
-- **Dynamic Tool Registry**: Real-time tool creation and management
-- **Quality Assessment**: Automated evaluation with improvement recommendations
-- **Performance Analytics**: Usage patterns and optimization insights
-- **Continuous Learning**: Knowledge base expansion from successful approaches
-
-#### **Memory Management**
-- **Template Learning**: Save successful problem-solving approaches
-- **Semantic Search**: Intelligent retrieval of relevant past experiences
-- **User Personalization**: Individual memory profiles and preferences
-- **Collaborative Memory**: Shared knowledge spaces for team research
-
-### 🛡️ Safety & Security
-
-- **Biosafety Alignment**: Built-in research ethics and safety guidelines
-- **Secure Execution**: Sandboxed environment for code execution
-- **Input Validation**: Comprehensive sanitization of user inputs
-- **Output Filtering**: Safety checks for generated content
-
-### 📊 Performance & Monitoring
-
-- **Real-time Tracking**: Step-by-step execution monitoring
-- **Token Usage**: Detailed API usage analytics
-- **Performance Metrics**: Response time and accuracy measurements
-- **Error Handling**: Comprehensive error recovery and debugging
-
-### 🤝 Contributing
-
-STELLA is designed for extensibility. Contribute by:
-- Adding new biomedical tools to `new_tools/`
-- Improving agent capabilities in `stella_core.py`
-- Enhancing memory systems in `memory_manager.py`
-- Expanding knowledge templates
-
-### 📄 License
-
-MIT License - see LICENSE file for details.
+| Subtask | Accuracy |
+|---------|----------|
+| Gene-disease association (DisGeNet) | 1/1 |
+| Gene location (Ensembl) | 2/2 |
+| miRNA targets | 1/1 |
+| Mouse tumor gene sets (MGI) | 3/3 |
+| Oncogenic signatures (MSigDB) | 2/2 |
+| ClinVar variant lookup | 1/1 |
+| Vaccine response | 2/2 |
+| Multi-sequence variant | 1/3 |
+| **Overall** | **13/15 = 87%** |
 
 ---
 
-## 🇨🇳 中文文档
+## Docker Deployment
 
-### 🌟 概述
-
-**STELLA**（自进化智能实验室助手）是专为生物医学研究和科学发现设计的革命性多智能体AI框架。STELLA结合了智能工具选择、动态工具创建、高级记忆管理和多智能体协作，提供无与伦比的研究助力。
-
-### ✨ 核心特性
-
-#### 🤖 **LLM驱动的智能工具选择**
-- **智能分析**: 使用Grok-4深度理解研究查询
-- **动态加载**: 自动从**61+专业生物医学工具**中选择最相关的工具
-- **并行执行**: `execute_tools_in_parallel()` 实现同时执行多个工具操作
-- **多语言支持**: 完美支持中英文科学文献
-- **实时优化**: 基于使用模式持续改进工具选择
-
-#### 🧠 **自我进化能力**
-- **质量评估**: 使用评价智能体自动评估任务完成质量
-- **动态工具创建**: 当现有工具不足时生成专用工具
-- **持续学习**: 从成功方法中学习并持续改进
-- **性能优化**: 基于使用分析进行系统级优化
-
-#### 💾 **高级记忆系统**
-- **Mem0增强**: 语义记忆搜索和智能知识管理
-- **知识模板**: 保存和检索成功的问题解决模式
-- **协作记忆**: 多智能体协作的共享记忆空间
-- **用户个性化**: 个人记忆档案和偏好学习
-
-### 🚀 快速开始
-
-#### **启动STELLA**
-```bash
-# 推荐：启动增强版STELLA
-python3 start_stella_web.py
-
-# 访问地址
-# 本地: http://localhost:7860
-# 网络: http://[你的IP]:7860
-```
-
-#### **示例研究任务**
-```
-从PubMed搜索2024年发表的CRISPR-Cas9在癌症治疗中的最新研究进展
-```
-
-```
-从PDB获取人胰岛素的晶体结构，分析其结合位点，并预测潜在的药物相互作用
-```
-
-```
-使用虚拟对接筛选EGFR激酶的潜在抑制剂，并预测其ADMET性质
-```
-
-### 📁 项目结构
-
-```
-STELLA/
-├── 🚀 start_stella_web.py      # Web启动器（推荐）
-├── 🧠 stella_core.py           # 核心多智能体系统
-├── 💾 memory_manager.py        # 高级记忆管理
-├── 📚 Knowledge_base.py        # 知识库系统
-├── 📁 new_tools/              # 专业工具库（61+工具）
-├── 📁 resource/               # 数据资源（9.7GB）
-└── 🗜️ resource_backup_*.zip   # 压缩资源（2.0GB）
-```
-
-### 💿 资源下载
-
-**大型资源文件**: 由于生物医学数据集较大（9.7GB），资源文件夹已压缩并通过Google Drive提供：
-
-📥 **下载**: [STELLA资源Google Drive链接](https://drive.google.com/file/d/1n8I-gkM58wL1OZysdpYhr-Q9ZApd9yU4/view?usp=sharing)
-- **文件**: `resource_backup_20250719_055729.zip` (压缩后2.0GB)
-- **内容**: 生物医学数据库、基因表达数据集、蛋白质网络
-- **解压到**: `agents/STELLA/resource/`
-
-### 🛠️ 安装说明
+See `docker_files/README-Docker.md` for Docker-based deployment instructions.
 
 ```bash
-# 基础依赖
-pip install gradio 'smolagents[mcp]' numpy pandas scikit-learn
-
-# Mem0增强记忆（推荐）
-pip install mem0ai
-
-# 生物医学分析工具
-pip install biopython rdkit-pypi pymed arxiv scholarly
+cd docker_files
+docker-compose up
 ```
-
-### 🎯 工作流程
-
-1. **🎯 查询分析**: Manager智能体使用Grok-4分析用户请求
-2. **🛠️ 工具选择**: 自动加载最相关的专业工具
-3. **📋 任务委派**: Manager协调专业智能体执行任务
-4. **🔍 质量评估**: Critic智能体评估完成质量并提出改进建议
-5. **🧠 自我进化**: 系统根据需要创建新工具并从成功经验中学习
-6. **💾 记忆存储**: 将成功模式保存供未来类似任务使用
 
 ---
 
-<div align="center">
+## License
 
-**🌟 开始您的科学发现之旅！** 
-
-Made with ❤️ for the Scientific Community
-
-</div> 
+MIT License -- see LICENSE file for details.

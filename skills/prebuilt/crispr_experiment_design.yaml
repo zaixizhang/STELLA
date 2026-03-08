@@ -1,0 +1,135 @@
+skill_id: crispr_experiment_design
+version: "1.0.0"
+name: CRISPR Experiment Design
+domain: gene_editing
+description: >
+  Designs CRISPR-Cas9/Cas12/Cas13 experiments from concept to protocol.
+  Conducts literature review for target gene context, analyzes gene targets
+  for optimal guide RNA design, generates detailed experimental protocols,
+  and provides troubleshooting recommendations.
+
+workflow:
+  - step: 1
+    action: literature_context
+    description: >
+      Search PubMed and web sources for published CRISPR experiments targeting
+      the gene of interest. Identify successful guide RNA sequences, delivery
+      methods, cell lines used, and reported efficiencies from prior studies.
+    tools_required:
+      - query_pubmed
+      - enhanced_google_search
+    parameters:
+      max_results: 15
+      search_focus: crispr_protocols
+    agent: dev
+
+  - step: 2
+    action: gene_target_analysis
+    description: >
+      Analyze the target gene structure including exon-intron boundaries,
+      functional domains, and known isoforms. Identify optimal CRISPR target
+      regions based on exon location, conservation, and functional importance.
+    tools_required:
+      - multi_source_search
+      - create_and_run_script
+    parameters:
+      include_isoform_analysis: true
+      prefer_early_exons: true
+    agent: dev
+
+  - step: 3
+    action: guide_rna_design
+    description: >
+      Design guide RNA sequences for the selected target sites. Evaluate
+      on-target efficiency scores, off-target potential, GC content, and
+      secondary structure. Rank candidates by composite design score.
+    tools_required:
+      - create_and_run_script
+    parameters:
+      cas_variant: Cas9
+      pam_sequence: NGG
+      guide_length: 20
+      max_off_targets: 5
+    agent: dev
+
+  - step: 4
+    action: protocol_generation
+    description: >
+      Generate a detailed step-by-step experimental protocol including
+      reagent lists, transfection conditions, selection strategy, validation
+      assays (T7 endonuclease, Sanger sequencing, Western blot), and timeline.
+    tools_required:
+      - create_and_run_script
+      - multi_source_search
+    parameters:
+      delivery_method: lipofection
+      include_controls: true
+      validation_methods:
+        - t7_endonuclease
+        - sanger_sequencing
+        - western_blot
+    agent: manager
+
+  - step: 5
+    action: review_and_optimize
+    description: >
+      Review the complete experimental design for potential pitfalls.
+      Check guide RNA specificity, suggest backup guides, recommend
+      positive and negative controls, and provide troubleshooting guidance
+      for common CRISPR failure modes.
+    tools_required: []
+    parameters:
+      include_troubleshooting: true
+      include_backup_guides: true
+    agent: critic
+
+tools_required:
+  - tool_id: query_pubmed
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: enhanced_google_search
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: create_and_run_script
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: multi_source_search
+    version: ">=1.0.0"
+    optional: false
+
+tags:
+  - CRISPR
+  - gene editing
+  - guide RNA
+  - Cas9
+  - experiment design
+  - protocol
+  - gene knockout
+  - sgRNA
+
+applicable_queries:
+  - "*CRISPR*design*"
+  - "*CRISPR*experiment*"
+  - "*guide*RNA*design*"
+  - "*gene*knockout*protocol*"
+  - "*Cas9*target*"
+
+quality_metrics:
+  success_count: 7
+  failure_count: 0
+  avg_completion_time_sec: 190.0
+  avg_critic_score: 0.90
+  last_used: "2026-03-08"
+  created_at: "2026-03-08"
+  last_updated: "2026-03-08"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-03-08"
+      changes: "Initial prebuilt skill for CRISPR experiment design with literature review, guide RNA design, and protocol generation."
+
+status: active

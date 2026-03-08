@@ -1,0 +1,639 @@
+tools:
+  - tool_id: enhanced_google_search
+    version: "1.0.0"
+    name: Enhanced Google Search
+    description: "Enhanced Google search with reliable implementation using googlesearch-python. Returns well-formatted search results with titles, URLs, and descriptions."
+    category: search
+    author: stella_team
+    status: active
+    interface:
+      function_name: enhanced_google_search
+      module_path: predefined_tools
+      parameters:
+        - name: query
+          type: str
+          required: true
+          default: null
+          description: "Search query"
+        - name: num_results
+          type: int
+          required: false
+          default: 5
+          description: "Number of results to return"
+        - name: include_snippets
+          type: bool
+          required: false
+          default: true
+          description: "Whether to include result snippets"
+      return_type: str
+      return_description: "Well-formatted search results with titles, URLs, and descriptions"
+    dependencies:
+      python_packages:
+        - requests
+        - googlesearch-python
+        - beautifulsoup4
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: search_google_basic
+    version: "1.0.0"
+    name: Basic Google Search
+    description: "Basic Google search fallback implementation using googlesearch-python."
+    category: search
+    author: stella_team
+    status: active
+    interface:
+      function_name: search_google_basic
+      module_path: predefined_tools
+      parameters:
+        - name: query
+          type: str
+          required: true
+          default: null
+          description: "Search query"
+        - name: num_results
+          type: int
+          required: false
+          default: 3
+          description: "Number of results to return"
+      return_type: str
+      return_description: "Basic search results"
+    dependencies:
+      python_packages:
+        - requests
+        - googlesearch-python
+        - beautifulsoup4
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: multi_source_search
+    version: "1.0.0"
+    name: Multi-Source Search
+    description: "Unified search tool with flexible source combinations for different needs. Supports google, serpapi, and knowledge sources."
+    category: search
+    author: stella_team
+    status: active
+    interface:
+      function_name: multi_source_search
+      module_path: predefined_tools
+      parameters:
+        - name: query
+          type: str
+          required: true
+          default: null
+          description: "Search query"
+        - name: sources
+          type: str
+          required: false
+          default: "google,serpapi"
+          description: "Comma-separated sources. Options: google, serpapi, knowledge"
+      return_type: str
+      return_description: "Consolidated search results with clear source attribution"
+    dependencies:
+      python_packages:
+        - requests
+        - googlesearch-python
+        - beautifulsoup4
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - SERPAPI_API_KEY
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: smart_search_router
+    version: "1.0.0"
+    name: Smart Search Router
+    description: "Intelligently routes search queries to the most appropriate reliable method based on domain detection (scientific, technical, general)."
+    category: search
+    author: stella_team
+    status: active
+    interface:
+      function_name: smart_search_router
+      module_path: predefined_tools
+      parameters:
+        - name: query
+          type: str
+          required: true
+          default: null
+          description: "Search query"
+        - name: domain
+          type: str
+          required: false
+          default: "auto"
+          description: "Domain hint (auto, scientific, general, technical, research)"
+      return_type: str
+      return_description: "Results from the most appropriate search method"
+    dependencies:
+      python_packages:
+        - requests
+        - googlesearch-python
+        - beautifulsoup4
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: search_with_serpapi
+    version: "1.0.0"
+    name: SerpAPI Search
+    description: "Advanced Google search using SerpAPI. Requires SERPAPI_API_KEY environment variable."
+    category: search
+    author: stella_team
+    status: active
+    interface:
+      function_name: search_with_serpapi
+      module_path: predefined_tools
+      parameters:
+        - name: query
+          type: str
+          required: true
+          default: null
+          description: "Search query"
+        - name: num_results
+          type: int
+          required: false
+          default: 5
+          description: "Number of results to return"
+      return_type: str
+      return_description: "Formatted search results with titles, URLs, and descriptions"
+    dependencies:
+      python_packages:
+        - requests
+        - googlesearch-python
+        - beautifulsoup4
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - SERPAPI_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: enhanced_knowledge_search
+    version: "1.0.0"
+    name: Enhanced Knowledge Search
+    description: "Uses LLM internal knowledge via OpenRouter to provide detailed information for research queries."
+    category: search
+    author: stella_team
+    status: active
+    interface:
+      function_name: enhanced_knowledge_search
+      module_path: predefined_tools
+      parameters:
+        - name: query
+          type: str
+          required: true
+          default: null
+          description: "Knowledge query or research question"
+        - name: model_name
+          type: str
+          required: false
+          default: "gemini-2.5-pro"
+          description: "LLM model to use for knowledge expansion"
+      return_type: str
+      return_description: "Detailed information based on LLM training knowledge"
+    dependencies:
+      python_packages:
+        - requests
+        - googlesearch-python
+        - beautifulsoup4
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required:
+        - OPENROUTER_API_KEY
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: search_google
+    version: "1.0.0"
+    name: Legacy Google Search
+    description: "Legacy Google search function that redirects to the enhanced Google search implementation."
+    category: search
+    author: stella_team
+    status: active
+    interface:
+      function_name: search_google
+      module_path: predefined_tools
+      parameters:
+        - name: query
+          type: str
+          required: true
+          default: null
+          description: "The search query"
+        - name: num_results
+          type: int
+          required: false
+          default: 3
+          description: "Number of results to return"
+        - name: language
+          type: str
+          required: false
+          default: "en"
+          description: "Language code for search results"
+      return_type: str
+      return_description: "Formatted string containing search results"
+    dependencies:
+      python_packages:
+        - requests
+        - googlesearch-python
+        - beautifulsoup4
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: visit_webpage
+    version: "1.0.0"
+    name: Visit Webpage
+    description: "Visits a webpage at the given URL and returns its content as a markdown string."
+    category: search
+    author: stella_team
+    status: active
+    interface:
+      function_name: visit_webpage
+      module_path: predefined_tools
+      parameters:
+        - name: url
+          type: str
+          required: true
+          default: null
+          description: "The URL of the webpage to visit"
+      return_type: str
+      return_description: "The content of the webpage converted to Markdown, or an error message"
+    dependencies:
+      python_packages:
+        - requests
+        - markdownify
+        - beautifulsoup4
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: search_github_repositories
+    version: "1.0.0"
+    name: Search GitHub Repositories
+    description: "Search GitHub repositories for packages, models, or projects using the GitHub API."
+    category: search
+    author: stella_team
+    status: active
+    interface:
+      function_name: search_github_repositories
+      module_path: predefined_tools
+      parameters:
+        - name: query
+          type: str
+          required: true
+          default: null
+          description: "Search query (e.g., 'transformer model', 'pytorch CNN')"
+        - name: language
+          type: str
+          required: false
+          default: ""
+          description: "Programming language filter (e.g., 'Python', 'JavaScript')"
+        - name: sort
+          type: str
+          required: false
+          default: "stars"
+          description: "Sort results by 'stars', 'forks', 'updated', or 'created'"
+        - name: order
+          type: str
+          required: false
+          default: "desc"
+          description: "Order results 'desc' or 'asc'"
+        - name: per_page
+          type: int
+          required: false
+          default: 10
+          description: "Number of results to return (max 100)"
+      return_type: str
+      return_description: "Formatted list of repository information including name, description, stars, and URL"
+    dependencies:
+      python_packages:
+        - requests
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: search_github_code
+    version: "1.0.0"
+    name: Search GitHub Code
+    description: "Search for code snippets in GitHub repositories using the GitHub Code Search API."
+    category: search
+    author: stella_team
+    status: active
+    interface:
+      function_name: search_github_code
+      module_path: predefined_tools
+      parameters:
+        - name: query
+          type: str
+          required: true
+          default: null
+          description: "Code search query (e.g., 'def train_model', 'class CNN')"
+        - name: language
+          type: str
+          required: false
+          default: ""
+          description: "Programming language filter"
+        - name: filename
+          type: str
+          required: false
+          default: ""
+          description: "Specific filename to search in"
+        - name: extension
+          type: str
+          required: false
+          default: ""
+          description: "File extension filter (e.g., 'py', 'js')"
+        - name: per_page
+          type: int
+          required: false
+          default: 10
+          description: "Number of results to return (max 100)"
+      return_type: str
+      return_description: "Code search results with file paths, repository info, and code snippets"
+    dependencies:
+      python_packages:
+        - requests
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: get_github_repository_info
+    version: "1.0.0"
+    name: Get GitHub Repository Info
+    description: "Get detailed information about a specific GitHub repository including README, releases, and installation instructions."
+    category: search
+    author: stella_team
+    status: active
+    interface:
+      function_name: get_github_repository_info
+      module_path: predefined_tools
+      parameters:
+        - name: repo_owner
+          type: str
+          required: true
+          default: null
+          description: "Repository owner/organization name"
+        - name: repo_name
+          type: str
+          required: true
+          default: null
+          description: "Repository name"
+      return_type: str
+      return_description: "Detailed repository information including README, releases, and installation instructions"
+    dependencies:
+      python_packages:
+        - requests
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: extract_url_content
+    version: "1.0.0"
+    name: Extract URL Content
+    description: "Extract the text content of a webpage using requests and BeautifulSoup."
+    category: search
+    author: stella_team
+    status: active
+    interface:
+      function_name: extract_url_content
+      module_path: predefined_tools
+      parameters:
+        - name: url
+          type: str
+          required: true
+          default: null
+          description: "Webpage URL to extract content from"
+      return_type: str
+      return_description: "Text content of the webpage"
+    dependencies:
+      python_packages:
+        - requests
+        - beautifulsoup4
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0

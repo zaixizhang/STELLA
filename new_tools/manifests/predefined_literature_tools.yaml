@@ -1,0 +1,253 @@
+tools:
+  - tool_id: fetch_supplementary_info_from_doi
+    version: "1.0.0"
+    name: Fetch Supplementary Info from DOI
+    description: "Fetches supplementary information for a paper given its DOI, downloads supplementary files, and returns a research log."
+    category: literature
+    author: stella_team
+    status: active
+    interface:
+      function_name: fetch_supplementary_info_from_doi
+      module_path: predefined_tools
+      parameters:
+        - name: doi
+          type: str
+          required: true
+          default: null
+          description: "The paper DOI"
+        - name: output_dir
+          type: str
+          required: false
+          default: "supplementary_info"
+          description: "Directory to save supplementary files"
+      return_type: str
+      return_description: "A formatted research log string containing the download process and results"
+    dependencies:
+      python_packages:
+        - requests
+        - beautifulsoup4
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_arxiv
+    version: "1.0.0"
+    name: Query arXiv
+    description: "Query arXiv for papers based on the provided search query. Returns formatted paper titles and summaries."
+    category: literature
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_arxiv
+      module_path: predefined_tools
+      parameters:
+        - name: query
+          type: str
+          required: true
+          default: null
+          description: "The search query string"
+        - name: max_papers
+          type: int
+          required: false
+          default: 10
+          description: "The maximum number of papers to retrieve"
+      return_type: str
+      return_description: "The formatted search results or an error message"
+    dependencies:
+      python_packages:
+        - requests
+        - arxiv
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_scholar
+    version: "1.0.0"
+    name: Query Google Scholar
+    description: "Query Google Scholar for papers with timeout handling. Falls back to enhanced Google search on rate-limiting or timeout."
+    category: literature
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_scholar
+      module_path: predefined_tools
+      parameters:
+        - name: query
+          type: str
+          required: true
+          default: null
+          description: "The search query string"
+        - name: timeout_seconds
+          type: int
+          required: false
+          default: 30
+          description: "Maximum seconds to wait before timing out"
+      return_type: str
+      return_description: "A formatted result string, a timeout/rate-limit notice with fallback, or an error message"
+    dependencies:
+      python_packages:
+        - requests
+        - scholarly
+        - beautifulsoup4
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: query_pubmed
+    version: "1.0.0"
+    name: Query PubMed
+    description: "Query PubMed for papers based on the provided search query with automatic retry using simplified queries."
+    category: literature
+    author: stella_team
+    status: active
+    interface:
+      function_name: query_pubmed
+      module_path: predefined_tools
+      parameters:
+        - name: query
+          type: str
+          required: true
+          default: null
+          description: "The search query string"
+        - name: max_papers
+          type: int
+          required: false
+          default: 10
+          description: "The maximum number of papers to retrieve"
+        - name: max_retries
+          type: int
+          required: false
+          default: 3
+          description: "Maximum number of retry attempts with modified queries"
+      return_type: str
+      return_description: "The formatted search results or an error message"
+    dependencies:
+      python_packages:
+        - requests
+        - pymed
+        - beautifulsoup4
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
+
+  - tool_id: extract_pdf_content
+    version: "1.0.0"
+    name: Extract PDF Content
+    description: "Extract the text content of a PDF file given its URL. Supports direct PDF links and automatic PDF link detection on HTML pages."
+    category: literature
+    author: stella_team
+    status: active
+    interface:
+      function_name: extract_pdf_content
+      module_path: predefined_tools
+      parameters:
+        - name: url
+          type: str
+          required: true
+          default: null
+          description: "URL of the PDF file to extract text from"
+      return_type: str
+      return_description: "The extracted text content from the PDF"
+    dependencies:
+      python_packages:
+        - requests
+        - PyPDF2
+        - beautifulsoup4
+      system_packages: []
+      conda_channels:
+        - conda-forge
+      env_vars_required: []
+    validation:
+      test_function: ""
+      test_module: ""
+      last_validated: ""
+      validation_status: untested
+    provenance:
+      created_at: "2025-01-01"
+      last_modified: "2026-03-08"
+      source: predefined
+      changelog:
+        - version: "1.0.0"
+          date: "2025-01-01"
+          changes: "Initial version"
+    usage_stats:
+      total_calls: 0
+      success_count: 0
+      failure_count: 0
+      avg_execution_time_ms: 0.0
