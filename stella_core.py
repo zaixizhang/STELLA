@@ -179,6 +179,55 @@ auto_memory = AutoMemory()
 # Global registry for dynamically created tools
 dynamic_tools_registry = {}
 
+
+def _is_tool_object(obj) -> bool:
+    """Return True if an object looks like a smolagents tool instance or legacy tool function."""
+    return (
+        hasattr(obj, "forward") and hasattr(obj, "name")
+    ) or hasattr(obj, "__smolagents_tool__")
+
+
+def _discover_tools_in_module(module) -> list:
+    """Find tool objects exported by a dynamically loaded module."""
+    import inspect
+
+    tools = []
+    for _, obj in inspect.getmembers(module):
+        if _is_tool_object(obj):
+            tools.append(obj)
+    return tools
+
+
+def _register_tool_with_agent(agent, tool_obj) -> bool:
+    """Register a tool with an agent and its Python executor if available."""
+    if agent is None:
+        return False
+
+    added = False
+    tool_name = getattr(tool_obj, "name", getattr(tool_obj, "__name__", None))
+    if not tool_name:
+        return False
+
+    try:
+        if isinstance(agent.tools, dict):
+            if tool_name not in agent.tools:
+                agent.tools[tool_name] = tool_obj
+                added = True
+        elif isinstance(agent.tools, list):
+            if tool_obj not in agent.tools:
+                agent.tools.append(tool_obj)
+                added = True
+    except Exception:
+        pass
+
+    try:
+        if hasattr(agent, "python_executor") and hasattr(agent.python_executor, "custom_tools"):
+            agent.python_executor.custom_tools[tool_name] = tool_obj
+    except Exception:
+        pass
+
+    return added
+
 # --- Performance Optimization: Tool Loading Cache ---
 tool_loading_cache = {}
 tool_loading_lock = threading.Lock()
@@ -445,8 +494,21 @@ The tool should be production-ready and immediately usable by other agents.
 
         # Automatically load the created tool into the agents
         load_result = load_dynamic_tool(tool_name, add_to_agents=True)
+        tool_file_path = f'./new_tools/{tool_name}.py'
+        tool_file_exists = os.path.exists(tool_file_path)
 
-        final_result = f"Tool creation completed!\n\n{result}\n\nTool '{tool_name}' registered with governance manifest.\n\nAuto-loading result: {load_result}"
+        if tool_file_exists and "Successfully loaded tool" in load_result:
+            final_result = (
+                f"Tool creation completed!\n\n{result}\n\n"
+                f"Tool '{tool_name}' registered with governance manifest.\n\n"
+                f"Auto-loading result: {load_result}"
+            )
+        else:
+            final_result = (
+                f"⚠️ Tool creation attempted but not fully materialized.\n\n{result}\n\n"
+                f"Tool file exists: {tool_file_exists}\n"
+                f"Auto-loading result: {load_result}"
+            )
         
         return final_result
         
@@ -469,7 +531,6 @@ def load_dynamic_tool(tool_name: str, add_to_agents: bool = True) -> str:
     try:
         import importlib.util
         import sys
-        import inspect
         
         # Ensure new_tools directory exists
         os.makedirs('./new_tools', exist_ok=True)
@@ -491,23 +552,27 @@ def load_dynamic_tool(tool_name: str, add_to_agents: bool = True) -> str:
         result = f"✅ Successfully loaded tool '{tool_name}' from {tool_file_path}"
         
         if add_to_agents:
-            # Find all functions decorated with @tool in the loaded module
-            tool_functions = []
-            for name, obj in inspect.getmembers(module):
-                if inspect.isfunction(obj) and hasattr(obj, '__smolagents_tool__'):
-                    tool_functions.append(obj)
-            
-            if tool_functions:
-                # Add to dev_agent tools
-                for tool_func in tool_functions:
-                    if tool_func not in dev_agent.tools:
-                        dev_agent.tools.append(tool_func)
-                    if tool_func not in tool_creation_agent.tools:
-                        tool_creation_agent.tools.append(tool_func)
-                
-                result += f"\n🔧 Added {len(tool_functions)} tool function(s) to dev_agent and tool_creation_agent"
+            tool_objects = _discover_tools_in_module(module)
+
+            if tool_objects:
+                added_agents = set()
+                for tool_obj in tool_objects:
+                    if _register_tool_with_agent(dev_agent, tool_obj):
+                        added_agents.add("dev_agent")
+                    if _register_tool_with_agent(tool_creation_agent, tool_obj):
+                        added_agents.add("tool_creation_agent")
+                    if _register_tool_with_agent(manager_agent, tool_obj):
+                        added_agents.add("manager_agent")
+
+                if added_agents:
+                    result += (
+                        f"\n🔧 Added {len(tool_objects)} tool object(s) to "
+                        + ", ".join(sorted(added_agents))
+                    )
+                else:
+                    result += f"\nℹ️ Tool object(s) already available to agents"
             else:
-                result += "\n⚠️ No @tool decorated functions found in the module"
+                result += "\n⚠️ No smolagents tool objects found in the module"
         
         return result
         
@@ -1195,7 +1260,6 @@ def add_tool_to_agents(tool_function_name: str, module_name: str) -> str:
     """
     try:
         import sys
-        import inspect
         
         if module_name not in sys.modules:
             return f"❌ Module '{module_name}' not loaded. Use load_dynamic_tool first."
@@ -1208,18 +1272,19 @@ def add_tool_to_agents(tool_function_name: str, module_name: str) -> str:
         tool_func = getattr(module, tool_function_name)
         
         # Check if it's a tool function
-        if not hasattr(tool_func, '__smolagents_tool__'):
-            return f"❌ Function '{tool_function_name}' is not decorated with @tool."
+        if not _is_tool_object(tool_func):
+            return f"❌ Function '{tool_function_name}' is not a recognized smolagents tool object."
         
         # Add to agents if not already present
         added_to = []
-        if tool_func not in dev_agent.tools:
-            dev_agent.tools.append(tool_func)
+        if _register_tool_with_agent(dev_agent, tool_func):
             added_to.append("dev_agent")
         
-        if tool_func not in tool_creation_agent.tools:
-            tool_creation_agent.tools.append(tool_func)
+        if _register_tool_with_agent(tool_creation_agent, tool_func):
             added_to.append("tool_creation_agent")
+
+        if _register_tool_with_agent(manager_agent, tool_func):
+            added_to.append("manager_agent")
         
         if added_to:
             return f"✅ Tool '{tool_function_name}' added to: {', '.join(added_to)}"
