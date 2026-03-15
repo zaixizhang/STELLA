@@ -1,0 +1,16 @@
+{
+  "task_csv": "tasks.csv",
+  "mcq_csv": "mcq.csv",
+  "out_csv": "outputs/result.csv",
+  "run_id": "my_run_001",
+  "models": [
+    "STELLA",
+    "GPT4o",
+    "o3"
+  ],
+  "task_range": null,
+  "task_ids": null,
+  "repeats": 3,
+  "max_workers": 3,
+  "resume_no_dupes": true
+}
