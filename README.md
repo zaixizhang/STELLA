@@ -44,6 +44,7 @@ Ruofan Jin<sup>1</sup>, Mingyang Xu<sup>2</sup>, Fei Meng<sup>3,4</sup>, Guanche
 - [Installation](#installation)
 - [Resource Download](#resource-download--setup)
 - [API Keys](#api-keys)
+- [Tool Creation Benchmark](#tool-creation-benchmark)
 - [Case Studies & Reproducibility](#case-studies--reproducibility)
 - [Citation](#citation)
 - [Related Projects](#related-projects)
@@ -227,6 +228,41 @@ echo "SERPAPI_API_KEY=your_serpapi_key_here" >> .env
 **Get API Keys:**
 - OpenRouter: https://openrouter.ai/
 - SERPAPI: https://serpapi.com/
+
+## Tool Creation Benchmark
+
+The **Tool Creation Benchmark** evaluates biomedical AI agents across 117 tasks organized into two difficulty tiers. All benchmark files are in the [`Tool_Creation_Benchmark/`](Tool_Creation_Benchmark/) directory.
+
+| Set | Categories | Tasks | Evaluation |
+|-----|-----------|-------|------------|
+| **Simple Set** | Category 2 (Protocol/Design/Computation) + Category 3 (Database/Web Retrieval) | 99 tasks, 308 MCQs | Objective multiple-choice questions |
+| **Hard Set** | Category 4 (Biology-Oriented ML) | 18 tasks (8 ProteinGym + 10 TDC/Polaris) | Metric-based predictions graded against task-specific leaderboards |
+
+### Quick Start
+
+```bash
+cd Tool_Creation_Benchmark/simple_set
+
+# Install dependencies
+pip install requests
+
+# Set your API key
+export OPENROUTER_API_KEY=<your_key>
+
+# Run benchmark (edit config_example.json to select models)
+python run_benchmark.py --config config_example.json
+
+# Score results
+python score_results.py \
+  --run_id my_run_001 \
+  --result_csv outputs/result.csv \
+  --ground_truth_csv mcq.csv \
+  --out_dir outputs/scored
+```
+
+See [`Tool_Creation_Benchmark/README.md`](Tool_Creation_Benchmark/README.md) for full documentation, hard-set instructions, and pre-computed results.
+
+---
 
 ## Case Studies & Reproducibility
 

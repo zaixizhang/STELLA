@@ -1,0 +1,2459 @@
+Task ID,Category,Original Task ID,Task Name,Task Type,Task Description,Input,Output,Success Criteria,Source
+1,Category 2,14,PCR_Primer_Design_TargetTm60_v2,molecular_cloning_primer_design,Design forward and reverse primers flanking a CDS-like region with an annealing temperature around 60°C.,"region_to_amplify: >
+  ATGGTGTCCAAGGGCGAAGAGGACAACATGGCCAGCCTGCCTGCCACCCACGAGCTGCACATCTTCGGCAGCATCAACGGCGTGGACTTCGACATGGTGGGACAGGGCACCGGCAACCCCAACGACGGCTACGAGGAACTGAACCTGAAGTCCACAAAGGGCGACCTGCAGTTCAGCCCCTGGATCCTGGTGCCCCACATCGGCTACGGCTTCCACCAGTACCTGCCCTACCCCGACGGCATGAGCCCTTTTCAGGCCGCCATGGTGGATGGCAGCGGCTACCAGGTGCACCGGACCATGCAGTTTGAGGACGGCGCCAGCCTGACCGTGAACTACCGGTACACATACGAGGGCAGCCACATCAAGGGCGAGGCCCAAGTGAAGGGCACAGGCTTTCCAGCCGACGGCCCCGTGATGACCAATAGCCTGACAGCCGCCGACTGGTGCAGAAGCAAGAAAACCTACCCCAATGACAAGACCATCATCAGCACCTTCAAGTGGTCCTACACCACCGGCAATGGCAAGCGGTACAGAAGCACCGCCCGGACCACCTACACCTTCGCCAAACCCATGGCCGCCAACTACCTGAAGAACCAGCCTATGTACGTGTTCCGCAAGACCGAGCTGAAGCACTCCAAGACAGAACTGAACTTCAAAGAGTGGCAGAAAGCCTTCACCGACGTGATGGGCATGGACGAGCTGTACAAG
+target_Tm_C: 60","primer_forward:
+  sequence: ATGGTGTCCAAGGGCGAAG
+primer_reverse:
+  sequence: CTTGTACAGCTCGTCCATGCC
+expected_product_size_bp: 708","- Both primers designed with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–25 nt
+- Primers produce an amplicon of correct expected size",Example sequence generated in SnapGene with a specified temperature.
+2,Category 2,15,PCR_Primer_Design_TargetTm60_4,molecular_cloning_primer_design,"Use defined primers to amplify a region of DNA from the provided sequence, targeting an annealing temperature of ~60°C.","region_to_amplify: >
+  atgagccatattcaacgggaaacgtcttgctctaggccgcgattaaattccaacatggatgctgatttatatgggtataaatgggctcgcgataatgtcgggcaatcaggtgcgacaatctatcgattgtatgggaagcccgatgcgccagagttgtttctgaaacatggcaaaggtagcgttgccaatgatgttacagatgagatggtcagactaaactggctgacggaatttatgcctcttccgaccatcaagcattttatccgtactcctgatgatgcatggttactcaccactgcgatccccgggaaaacagcattccaggtattagaagaatatcctgattcaggtgaaaatattgttgatgcgctggcagtgttcctgcgccggttgcattcgattcctgtttgtaattgtccttttaacagcgatcgcgtatttcgtctcgctcaggcgcaatcacgaatgaataacggtttggttgatgcgagtgattttgatgacgagcgtaatggctggcctgttgaacaagtctggaaagaaatgcataaacttttgccattctcaccggattcagtcgtcactcatggtgatttctcacttgataaccttatttttgacgaggggaaattaataggttgtattgatgttggacgagtcggaatcgcagaccgataccaggatcttgccatcctatggaactgcctcggtgagttttctccttcattacagaaacggctttttcaaaaatatggtattgataatcctgatatgaataaattgcagtttcatttgatgctcgatgagtttttctaa
+target_Tm_C: 60","primer_forward:
+  sequence: atgagccatattcaacgggaaacg
+primer_reverse:
+  sequence: ttagaaaaactcatcgagcatcaaatgaaact
+expected_product_size_bp: 816","- Both primers designed or selected with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–30 nt
+- Primers produce an amplicon of correct expected size",Example sequence generated in SnapGene with a specified temperature.
+3,Category 2,16,PCR_Primer_Design_TargetTm60_Set2,molecular_cloning_primer_design,"Use defined primers to amplify a DNA region from the provided sequence, targeting an annealing temperature of ~60°C.","region_to_amplify: >
+  atgagtattcaacatttccgtgtcgcccttattcccttttttgcggcattttgccttcctgtttttgctcacccagaaacgctggtgaaagtaaaagatgctgaagatcagttgggtgcacgagtgggttacatcgaactggatctcaacagcggtaagatccttgagagttttcgccccgaagaacgttttccaatgatgagcacttttaaagttctgctatgtggcgcggtattatcccgtattgacgccgggcaagagcaactcggtcgccgcatacactattctcagaatgacttggttgagtactcaccagtcacagaaaagcatcttacggatggcatgacagtaagagaattatgcagtgctgccataaccatgagtgataacactgcggccaacttacttctgacaacgatcggaggaccgaaggagctaaccgcttttttgcacaacatgggggatcatgtaactcgccttgatcgttgggaaccggagctgaatgaagccataccaaacgacgagcgtgacaccacgatgcctgtagcaatggcaacaacgttgcgcaaactattaactggcgaactacttactctagcttcccggcaacaattaatagactggatggaggcggataaagttgcaggaccacttctgcgctcggcccttccggctggctggtttattgctgataaatctggagccggtgagcgtgggtctcgcggtatcattgcagcactggggccagatggtaagccctcccgtatcgtagttatctacacgacggggagtcaggcaactatggatgaacgaaatagacagatcgctgagataggtgcctcactgattaagcattggtaa
+target_Tm_C: 60","primer_forward:
+  sequence: atgagtattcaacatttccgtgtcgc
+primer_reverse:
+  sequence: ttaccaatgcttaatcagtgaggcac
+expected_product_size_bp: 861","- Both primers designed or selected with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–30 nt
+- Primers produce an amplicon of correct expected size",Example sequence generated in SnapGene with a specified temperature.
+4,Category 2,17,PCR_Primer_Design_TargetTm55_Set3,molecular_cloning_primer_design,"Use defined primers to amplify a DNA region from the provided sequence, targeting an annealing temperature of ~55°C.","region_to_amplify: >
+  atgagtattcaacatttccgtgtcgcccttattcccttttttgcggcattttgccttcctgtttttgctcacccagaaacgctggtgaaagtaaaagatgctgaagatcagttgggtgcacgagtgggttacatcgaactggatctcaacagcggtaagatccttgagagttttcgccccgaagaacgttttccaatgatgagcacttttaaagttctgctatgtggcgcggtattatcccgtattgacgccgggcaagagcaactcggtcgccgcatacactattctcagaatgacttggttgagtactcaccagtcacagaaaagcatcttacggatggcatgacagtaagagaattatgcagtgctgccataaccatgagtgataacactgcggccaacttacttctgacaacgatcggaggaccgaaggagctaaccgcttttttgcacaacatgggggatcatgtaactcgccttgatcgttgggaaccggagctgaatgaagccataccaaacgacgagcgtgacaccacgatgcctgtagcaatggcaacaacgttgcgcaaactattaactggcgaactacttactctagcttcccggcaacaattaatagactggatggaggcggataaagttgcaggaccacttctgcgctcggcccttccggctggctggtttattgctgataaatctggagccggtgagcgtgggtctcgcggtatcattgcagcactggggccagatggtaagccctcccgtatcgtagttatctacacgacggggagtcaggcaactatggatgaacgaaatagacagatcgctgagataggtgcctcactgattaagcattggtaa
+target_Tm_C: 55","primer_forward:
+  sequence: atgagtattcaacatttccgtgt
+primer_reverse:
+  sequence: ttaccaatgcttaatcagtgagg
+expected_product_size_bp: 861","- Both primers designed or selected with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–30 nt
+- Primers produce an amplicon of correct expected size",Example sequence generated in SnapGene with a specified temperature.
+5,Category 2,18,PCR_Primer_Design_TargetTm65_Set4,molecular_cloning_primer_design,"Use defined primers to amplify a DNA region from the provided sequence, targeting an annealing temperature of ~65°C.","region_to_amplify: >
+  atgagtattcaacatttccgtgtcgcccttattcccttttttgcggcattttgccttcctgtttttgctcacccagaaacgctggtgaaagtaaaagatgctgaagatcagttgggtgcacgagtgggttacatcgaactggatctcaacagcggtaagatccttgagagttttcgccccgaagaacgttttccaatgatgagcacttttaaagttctgctatctgcaagagatcttcagcaacgagatggccaaggtggacgacagcttcttccacagactggaagagtccttcctggtggaagaggataagaagcacgagcggcaccccatcttcggcaacatcgtggacgaggtggcctaccacgagaagtaccccaccatctaccacctgagaaagaaactggtggacagcaccgacaaggccgacctgcggctgatctatctggccctggcccacatgatcaagttccggggccacttcct
+target_Tm_C: 65","primer_forward:
+  sequence: atgagtattcaacatttccgtgtcgcccttattcc
+primer_reverse:
+  sequence: aggaagtggccccggaacttgatca
+expected_product_size_bp: 486","- Both primers designed or selected with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–35 nt
+- Primers produce an amplicon of correct expected size",Example sequence generated in SnapGene with a specified temperature.
+6,Category 2,19,PCR_Primer_Design_TargetTm60_Set5,molecular_cloning_primer_design,"Use defined primers to amplify a region from the provided plasmid-like sequence, targeting an annealing temperature of ~60°C.","region_to_amplify: >
+  atgaccatgattacgccaagcttgcatgcctgcaggtcgactctagaggatccccgggtaccgagctcgaattcactggccgtcgttttacaacgtcgtgactgggaaaaccctggcgttacccaacttaatcgccttgcagcacatccccctttcgccagctggcgtaatagcgaagaggcccgcaccgatcgcccttcccaacagttgcgcagcctgaatggcgaatggcgcctgatgcggtattttctccttacgcatctgtgcggtatttcacaccgcatatggtgcactctcagtacaatctgctctgatgccgcatag
+target_Tm_C: 60","primer_forward:
+  sequence: atgaccatgattacgccaagcttg
+primer_reverse:
+  sequence: ctatgcggcatcagagcagattg
+expected_product_size_bp: 324","- Both primers designed or selected with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–30 nt
+- Primers produce an amplicon of correct expected size",Example sequence generated in SnapGene with a specified temperature.
+7,Category 2,20,PCR_Primer_Design_TargetTm60_Set6,molecular_cloning_primer_design,"Use defined primers to amplify a CDS-like region from the provided sequence, targeting an annealing temperature of ~60°C.","region_to_amplify: >
+  ATGGTGTCCAAGGGCGAAGAGGACAACATGGCCAGCCTGCCTGCCACCCACGAGCTGCACATCTTCGGCAGCATCAACGGCGTGGACTTCGACATGGTGGGACAGGGCACCGGCAACCCCAACGACGGCTACGAGGAACTGAACCTGAAGTCCACAAAGGGCGACCTGCAGTTCAGCCCCTGGATCCTGGTGCCCCACATCGGCTACGGCTTCCACCAGTACCTGCCCTACCCCGACGGCATGAGCCCTTTTCAGGCCGCCATGGTGGATGGCAGCGGCTACCAGGTGCACCGGACCATGCAGTTTGAGGACGGCGCCAGCCTGACCGTGAACTACCGGTACACATACGAGGGCAGCCACATCAAGGGCGAGGCCCAAGTGAAGGGCACAGGCTTTCCAGCCGACGGCCCCGTGATGACCAATAGCCTGACAGCCGCCGACTGGTGCAGAAGCAAGAAAACCTACCCCAATGACAAGACCATCATCAGCACCTTCAAGTGGTCCTACACCACCGGCAATGGCAAGCGGTACAGAAGCACCGCCCGGACCACCTACACCTTCGCCAAACCCATGGCCGCCAACTACCTGAAGAACCAGCCTATGTACGTGTTCCGCAAGACCGAGCTGAAGCACTCCAAGACAGAACTGAACTTCAAAGAGTGGCAGAAAGCCTTCACCGACGTGATGGGCATGGACGAGCTGTACAAG
+target_Tm_C: 60","primer_forward:
+  sequence: ATGGTGTCCAAGGGCGAAG
+primer_reverse:
+  sequence: CTTGTACAGCTCGTCCATGCC
+expected_product_size_bp: 708","- Both primers designed or selected with Tm within ±1°C of target
+- GC content between 40%–60% to minimize secondary structures
+- Primer length between 18–30 nt
+- Primers produce an amplicon of correct expected size",Example sequence generated in SnapGene with a specified temperature.
+8,Category 2,21,Restriction_Digest_EcoRI_AatII,molecular_cloning_restriction_digest,Plan restriction enzyme digest with EcoRI and AatII,"enzymes:
+  - EcoRI
+  - AatII
+buffer_options:
+  - NEBuffer r1.1
+  - NEBuffer r2.1
+  - NEBuffer r3.1
+  - rCutSmart
+temperature_C: 37","recommended_buffer: NEBuffer r3.1
+enzyme_activities:
+  EcoRI:
+    activity_percent: 50
+    note: May exhibit star activity in this buffer
+  AatII:
+    activity_percent: 50
+time_saver: true
+heat_inactivation:
+  EcoRI: 65°C
+  AatII: 80°C","Correctly identifies the recommended reaction buffer for EcoRI + AatII digest based on NEB compatibility data.
+
+Reports enzyme activity percentages per buffer correctly as specified by NEBCloner.
+
+Includes relevant notes such as star activity risks where applicable.
+
+Provides accurate temperature and heat-inactivation parameters.
+
+Output is structured, concise, and formatted in a machine-readable YAML/JSON-like block.
+
+Contains only verified information from NEB sources with no invented experimental conditions.
+
+Allows direct use as practical guidance for planning a restriction digest.","source_name: NEBCloner (New England Biolabs)
+
+source_url: https://nebcloner.neb.com/#!/redigest"
+9,Category 2,23,BWA_MEM_Alignment,sequence_alignment,Align Illumina short reads to reference genome using BWA-MEM,"reference: ref/GRCh38.fa
+reads:
+  single_end: reads/sample_R1.fastq.gz
+  paired_end:
+    read1: reads/sample_R1.fastq.gz
+    read2: reads/sample_R2.fastq.gz
+parameters:
+  threads: 4
+  mark_secondary: true
+  read_group: ""@RG\\tID:sample\\tSM:sample\\tPL:ILLUMINA""","sam_file: aligned.sam
+bam_file: aligned.bam
+alignment_stats:
+  total_reads: expected_count
+  mapped_reads: "">90%""
+  mapping_quality: "">30""","- Correctly runs BWA-MEM using the provided reference and read files.
+
+- Produces valid SAM and BAM output files with proper formatting.
+
+- Achieves >90% mapping rate when expected for high-quality human Illumina reads.
+
+- Produces alignments with mapping quality scores predominantly >30.
+
+- Includes proper read group annotations in the output.
+
+- Uses correct parameterization for single-end vs paired-end reads.
+
+- No corrupted output files; results must be parseable by samtools and downstream tools.
+
+- Alignment statistics must accurately reflect mapping performance.","source_name: BWA-MEM (Burrows-Wheeler Aligner)
+
+reference_publication: Li H. ""Aligning sequence reads, clone sequences and assembly contigs with BWA-MEM."", arXiv:1303.3997"
+10,Category 2,24,MACS2_Peak_Calling,epigenomics_peak_calling,Call peaks from ChIP-seq data using MACS2,"treatment_bam: data/bams/H1hesc_Nanog_Rep1_aln.bam
+control_bam: data/bams/H1hesc_Input_Rep1_aln.bam
+genome_size: hs
+output_prefix: nanog_peaks","peak_file: nanog_peaks_peaks.narrowPeak
+summit_file: nanog_peaks_summits.bed
+model_file: nanog_peaks_model.r
+peak_count: expected_peak_count","- Successfully runs MACS2 using treatment and control BAM files.
+
+- Outputs valid peak files in narrowPeak and summit formats.
+
+- Peak count falls within expected range for the factor (not zero or implausible).
+
+- Summits correspond to enriched binding signal regions.
+
+- Output files are properly formatted and parsable by standard genomics tools (e.g., bedtools, IGV).
+
+- Uses correct genome size parameter (""hs"" for human).
+
+- No corrupted output; no empty peak result unless biologically appropriate.
+
+- Peak calling reflects enrichment relative to input control and not random noise.","source_name: MACS / MACS2 (Model-based Analysis of ChIP-Seq)
+
+reference_publication: Zhang Y et al., ""Model-based Analysis of ChIP-Seq (MACS)."" Genome Biology (2008)."
+11,Category 2,25,ChIPQC_Quality_Assessment,epigenomics_quality_assessment,Assess ChIP-seq data quality using ChIPQC,"sample_sheet: samplesheet_chr12.csv
+bam_files:
+  - data/bams/H1hesc_Nanog_Rep1_aln.bam
+  - data/bams/H1hesc_Nanog_Rep2_aln.bam
+  - data/bams/H1hesc_Pou5f1_Rep1_aln.bam
+  - data/bams/H1hesc_Pou5f1_Rep2_aln.bam
+  - data/bams/H1hesc_Input_Rep1_aln.bam
+  - data/bams/H1hesc_Input_Rep2_aln.bam","qc_report: chipqc_report.html
+qc_metrics: chipqc_metrics.txt
+quality_scores:
+  - ssd: ""Sample-specific distance""
+  - nsc: ""Normalized strand cross-correlation""
+  - rsc: ""Relative strand cross-correlation""","- Successfully runs ChIPQC on the provided BAM files and sample sheet.
+
+- Generates a valid HTML quality report containing visual QC metrics.
+
+- Computes strand cross-correlation metrics (NSC, RSC) and SSD correctly.
+
+- Produces QC output files with correctly formatted metrics (chipqc_report.html, chipqc_metrics.txt).
+
+- NSC and RSC values fall within biologically plausible ranges, enabling interpretation of enrichment quality.
+
+- Each replicate is analyzed without processing errors or missing data.
+
+- Flagging of low-quality or poor-enrichment samples is accurate when applicable.
+
+- Results are consistent with known expectations of transcription factor ChIP-seq quality (e.g., NANOG, POU5F1).","source_name: ChIPQC — Bioconductor package for ChIP-seq quality assessment
+
+reference_publication: 
+
+  Carroll TS et al. ""Impact of artifact removal on ChIP quality metrics in ChIP-Seq and ChIP-exo data."" 
+
+  Genome Biology (2014)"
+12,Category 2,26,DREME_Motif_Analysis,epigenomics_motif_analysis,Discover DNA motifs using DREME,"peak_file: nanog_peaks_peaks.narrowPeak
+genome: ref/hg19.fa
+background: ""Random genomic regions or input control""","motif_file: dreme_results.txt
+html_report: dreme_results.html
+discovered_motifs:
+  - motif_sequences: ""Discovered motif sequences""
+  - e_values: ""Statistical significance""
+  - frequencies: ""Motif frequencies""","- Successfully runs DREME using the given peak-region sequences.
+
+- Identifies enriched DNA motifs compared to background sequences.
+
+- Reports motifs with valid E-values indicating statistical significance.
+
+- Generates both text output and HTML visualization results.
+
+- Motif sequences and frequency statistics are biologically plausible (not random noise).
+
+- Output files are correctly formatted and parseable (dreme_results.txt, dreme_results.html).
+
+- Motif discovery reflects real regulatory enrichment related to the input peak set.","source_name: DREME — part of MEME Suite (motif discovery)
+
+reference_publication:
+
+  Bailey TL. ""DREME: motif discovery in transcription factor ChIP-seq data.""
+
+  Bioinformatics (2011)."
+13,Category 2,27,PCR_Primer_Design_TargetTm60,molecular_cloning_primer_design,Design primers for a specific DNA region targeting 60°C annealing temperature,"region_to_amplify: >
+  ctagttagaaaaagacatttttgctgtcagtcactgtcaagagattcttttgctggcatttcttctagaagcaaaaagagcgatgcgtcttttccgctgaaccgttccagcaaaaaagactaccaacgcaatatggattgtcagaatcatataaaagagaagcaaataactccttgtcttgtatcaattgcattataatatcttcttgttagtgcaatatcatatagaagtcatc
+target_Tm_C: 60","primer_forward:
+  sequence: CTAGTTAGAAAAAGACATTTTTGC
+  length: 24
+  Tm_C: 59.8
+primer_reverse:
+  sequence: GATGACTTCTATATGATATTGCAC
+  length: 24
+  Tm_C: 60.1
+expected_product_size_bp: 235","- Primers flank the intended DNA region.
+
+- Both primers have melting temperatures close to 60°C (±2°C).
+
+- Primer lengths are appropriate (18–30 bases).
+
+- GC content is within a reasonable range (30–60%).
+
+- Product size is reasonable and matches the expected range.
+
+- No severe self-complementarity or long homopolymer runs.
+
+- Reverse primer is correct reverse complement of target region.",Example primers designed in SnapGene with specified target annealing temperature settings.
+14,Category 2,28,PCR_Primer_Design_OneTaq,molecular_cloning_primer_design,Design PCR primers using OneTaq DNA Polymerase (Standard Buffer),"polymerase: OneTaq DNA Polymerase (Standard Buffer)
+primer_concentration_nM: 200
+primer_1: TAACGAAGCTTTCGATATCAGGCATGCAG
+primer_2: CTCAACAGCCTCGCGCGC","annealing_temperature: 57°C
+primer_1:
+  length: 29
+  tm: 62°C
+primer_2:
+  length: 18
+  tm: 65°C","- Primers are suitable for OneTaq polymerase in Standard Buffer.
+
+- Melting temperatures are compatible with selected annealing temperature.
+
+- GC content is appropriate for OneTaq reactions.
+
+- Primer length is reasonable and synthetically feasible.
+
+- Annealing temperature chosen is within correct offset from primer Tm.
+
+- No excessive secondary structure predicted.",Example primers designed in SnapGene with specified target annealing temperature settings.
+15,Category 2,29,Restriction_Digest_SacII_AatII,molecular_cloning_restriction_digest,Plan restriction enzyme digest with SacII and AatII,"enzymes:
+  - SacII
+  - AatII
+buffer_options:
+  - NEBuffer r1.1
+  - NEBuffer r2.1
+  - NEBuffer r3.1
+  - rCutSmart
+temperature_C: 37","recommended_buffer: rCutSmart
+enzyme_activities:
+  SacII:
+    activity_percent: 100
+    note: May exhibit star activity in this buffer
+  AatII:
+    activity_percent: 100
+time_saver: true
+heat_inactivation:
+  SacII: 65°C
+  AatII: 80°C
+methylation_sensitivity:
+  SacII: cpg (Blocked)
+  AatII: cpg (Blocked)","- Correctly identifies rCutSmart as the optimal buffer for SacII + AatII.
+
+- Reports enzyme activity values accurately based on NEB data.
+
+- Includes correct heat-inactivation temperatures for both enzymes.
+
+- Notes methylation blocking for CpG sites correctly for both SacII and AatII.
+
+- Indicates star activity risk where applicable.
+
+- Produces a clean structured output with no invented or non–NEB-verified values.","source_name: NEBCloner — New England Biolabs Double Digest Planning Tool
+
+source_url: https://nebcloner.neb.com/#!/redigest
+
+source_description: Restriction enzyme digest conditions, buffer compatibility, activity %, methylation sensitivity, and heat-inactivation parameters derived from NEB's online digest planning tools (NEBCloner / Double Digest Finder)."
+16,Category 2,30,Restriction_Digest_NheIHF_HindIIIHF,molecular_cloning_restriction_digest,Plan restriction enzyme digest with NheI-HF and HindIII-HF,"enzymes:
+  - NheI-HF
+  - HindIII-HF
+buffer_options:
+  - NEBuffer r1.1
+  - NEBuffer r2.1
+  - NEBuffer r3.1
+  - rCutSmart
+temperature_C: 37","recommended_buffer: rCutSmart
+enzyme_activities:
+  NheI-HF:
+    activity_percent: 100
+    note: Blocked by some combinations of overlapping cpg methylation
+  HindIII-HF:
+    activity_percent: 100
+    note: No methylation sensitivity
+time_saver: true
+heat_inactivation:
+  NheI-HF: 80°C
+  HindIII-HF: 80°C
+methylation_sensitivity:
+  NheI-HF: cpg (Blocked by Some Combinations of Overlapping)
+  HindIII-HF: None","- Correctly identifies rCutSmart as the recommended buffer for NheI-HF + HindIII-HF.
+
+- Reports 100% activity for both enzymes in the chosen buffer.
+
+- Accurately includes the correct methylation sensitivity — NheI-HF blocked by overlapping CpG methylation; HindIII-HF not methylation-sensitive.
+
+- Includes correct heat-inactivation conditions for both enzymes.
+
+- Output is concise, correctly structured, and consistent with NEB documentation.
+
+- No hallucinated enzyme behavior or unsupported experimental advice.","source_name: NEBCloner — New England Biolabs Double Digest Planning Tool
+
+source_url: https://nebcloner.neb.com/#!/redigest
+
+source_description: Restriction enzyme digest conditions, buffer compatibility, activity %, methylation sensitivity, and heat-inactivation parameters derived from NEB's online digest planning tools (NEBCloner / Double Digest Finder)."
+17,Category 2,31,PCR_Primer_Design_TargetTm60_v3,molecular_cloning_primer_design,Design primers for a CDS-like region targeting 60°C annealing temperature,"region_to_amplify: >
+  ATGGTGTCCAAGGGCGAAGAGGACAACATGGCCAGCCTGCCTGCCACCCACGAGCTGCACATCTTCGGCAGCATCAACGGCGTGGACTTCGACATGGTGGGACAGGGCACCGGCAACCCCAACGACGGCTACGAGGAACTGAACCTGAAGTCCACAAAGGGCGACCTGCAGTTCAGCCCCTGGATCCTGGTGCCCCACATCGGCTACGGCTTCCACCAGTACCTGCCCTACCCCGACGGCATGAGCCCTTTTCAGGCCGCCATGGTGGATGGCAGCGGCTACCAGGTGCACCGGACCATGCAGTTTGAGGACGGCGCCAGCCTGACCGTGAACTACCGGTACACATACGAGGGCAGCCACATCAAGGGCGAGGCCCAAGTGAAGGGCACAGGCTTTCCAGCCGACGGCCCCGTGATGACCAATAGCCTGACAGCCGCCGACTGGTGCAGAAGCAAGAAAACCTACCCCAATGACAAGACCATCATCAGCACCTTCAAGTGGTCCTACACCACCGGCAATGGCAAGCGGTACAGAAGCACCGCCCGGACCACCTACACCTTCGCCAAACCCATGGCCGCCAACTACCTGAAGAACCAGCCTATGTACGTGTTCCGCAAGACCGAGCTGAAGCACTCCAAGACAGAACTGAACTTCAAAGAGTGGCAGAAAGCCTTCACCGACGTGATGGGCATGGACGAGCTGTACAAG
+target_Tm_C: 60","primer_forward:
+  sequence: ATGGTGTCCAAGGGCGAAG
+  length: 19
+primer_reverse:
+  sequence: CTTGTACAGCTCGTCCATGCC
+  length: 21
+expected_product_size_bp: 708
+notes:
+  - Primers flank the entire CDS-like region
+  - Designed for ~60°C annealing temperature
+  - GC content and Tm are well balanced
+  - Reverse primer is reverse-complemented from the 3' end of the sequence","- Primers correctly flank the full CDS-like region and yield the intended amplicon.
+
+- Forward and reverse primers have melting temperatures close to 60°C (±2°C).
+
+- Primer GC% is balanced and within reasonable range (40–60%).
+
+- Primers avoid strong self-complementarity and 3' cross-dimerization.
+
+- Reverse primer is indeed the correct reverse complement of the intended target region.
+
+- Output format is clean, structured, and contains correct length + Tm + GC%.","source_name: SnapGene primer design tool (user-generated examples)
+
+source_method: primers designed using SnapGene with specified target Tm parameters"
+18,Category 2,32,PCR_Primer_Design_TargetTm55_v4,molecular_cloning_primer_design,Design primers for AT-rich region targeting 55°C annealing temperature,"region_to_amplify: >
+  TTTGTTTATTTTTCTAAATACATTCAAATATGTATCCGCTCATGAGACAATAACCCTGATAAATGCTTCAATAATATTGAAAAAGGAAGAGT
+target_Tm_C: 55","primer_forward:
+ sequence: TTTGTTTATTTTTCTAAATACATTCAAATATGTATCC
+ length: 37
+primer_reverse:
+ sequence: ACTCTTCCTTTTTCAATATTATTGAAGCA
+ length: 29
+expected_product_size_bp: 92
+notes:
+ - Designed for ~55°C annealing temperature
+ - Primers meet minimum length and Tm for efficient amplification","- Forward and reverse primers exhibit melting temperatures around 55°C (±2°C).
+
+- GC% can be low due to AT-rich nature but still produces a functional primer pair.
+
+- Primers meet minimum stability requirements (Tm > 50°C, length > 20 bases).
+
+- Reverse primer is correctly reverse-complemented from target.
+
+- Output provides valid primer properties without invented or unsupported values.","source_name: SnapGene primer design tool (user-generated examples)
+
+source_method: primers designed using SnapGene with specified target Tm parameters"
+19,Category 2,33,Non_cutter_Restriction_Enzyme_Identification_pUC19,molecular_cloning_restriction_analysis,Identify all restriction enzymes that do NOT cut within the pUC19 plasmid sequence,"plasmid_name: pUC19
+plasmid_source: https://www.addgene.org/50005/
+plasmid_sequence_fasta: addgene-plasmid-50005-sequence.fasta
+restriction_enzyme_database: REBASE 2024","non_cutters:
+  - AanI, AarI, AatI, AbsI, AccIII, AccB7I, AcvI, AdeI, AfeI, AflII, AgeI, AhlI, AjiI, AjuI, AleI, AlfI, AloI, Aor13HI, Aor51HI, ApaI, ArsI, AscI, AsiGI, AsiSI, AspI, AspA2I, AsuII, AsuNHI, AvrII, AxyI, BaeI, BalI, BanIII, BarI, BbrPI, BbsI, BbvCI, BclI, BcuI, BfrI, BglII, BlnI, BlpI, BmgBI, BmtI, BoxI, BpiI, BplI, Bpu10I, Bpu14I, Bpu1102I, BpuAI, Bsa29I, BsaAI, BsaBI, BsaMI, Bse8I, Bse21I, BseAI, BseCI, BseJI, BsePI, BseRI, BseX3I, BsgI, BshVI, BshTI, BsiWI, BslFI, BsmI, BsmFI, Bsp13I, Bsp19I, Bsp68I, Bsp119I, Bsp120I, Bsp1407I, Bsp1720I, BspDI, BspEI, BspOI, BspTI, BspT104I, BspXI, BsrGI, BssHII, BssNAI, BssT1I, Bst98I, Bst1107I, BstAFI, BstAUI, BstBI, BstBAI, BstDSI, BstEII, BstENI, BstHPI, BstPI, BstPAI, BstSNI, BstV2I, BstXI, BstZI, BstZ17I, Bsu15I, Bsu36I, BsuTUI, BtgI, BtgZI, BtrI, BtuMI, CciNI, CelII, Cfr42I, ClaI, CpoI, CsiI, CspI, Csp45I, CspAI, CspCI, DraIII, EagI, EclXI, Eco32I, Eco47III, Eco52I, Eco72I, Eco81I, Eco91I, Eco105I, Eco130I, Eco147I, EcoNI, EcoO65I, EcoRV, EcoT14I, EcoT22I, ErhI, FalI, FaqI, FbaI, FseI, FspAI, HpaI, I-CeuI, I-PpoI, I-SceI, KflI, Kpn2I, KroNI, KspI, Ksp22I, KspAI, MabI, MamI, MauBI, MfeI, MlsI, MluI, MluNI, Mox20I, Mph1103I, MreI, MroI, MroNI, MscI, Msp20I, MspCI, MssI, MunI, Mva1269I, NaeI, Nb.BbvCI, Nb.Bpu10I, Nb.BsmI, Nb.Mva1269I, NcoI, NgoMIV, NheI, NotI, NruI, NsiI, NspV, Nt.BbvCI, Nt.Bpu10I, OliI, PacI, PaeR7I, PalAI, PaqCI, PauI, Pfl23II, PflFI, PI-PspI, PI-SceI, PinAI, PmaCI, PmeI, PmlI, Ppu21I, PpuMI, PshAI, PsiI, Psp5II, PspCI, PspEI, PspLI, PspOMI, PspPPI, PspXI, PsrI, PsyI, PteI, RgaI, RigI, RruI, RsrII, Rsr2I, SacII, SanDI, SauI, SexAI, SfaAI, SfiI, Sfr274I, Sfr303I, SfuI, SgfI, SgrAI, SgrBI, SgrDI, SgsI, SlaI, SmiI, SnaBI, SpeI, SrfI, SseBI, SspBI, SstII, StuI, StyI, SwaI, TstI, Tth111I, Van91I, Vha464I, XagI, XcmI, XhoI, XmaJI, Zsp2I","- Uses the correct pUC19 plasmid sequence from the specified Addgene record.
+
+- Non-cutting enzymes are consistent with SnapGene / REBASE 2024 for pUC19 (no enzymes listed that actually cut the sequence).
+
+- Output is a clean, comma-separated list of enzyme names with standard nomenclature.
+
+- No duplicated enzyme names and no obvious missing ""common cutters"" that should appear as cutters instead of non-cutters.
+
+- Results are reproducible by re-running restriction analysis in SnapGene (same plasmid + enzyme database).","source_name: SnapGene restriction analysis (pUC19) using REBASE 2024 enzyme database
+
+source_note: Non-cutting enzymes were identified with SnapGene's restriction sites tool on the pUC19 sequence from Addgene (plasmid #50005)."
+20,Category 2,34,Non_cutter_Restriction_Enzyme_Identification_pCMV_PE6c,molecular_cloning_restriction_analysis,Identify all restriction enzymes that do NOT cut within the pCMV-PE6c plasmid sequence,"plasmid_name: pCMV-PE6c
+plasmid_source: https://www.addgene.org/207853/
+plasmid_sequence_fasta: addgene-plasmid-207853-sequence.fasta
+restriction_enzyme_database: REBASE 2024","non_cutters:
+  - AanI, AarI, AbsI, Acc65I, AflII, AleI, AlfI, AscI, AsiSI, AspI, Asp718I, AsuII, AsuNHI, BaeI, BamHI, BbeI, BfrI, BmtI, BplI, Bpu14I, BsaI, BsePI, BsiWI, BsmBI, Bso31I, Bsp119I, Bsp1407I, BspOI, BspTI, BspT104I, BspTNI, BsrGI, BssHII, BssNAI, Bst98I, Bst1107I, BstAFI, BstAUI, BstBI, BstEII, BstHPI, BstPI, BstZ17I, Cfr9I, Csp45I, DinI, Eco31I, Eco91I, EcoO65I, EcoT22I, EgeI, EheI, Esp3I, FseI, FspAI, HindIII, HpaI, I-CeuI, I-PpoI, I-SceI, KasI, KpnI, KspAI, MauBI, Mly113I, Mph1103I, MreI, MspCI, NarI, NheI, NsiI, NspV, OliI, PacI, PaeR7I, PalAI, PaqCI, PauI, Pfl23II, PflFI, PI-PspI, PI-SceI, PluTI, PsiI, PspEI, PspLI, PspXI, PsyI, PteI, RgaI, RigI, SfaAI, SfiI, SfoI, Sfr274I, SfuI, SgfI, SgrAI, SgsI, SlaI, SmaI, SmiI, SrfI, SspBI, SspDI, SwaI, TspMI, Tth111I, Vha464I, XhoI, XmaI, XmaCI, Zsp2I","- Uses the correct pCMV-PE6c plasmid sequence from the specified Addgene record.
+
+- Reported non-cutting enzymes do not have recognition sites in the plasmid according to SnapGene / REBASE 2024.
+
+- Enzyme names follow standard restriction-enzyme nomenclature and are formatted consistently.
+
+- The non-cutter list is free of duplicates and obvious errors (e.g., enzymes known to cut pCMV-PE6c are not included).
+
+- Results can be reproduced by running the same restriction-enzyme analysis in SnapGene with the same database settings.","source_name: SnapGene restriction analysis (pCMV-PE6c) using REBASE 2024 enzyme database
+
+source_note: Non-cutting enzymes were identified with SnapGene's restriction sites tool on the pCMV-PE6c sequence from Addgene (plasmid #207853)."
+21,Category 2,35,PCR_Q5_HighFidelity,wet_lab_protocol_execution,Design and simulate a PCR experiment using Q5 High-Fidelity DNA Polymerase to amplify a 1.5 kb DNA target from a plasmid template,"template_type: plasmid
+target_length_bp: 1500
+primer_tm_celsius: 60
+primers:
+  forward: ""5'-ATGCGTACGTTAGCTACG-3'""
+  reverse: ""5'-CGTAGCTAACGTACGCAT-3'""
+polymerase: Q5_HighFidelity
+total_volume_ul: 50","reaction_setup:
+  buffer: ""5X Q5 Reaction Buffer""
+  dntps: ""10 mM dNTPs""
+  primer_concentration_uM: 0.5
+  polymerase_volume_ul: 0.5
+  enhancer: ""optional""
+  water_volume_ul: auto_fill
+thermocycling_conditions:
+  initial_denaturation:
+    temp: 98
+    time: 30s
+  cycles: 30
+  denaturation:
+    temp: 98
+    time: 10s
+  annealing:
+    temp: 60
+    time: 20s
+  extension:
+    temp: 72
+    time: ""30s/kb""
+  final_extension:
+    temp: 72
+    time: 2min
+  hold:
+    temp: 4
+    time: ""∞""","- Volume accuracy matches official NEB protocol
+- Annealing temperature within ±5°C of primer Tm
+- Proper thermocycling conditions for 1.5 kb target
+- Complete reaction setup with all components",source_name: NEB Q5 High-Fidelity DNA Polymerase protocol
+22,Category 2,36,Gibson_Assembly_TwoFragments,wet_lab_protocol_execution,Simulate the setup of a Gibson Assembly reaction to clone a 1.5 kb gene insert into a 5 kb plasmid using the NEB Gibson Assembly Kit,"vector_length_bp: 5000
+insert_length_bp: 1500
+vector_mass_ng: 50
+insert_molar_excess: 3
+fragment_count: 2
+reaction_volume_ul: 20
+temperature: 50
+incubation_time_min: 15","reaction_setup:
+  gibson_master_mix_2x_ul: 10
+  dna_fragments:
+    - name: vector
+      mass_ng: 50
+    - name: insert
+      calculated_mass_ng: auto  # auto = use molar ratio formula
+  water_ul: auto  # to complete 20 µl total
+incubation_conditions:
+  temp_celsius: 50
+  time_minutes: 15
+post_step:
+  transformation:
+    competent_cells: ""NEB 5-alpha E. coli""
+    volume_ul: 2
+    storage: ""-20°C or ice until transformation""","- Molar ratio correctness (insert ~3x molar excess relative to vector)
+- Component volume check (Master mix = 10 µl; Total = 20 µl)
+- Incubation accuracy (Temp = 50°C; Time = 15 min)
+- Protocol reasoning (explain why ratios and steps are chosen)",source_name: NEB Gibson Assembly Cloning Kit protocol
+23,Category 2,37,Golden_Gate_Assembly_Multi_Insert,wet_lab_protocol_execution,Design and simulate a Golden Gate Assembly reaction using NEB E1601 kit (BsaI-HFv2) to assemble 4 DNA inserts into the pGGAselect vector,"insert_count: 4
+destination_vector:
+  name: pGGAselect
+  length_bp: 2133
+  concentration_ng_per_ul: 75
+insert_length_bp: [500, 700, 900, 300]
+insert_form: plasmid
+enzyme: BsaI-HFv2
+total_reaction_volume_ul: 20","reaction_setup:
+  vector_volume_ul: 1.0
+  inserts:
+    - name: insert1
+      mass_ng: 75
+    - name: insert2
+      mass_ng: 75
+    - name: insert3
+      mass_ng: 75
+    - name: insert4
+      mass_ng: 75
+  ligase_buffer_10x_ul: 2.0
+  golden_gate_mix_ul: 1.0
+  water_ul: auto_fill
+thermocycling_protocol:
+  steps:
+    - cycle: 30
+      steps:
+        - temp: 37
+          time: 1min
+        - temp: 16
+          time: 1min
+    - step:
+        temp: 60
+        time: 5min
+enzyme_logic:
+  restriction_enzyme: BsaI-HFv2
+  recognition_site: GGTCTC
+  sticky_end_generation: true
+  orientation_check: required","- Insert-vector ratio at 2:1 molar ratio
+- Correct thermocycling sequence (1 min @ 37°C, 1 min @ 16°C, 30x cycles)
+- Proper enzyme and buffer usage (1-2 µl Golden Gate Mix, 2 µl ligase buffer)
+- Vector restriction site validation and orientation check
+- Total reaction volume equals 20 µl",source_name: NEB Golden Gate Assembly protocol
+24,Category 2,38,LB_Media_Ingredient_Calculation,wet_lab_formula_calculation,"Given a target volume and LB media formulation type (Miller, Lennox, Luria), calculate the correct mass (g) of each ingredient","total_volume_ml: 250
+formulation: ""Miller""
+include_agar: false
+agar_concentration_g_per_l: 15","components:
+  tryptone:
+    amount_g: 2.5
+    concentration_g_per_l: 10
+  yeast_extract:
+    amount_g: 1.25
+    concentration_g_per_l: 5
+  sodium_chloride:
+    amount_g: 2.5
+    concentration_g_per_l: 10
+  agar:
+    amount_g: 0
+    concentration_g_per_l: 0","- Mass scaling calculation: (concentration g/L) × (volume ml ÷ 1000)
+- Formulation correctness: Miller (10 g/L NaCl), Lennox (5 g/L), Luria (0.5 g/L)
+- Agar inclusion logic: only included if include_agar = true
+- All component masses calculated correctly for target volume",Standard LB media formulations
+25,Category 2,39,QIAprep_Spin_Miniprep_Buffer_Order,wet_lab_protocol_execution,"Given a bacterial culture volume (1–5 mL), verify that the agent correctly specifies the volumes and order of buffers for plasmid miniprep using the QIAprep Spin Miniprep Kit","culture_volume_ml: 3.0
+elution_volume_ul: 50
+optional_endA_plus_strain: true","buffer_order:
+  - name: Buffer P1
+    volume_ul: 250
+    function: Resuspension (contains RNase A)
+  - name: Buffer P2
+    volume_ul: 250
+    function: Alkaline lysis
+  - name: Buffer N3
+    volume_ul: 350
+    function: Neutralization and precipitation
+  - name: Buffer PB
+    volume_ul: 500
+    function: Optional wash (for endA⁺ strains)
+  - name: Buffer PE
+    volume_ul: 750
+    function: Ethanol wash
+  - name: Buffer EB
+    volume_ul: 50
+    function: Elution of plasmid DNA","- Correct buffer order: P1 → P2 → N3 → (PB) → PE → EB
+- Buffer volume match: volumes must match standard QIAprep protocol
+- Conditional PB inclusion: only included if endA_plus_strain is true
+- Elution range: EB volume should be between 30–100 µL",source_name: QIAprep Spin Miniprep Kit protocol — Qiagen
+26,Category 2,40,Agarose_Gel_Electrophoresis_Prep,wet_lab_formula_calculation,"Given desired gel volume, agarose percentage, and buffer type, calculate ingredient amounts and specify order for accurate gel prep","gel_volume_ml: 100
+agarose_percentage: 1.0
+buffer_type: ""TAE""
+include_stain: ""EtBr""
+etbr_concentration_ug_per_ml: 0.5","components:
+  agarose_g: 1.0
+  buffer_volume_ml: 100
+  stain:
+    name: EtBr
+    concentration_ug_per_ml: 0.5
+  loading_buffer_ratio:
+    sample_to_loading_ul: 25
+    loading_buffer_ul: 5
+gel_pouring_order:
+  - component: buffer
+    amount: buffer_volume_ml
+  - component: agarose
+    amount: agarose_g
+  - component: heat
+    notes: ""melt agarose until clarity""
+  - component: cool
+    notes: ""cool ~5 min before pouring (~60 °C)""
+  - component: stain
+    condition: include_stain != none
+    notes: ""add stain to molten gel""","- Agarose calculation: gel_volume_ml × agarose_percentage / 100
+- Buffer volume matches gel volume (typically 1× buffer)
+- Correct gel pouring order: buffer → agarose → heat → cool → stain
+- Stain inclusion logic: only added if include_stain != none
+- Loading buffer ratio: 5 µL per 25 µL sample",source_name: Standard agarose gel electrophoresis protocol
+27,Category 2,41,Bacterial_Glycerol_Stock_Prep,wet_lab_formula_calculation,Calculate the correct mixture for making glycerol stock from overnight bacterial culture,"culture_volume_ul: 500
+glycerol_percent: 20
+glycerol_solution_concentration_percent: 50","glycerol_stock:
+  culture_ul: 500
+  glycerol_stock_solution_ul: 500
+  glycerol_solution_concentration_percent: 50
+  mix:
+    final_volume_ul: 1000
+    final_glycerol_percent: 20","- Volume scaling: use equal volumes of culture and 50% glycerol stock
+- Final volume accuracy: culture_ul + glycerol_stock_ul
+- Glycerol concentration accuracy: final percentage must match input glycerol_percent
+- Formula application: needed_glycerol_stock = culture_volume_ul × (desired_percent / 50)",source_name: Standard bacterial glycerol stock preparation procedure
+28,Category 2,42,Protein_Concentration_Amicon_Filter,wet_lab_formula_calculation,"Simulate a protein concentration step using centrifugal filters (e.g., 10 kDa cutoff Amicon Ultra)","starting_volume_ul: 1000
+target_concentration_mg_per_ml: 10
+starting_concentration_mg_per_ml: 1.5
+molecular_weight_cutoff_kDa: 10
+buffer_type: ""Tris pH 7.5, 150 mM NaCl""","final_volume_ul: 150
+fold_concentration: 6.67
+filter_type: ""Amicon Ultra 0.5 mL 10K""
+centrifugation_settings:
+  speed_rcf: 14000
+  time_minutes: 10
+  temperature_c: 4
+notes: ""Ensure protein stays in buffer post-spin; avoid drying membrane completely.""","- Volume calculation: final_volume = start_conc / target_conc × start_volume
+- Cutoff logic: protein MW must be > cutoff (e.g., 30 kDa protein → 10 kDa filter OK)
+- Compatible buffer: explain buffer suitability (e.g., no imidazole for crystallization)
+- Centrifugation settings: proper speed, time, and temperature for protein concentration",source_name: Merck Millipore Amicon Ultra centrifugal filter protocol
+29,Category 2,43,PDB_Structure_Analysis,structure_analysis,"Analyze the PDB structure 1PC2 to:
+1. Count the number of VAL and TRP residues (alpha carbons only)
+2. Calculate the distance between alpha carbons of ASP72 and GLY144 in chain A","pdb_id: ""1PC2""
+analysis_type: [""residue_count"", ""distance_measurement""]
+residues_to_count: [""VAL"", ""TRP""]
+distance_measurement:
+  residue1: ""ASP72""
+  residue2: ""GLY144""
+  chain: ""A""
+  atom_type: ""CA""","residue_counts:
+  VAL: 12
+  TRP: 1
+distance_CA_ASP72_GLY144: 47.14  # Å, rounded from 47.14374542236328","- Accurate residue counts (VAL: 12, TRP: 1)
+- Correct distance measurement (approximately 47.14 Å)
+- Clear structural analysis report",source_name: Protein Data Bank (PDB) — structure 1PC2
+30,Category 2,44,PDB_Chain_Analysis,structure_analysis,Analyze the PDB structure 3BDP to identify and describe all unique chains in the structure.,"pdb_id: ""3BDP""
+analysis_type: ""chain_analysis""","chains:
+  - A
+  - P
+  - T
+chain_count: 3","- Correctly identifies all unique chain IDs in the structure
+
+- Chain count matches true structure (3 chains for 3BDP)
+
+- Output includes only canonical single-letter chain names
+
+- No missing or extra artificial chains",source_name: RCSB PDB — entry 3BDP
+31,Category 2,45,Protein_DNA_Interaction_Analysis,structure_analysis,"Analyze protein-DNA interactions in PDB structure 3BDP, focusing on contacts between protein chain A and DNA chain P.","pdb_id: ""3BDP""
+analysis_type: ""interaction_analysis""
+chains:
+  protein: ""A""
+  dna: ""P""
+distance_cutoff: 4.0  # Angstroms","interacting_residues:
+  chain_A:
+    - LYS 431
+    - PRO 531
+    - THR 550
+    - LYS 551
+    - SER 555
+    - THR 556
+    - SER 557
+    - ALA 558
+    - ARG 578
+    - GLN 579
+    - LYS 582
+    - TYR 587
+    - GLN 624
+    - ASN 625
+    - ILE 626
+    - PRO 627
+    - ILE 628
+    - ARG 629
+  chain_P:
+    - DC 8
+    - DT 10
+    - DG 11
+    - DA 12
+    - DT 13
+    - DG 14
+    - DC 15","- Identifies interacting residues within ≤4.0 Å distance
+
+- Correct chain assignment: protein = A, DNA = P
+
+- Correct residue naming (3-letter)
+
+- Interaction list includes only residues that meet distance threshold",source_name: RCSB PDB — entry 3BDP
+32,Category 2,46,Secondary_Structure_Analysis,structure_analysis,Analyze the secondary structure composition of chain A in PDB structure 3BDP.,"pdb_id: ""3BDP""
+chain: ""A""
+analysis_type: ""secondary_structure""","helix_residues: 668
+sheet_residues: 128
+coil_residues: 0","- The total assigned residues must match chain A length
+
+- Secondary structure classification must be based on DSSP or equivalent
+
+- Helix / sheet / coil counts must be internally consistent
+
+- Output clearly lists residue counts for each structure class",source_name: RCSB Protein Data Bank — 3BDP
+33,Category 2,47,Ligand_Analysis,structure_analysis,Identify and analyze all non-water ligands in PDB structure 3BDP.,"pdb_id: ""3BDP""
+analysis_type: ""ligand_analysis""
+exclude_water: true","ligands:
+  - resn: SO4
+    resi: 910
+    chain: A
+  - resn: SO4
+    resi: 912
+    chain: A
+  - resn: SO4
+    resi: 915
+    chain: A
+  - resn: SO4
+    resi: 920
+    chain: A
+  - resn: 2DT
+    resi: 16
+    chain: P","- All ligands listed must be non-water (HOH excluded)
+
+- Output includes residue name (resn), index (resi), and chain ID
+
+- Includes both small molecule ligands and nucleotides if applicable
+
+- No protein residues should be mistakenly included as ligands",source_name: RCSB Protein Data Bank — 3BDP
+34,Category 2,48,CRISPR_sgRNA_Target_Site_Identification,crispr_sgrna_design,"Identify valid SpCas9 target sites in a given DNA sequence. For S. pyogenes Cas9 (SpCas9), the 20-nt target sequence must be immediately upstream (5') of a 5'-NGG PAM (Protospacer Adjacent Motif). The sgRNA guide sequence is identical to the 20-nt target sequence.","genomic_sequence: >
+  5'-ATGCTAGCCTGAACGTCACCTCCAATGACTAGGCTACGCAACCACAAACCCACGAACTGCAGAGTGCTGCTTGCTGCTAACCAGGCCCCTGCGTAACCCCA-3'
+target_gene: EMX1_exon_region
+organism: Homo sapiens
+Cas9_system: SpCas9 (S. pyogenes)
+PAM_requirement: 5'-NGG (where N is any nucleotide)","valid_target_sites:
+  - site_1:
+      target_position: 11-30
+      target_sequence: GAACGTCACCTCCAATGACT
+      PAM: AGG (position 31-33)
+      strand: sense (+)
+      sgRNA_guide_sequence: GAACGTCACCTCCAATGACT
+  - site_2:
+      target_position: 63-82
+      target_sequence: AGTGCTGCTTGCTGCTAACC
+      PAM: AGG (position 83-85)
+      strand: sense (+)
+      sgRNA_guide_sequence: AGTGCTGCTTGCTGCTAACC
+total_valid_sites: 2","- Correctly identifies all 20-nt sequences immediately upstream of NGG PAM
+- PAM sequence (NGG) is NOT included in the 20-nt guide sequence
+- Target sequence is read in 5' to 3' direction on the sense strand
+- sgRNA guide sequence matches the target sequence exactly
+- Position numbering is 1-based","Ran FA, Hsu PD, Wright J, et al. Genome engineering using the CRISPR-Cas9 system. Nature Protocols. 2013;8(11):2281-2308. doi:10.1038/nprot.2013.143"
+35,Category 2,49,RNAseq_FPKM_Expression_Calculation,rnaseq_expression_quantification,"Calculate FPKM (Fragments Per Kilobase of transcript per Million mapped fragments) values from RNA-seq data to quantify and compare gene expression levels. FPKM normalizes for both transcript length and sequencing depth, enabling accurate comparison of expression between genes of different lengths.","total_mapped_fragments: 20000000
+genes:
+  - name: Gene_A
+    transcript_length_bp: 2000
+    fragments_mapped: 1000
+  - name: Gene_B
+    transcript_length_bp: 5000
+    fragments_mapped: 1500
+  - name: Gene_C
+    transcript_length_bp: 500
+    fragments_mapped: 400","fpkm_values:
+  Gene_A: 25.0
+  Gene_B: 15.0
+  Gene_C: 40.0
+expression_ranking:
+  1: Gene_C (FPKM=40.0, highest expression)
+  2: Gene_A (FPKM=25.0)
+  3: Gene_B (FPKM=15.0, lowest expression)
+note: Gene_B has the most fragments (1500) but lowest FPKM due to its long transcript (5000bp). Gene_C has fewest fragments (400) but highest FPKM due to its short transcript (500bp).","- Correctly applies FPKM formula: FPKM = (fragments × 10^9) / (transcript_length_bp × total_mapped_fragments)
+- Or equivalently: FPKM = fragments / (transcript_length_kb × total_mapped_millions)
+- Accurately calculates FPKM for each gene
+- Correctly ranks genes by expression level (Gene_C > Gene_A > Gene_B)
+- Understands that raw fragment counts do NOT reflect true expression without normalization","Trapnell C, et al. Differential gene and transcript expression analysis of RNA-seq experiments with TopHat and Cufflinks. Nat Protoc. 2012;7(3):562-578. doi:10.1038/nprot.2012.016"
+36,Category 2,50,SmartSeq2_SingleCell_RNAseq_Protocol_v2,single_cell_rnaseq_protocol,"Understand the key design principles of the Smart-seq2 single-cell RNA-seq protocol: anchored oligo-dT priming with VN, template switching oligo (TSO) with terminal riboguanosines and LNA enhancement, and practical limitations such as poly(A)+ bias and lack of strand specificity.","protocol_components:
+  oligo_dT_primer:
+    sequence: 5'-AAGCAGTGGTATCAACGCAGAGTACT30VN-3'
+    notes:
+      - VN anchor (V=A/C/G, N=any base) helps prime at the start of the poly(A) tail
+  TSO:
+    sequence: 5'-AAGCAGTGGTATCAACGCAGAGTACATrGrG+G-3'
+    notes:
+      - rG: riboguanosine
+      - +G: LNA-modified guanosine
+  ISPCR_primer:
+    sequence: 5'-AAGCAGTGGTATCAACGCAGAGT-3'
+  RT_and_PCR:
+    RT_additive: betaine (commonly used to reduce secondary structure and bias; final conditions are optimized per lab)
+    strand_specificity: none
+    RNA_capture_bias: poly(A)+ (oligo-dT primed)
+","key_points:
+  VN_anchor_purpose: Improves priming at the poly(A) start and avoids long poly(A) runs
+  template_switching: Reverse transcriptase adds non-templated Cs; terminal Gs on the TSO base-pair and enable 5' adapter addition
+  LNA_effect: Increases effective annealing strength/stability at the 3' end of the TSO
+limitations:
+  - Primarily captures poly(A)+ RNA; poly(A)- species are under-represented
+  - Not strand-specific
+advantages:
+  - Enables full-length cDNA coverage for many transcripts
+","- Explains why the oligo-dT ends with VN and what problem it avoids
+- Explains how template switching works and why the TSO contains terminal Gs
+- Understands what LNA modification changes (stability/annealing)
+- Identifies key limitations: poly(A)+ bias and lack of strand specificity
+","Picelli S, et al. Full-length RNA-seq from single cells using Smart-seq2. Nat Protoc. 2014;9(1):171-181. doi:10.1038/nprot.2014.006"
+37,Category 2,51,CRISPR_Screening_Parameters,crispr_screening,"Calculate key parameters for a pooled genome-scale CRISPR knockout screen, including estimating MOI from transduction rate (Poisson model), and computing starting cell numbers needed to maintain library coverage during selection.","library: GeCKO v2
+library_size_sgRNAs: 100000
+target_coverage_cells_per_sgRNA: 500
+target_MOI: 0.3
+
+titer_assay_cells_seeded_per_well: 3e6
+readout: fraction_transduced = (viability_with_selection / viability_without_selection)
+virus_volume_uL_to_fraction_transduced:
+  0: 0.00
+  25: 0.08
+  50: 0.15
+  100: 0.28
+  200: 0.45
+  400: 0.62
+
+model: Poisson infections per cell
+  fraction_transduced = 1 - exp(-MOI)
+  MOI = -ln(1 - fraction_transduced)
+","example_estimates:
+  fraction_transduced_at_100uL: 0.28
+  MOI_at_100uL: 0.33
+  infected_fraction_at_MOI_0.3: 0.259
+  required_infected_cells_for_500x: 50000000
+  starting_cells_to_transduce_at_MOI_0.3: 1.93e+08  # ~1.9e8
+
+selection_types:
+  negative_selection: sgRNAs targeting essential genes are depleted
+  positive_selection: sgRNAs conferring resistance are enriched
+","- Distinguishes fraction transduced from MOI and applies the Poisson relationship
+- Calculates starting cell numbers needed for target coverage at a specified MOI
+- Explains why low MOI is used in pooled screens (mostly one perturbation per cell)
+- Identifies expected enrichment/depletion behavior in positive vs negative selection
+","Joung J, Konermann S, Gootenberg JS, et al. Genome-scale CRISPR-Cas9 knockout and transcriptional activation screening. Nat Protoc. 2017;12(4):828-863. doi:10.1038/nprot.2017.016"
+38,Category 2,52,UMI_Molecular_Counting,ngs_umi_quantification,"Explain how Unique Molecular Identifiers (UMIs) enable molecule-level counting by collapsing PCR duplicates, and recognize common caveats such as sequencing/PCR errors and UMI collisions.","concepts:
+  UMI: short random sequence tag added during library prep to label original molecules
+  goal: count distinct (UMI, feature) pairs rather than raw reads to reduce PCR amplification bias
+  caveats:
+    - sequencing/PCR errors can create spurious UMIs (needs error-aware collapsing)
+    - UMI collisions can occur if UMI space is small or depth is very high
+
+reported_example (mRNA-seq, 15 vs 25 PCR cycles):
+  read_counting_R2: 0.94664
+  UMI_counting_R2: 0.99993
+
+reported_bias_finding:
+  - PCR amplification shows a G+C content bias in raw read counts
+  - preferential amplification of low G+C sequences was observed
+","summary:
+  - UMI counting reduces PCR-cycle-dependent distortion relative to total read counting
+  - Remaining variance can reflect biology, sampling noise, and technical factors not fixed by UMIs
+","- Defines what a UMI is and what problem it solves (PCR duplicates/bias)
+- Distinguishes read counting from UMI-based molecule counting
+- Identifies at least two caveats: UMI collisions and sequencing/PCR errors
+- Interprets the R² comparison between read counting and UMI counting
+","Kivioja T, Vaharautio A, Karlsson K, et al. Counting absolute numbers of molecules using unique molecular identifiers. Nat Methods. 2012;9(1):72-74. doi:10.1038/nmeth.1778"
+39,Category 2,53,Lentiviral_Vector_Production_and_Titration,lentiviral_vector_production,"Understand third-generation lentiviral vector production and common titration methods (functional titer by FACS and p24 ELISA), including correct unit handling in titer calculations and key safety concepts such as SIN LTRs.","system: third_generation_lentivirus
+plasmids: [transfer_vector, gag_pol, rev, VSV-G]  # example: pMDL, pRev, pVSVG
+functional_titration:
+  cells_per_well: 1e5
+  virus_volume_added_uL: 20
+  readout: percent_GFP_positive_by_FACS
+  dilution_table:
+    1: 95.0
+    1e-1: 78.0
+    1e-2: 42.0
+    1e-3: 8.5
+    1e-4: 0.9
+    1e-5: 0.1
+p24_ELISA_ng_per_uL: 50
+
+titer_formula (functional): TU_per_uL = (P/100 * N / V_uL) * (1/DF)
+
+capo4_transfection_note:
+  - CRITICAL STEP (per cited protocol): incubate at 3% CO2 for CaPO4 transfection (pH/precipitation sensitive)
+","key_points:
+  - Use non-saturated dilutions for functional titer calculation
+  - Functional titer and p24-based estimates can differ; p24 is an approximation
+  - SIN vectors: 3' LTR U3 deletion is copied to the 5' LTR, reducing promoter activity after integration
+","- Computes functional titer from %GFP+, cell number, volume, and dilution factor with correct units
+- Identifies why saturated conditions (very high %GFP+) are not used for titer calculation
+- Interprets p24-to-TU conversion as a rough estimate
+- Explains the SIN LTR safety mechanism at a high level
+","Tiscornia G, Singer O, Verma IM. Production and purification of lentiviral vectors. Nat Protoc. 2006;1(1):241-245. doi:10.1038/nprot.2006.37"
+40,Category 2,54,ATACseq_Chromatin_Accessibility_Profiling,atac_seq_chromatin_accessibility,"Understand core ATAC-seq concepts and QC: Tn5 tagmentation of accessible chromatin, why paired-end sequencing is recommended, and how to interpret quality metrics such as TSS enrichment and fragment size periodicity.","protocol: Omni-ATAC (example workflow)
+cells_per_sample: 50000
+lysis_buffer_detergents: [NP-40, Tween-20, digitonin]
+tagmentation: Tn5 transposase at 37C for 30 min
+PCR: barcoding amplification with initial 72C incubation (fill-in)
+sequencing: paired-end recommended
+","expected_QC_signatures:
+  - high TSS enrichment (good signal-to-background)
+  - fragment size distribution with nucleosome-associated periodicity (subnucleosomal and mono/di-nucleosome peaks)
+  - mitochondrial read fraction monitored (high values can indicate harsh lysis or sample issues)
+
+paired_end_rationale:
+  - enables accurate fragment length estimation
+  - captures both Tn5 insertion sites per fragment
+","- Explains why paired-end sequencing is recommended for ATAC-seq (fragment length + insertion sites)
+- Explains the role of digitonin in Omni-ATAC lysis (selective permeabilization)
+- Identifies TSS enrichment as a primary QC signal-to-background metric
+- Explains the purpose of the 72C fill-in step before PCR cycling
+","Grandi FC, Modi H, Kampman L, Corces MR. Chromatin accessibility profiling by ATAC-seq. Nat Protoc. 2022;17(6):1518-1552. doi:10.1038/s41596-022-00692-9"
+41,Category 2,55,TurboID_Proximity_Labeling,turboid_proximity_labeling,"Understand proximity labeling with TurboID/miniTurbo and split-TurboID: the biotin-AMP intermediate, key advantages over BioID, and practical considerations for experiments in cells or organisms (labeling window, background, and controls).","methods:
+  APEX2: peroxidase; uses biotin-phenol + H2O2; very fast labeling
+  BioID: biotin ligase; slow labeling (hours)
+  TurboID/miniTurbo: engineered biotin ligases; fast labeling (minutes)
+  split-TurboID: two fragments reconstitute activity upon proximity (e.g., contact sites)
+
+chemistry:
+  TurboID uses ATP + biotin to generate biotin-5'-AMP (biotin-AMP) that can covalently label nearby proteins
+","design_considerations:
+  - TurboID: higher activity; can increase background if biotin is present
+  - miniTurbo: lower activity/biotin affinity; can provide tighter temporal control with reduced background
+  - include appropriate negative controls (no enzyme / mislocalized enzyme / no-biotin controls as appropriate)
+","- Identifies biotin-AMP as the reactive intermediate for TurboID labeling
+- Explains the main advantage of TurboID vs BioID (short labeling window)
+- Explains a key practical advantage of ligase-based labeling vs peroxidase-based labeling (no H2O2 requirement)
+- Chooses when miniTurbo is preferable (tighter time window / lower background)
+","Cho KF, Branon TC, Udeshi ND, Myers SA, Carr SA, Ting AY. Proximity labeling in mammalian cells with TurboID and split-TurboID. Nat Protoc. 2020;15(12):3971-3999. doi:10.1038/s41596-020-0399-0"
+42,Category 2,56,SCENIC_Plus_eGRN_Inference,single_cell_multiomics_grn,"Understand the SCENIC+ workflow for inferring enhancer-driven gene regulatory networks (eGRNs) from single-cell multiomics data (scRNA-seq + scATAC-seq), including eRegulon definition, chromatin topic modeling, motif enrichment, and region-to-gene linking.","data_modalities: [scRNA-seq, scATAC-seq]
+core_objects:
+  eRegulon: TF + target regulatory regions + target genes
+steps_overview:
+  1) scATAC-seq topic modeling to group co-accessible regions (pycisTopic; LDA-based)
+  2) motif enrichment / TF annotation of regions (pycisTarget)
+  3) region-to-gene linking (uses statistical/ML models; multiple approaches can be benchmarked)
+  4) score TF/region/gene programs per cell (e.g., regulon activity AUC)
+analysis_extension:
+  GRN velocity: relate TF expression changes to downstream regulon activity changes along a trajectory
+","key_takeaways:
+  - eRegulon extends classic regulons by explicitly including regulatory regions
+  - pycisTopic uses LDA-style topic modeling on accessibility
+  - region-to-gene linking can be modeled with regression/ML (e.g., tree ensembles, regularized regression)
+  - GRN velocity is used to study temporal relationships between TF expression and regulon activity along differentiation
+","- Correctly identifies the three components of an eRegulon
+- Knows pycisTopic uses LDA topic modeling on scATAC-seq accessibility
+- Understands what region-to-gene linking means and that multiple models can be used/benchmarked
+- Explains, at a high level, what GRN velocity is used for (temporal/trajectory dynamics)
+","Bravo Gonzalez-Blas C, De Winter S, Hulselmans G, et al. SCENIC+: single-cell multiomic inference of enhancers and gene regulatory networks. Nat Methods. 2023;20(9):1355-1367. doi:10.1038/s41592-023-01938-4"
+43,Category 2,57,Harmony_SingleCell_Integration,single_cell_batch_correction,"Understand the Harmony algorithm for integrating single-cell data across batches/donors/technologies, including its soft k-means clustering, diversity-encouraging penalty, and common evaluation metrics such as iLISI/cLISI.","problem: batch effects in low-dimensional embeddings (e.g., PCA)
+algorithm_components:
+  clustering: soft k-means on the embedding
+  diversity_penalty: encourages batch mixing within clusters (information-theoretic/KL-based)
+  correction: computes batch-specific correction factors per cluster and updates the embedding iteratively
+evaluation:
+  iLISI: higher indicates better batch mixing
+  cLISI: close to 1 indicates good cell-type separation
+capability: can integrate multiple covariates (e.g., donor and technology)
+lisi_interpretation_note:
+  iLISI: minimum is 1; values near 1 indicate little/no batch mixing; higher indicates better mixing
+","key_takeaways:
+  - Harmony operates on a low-dimensional embedding and iteratively corrects batch effects
+  - soft clustering allows cells to have partial membership across clusters
+  - LISI metrics help quantify batch mixing vs cell-type separation
+","- Identifies soft k-means as the clustering approach used by Harmony
+- Explains why a diversity penalty is used (promote batch mixing within clusters)
+- Interprets iLISI and cLISI at a high level
+- Recognizes that Harmony can integrate multiple batch variables
+","Korsunsky I, Millard N, Fan J, et al. Fast, sensitive and accurate integration of single-cell data with Harmony. Nat Methods. 2019;16(12):1289-1296. doi:10.1038/s41592-019-0619-0"
+44,Category 2,58,ColabFold_Protein_Structure_Prediction,protein_structure_prediction,"Understand ColabFold as an accessible interface for structure prediction that uses MMseqs2-based homology search/MSA generation with AlphaFold2- or RoseTTAFold-based models, and interpret common confidence metrics (pLDDT, PAE, pTM/ipTM) and the recycle parameter.","components:
+  homology_search_and_msa: MMseqs2
+  structure_model: AlphaFold2 or RoseTTAFold variants (depending on run mode)
+confidence_outputs:
+  pLDDT: per-residue confidence (single-chain)
+  PAE: predicted alignment error (helps interpret domain/chain placement uncertainty)
+  pTM/ipTM: predicted TM-score (and interface TM-score for complexes)
+parameter:
+  recycle_count: number of iterative refinement passes through the model
+","key_takeaways:
+  - MMseqs2 accelerates the homology search/MSA step relative to older pipelines
+  - pLDDT reports local confidence; PAE helps interpret relative placement of domains/chains
+  - for complexes, interface confidence is often summarized by ipTM (alongside pTM)
+  - increasing recycles can improve some predictions at the cost of runtime
+","- Identifies MMseqs2 as the key method used for fast homology search/MSA generation
+- Correctly defines pLDDT as per-residue confidence
+- Knows PAE/pTM/ipTM are used to interpret global or inter-chain confidence
+- Explains what recycle count does (iterative refinement)
+","Mirdita M, Schutze K, Moriwaki Y, Heo L, Ovchinnikov S, Steinegger M. ColabFold: making protein folding accessible to all. Nat Methods. 2022;19(6):679-682. doi:10.1038/s41592-022-01488-1"
+45,Category 2,59,DESeq2_Differential_Expression,bulk_rnaseq_differential_expression,"Run DESeq2 R/Bioconductor package to perform differential expression analysis on RNA-seq count data. This involves executing R code to: (1) create DESeqDataSet object, (2) run the DESeq() function for normalization and statistical testing, (3) extract and filter results.","count_matrix: Gene-by-sample count matrix (raw integer counts, NOT normalized)
+sample_info: DataFrame with sample metadata including 'condition' column
+design_formula: ~condition
+alpha: 0.05 (FDR threshold)","dds: DESeqDataSet object with size factors and dispersion estimates
+res: DESeqResults object with baseMean, log2FoldChange, lfcSE, stat, pvalue, padj columns
+sig_genes: Filtered gene list with padj < 0.05","- R code correctly loads DESeq2 library and creates DESeqDataSet
+- DESeq() function runs without errors
+- Results extracted using results() function with correct contrast
+- Significant genes filtered using padj (NOT pvalue)","Love MI, Huber W, Anders S. Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome Biology. 2014;15(12):550. doi:10.1186/s13059-014-0550-8"
+46,Category 2,60,Seurat_scRNAseq_Integration,single_cell_data_integration,"Integrate multiple single-cell RNA-seq datasets using Seurat v3+ anchor-based integration. This involves executing R code to: (1) select integration features, (2) find integration anchors (optionally using CCA as the reduction), (3) integrate expression values to create an 'integrated' assay, and (4) run dimensionality reduction and clustering on the integrated assay.","seurat_obj_list: List of Seurat objects (e.g., control and stimulated conditions)
+features: Integration features (e.g., from SelectIntegrationFeatures)
+dims: Dimensions used for anchor finding/integration (e.g., 1:30)
+resolution: Clustering resolution parameter","integrated_obj: Seurat object containing an 'integrated' assay
+pca/umap: Integrated low-dimensional embeddings
+clusters: Joint clustering results across all datasets","- Uses Seurat v3+ workflow: SelectIntegrationFeatures() → FindIntegrationAnchors() → IntegrateData()
+- Runs ScaleData()/RunPCA() on assay='integrated' (then neighbors/clusters/UMAP)
+- Integrated embedding shows mixing by cell type rather than batch/condition","Butler A, Hoffman P, Smibert P, Papalexi E, Satija R. Integrating single-cell transcriptomic data across different conditions, technologies, and species. Nature Biotechnology. 2018;36(5):411-420. doi:10.1038/nbt.4096"
+47,Category 2,61,STAR_RNAseq_Alignment,rnaseq_alignment,"Align RNA-seq reads to a reference genome using STAR (Spliced Transcripts Alignment to a Reference). This involves: (1) generating a genome index with splice junction annotations, (2) running the alignment with appropriate parameters for intron size and multimapping, and (3) producing sorted BAM output for downstream analysis.","genome_fasta: Reference genome FASTA file (e.g., GRCh38.fa)
+annotation_gtf: Gene annotation GTF file (e.g., gencode.v38.gtf)
+reads_R1/R2: Paired-end FASTQ files
+read_length: Sequencing read length (e.g., 100bp)","Aligned.sortedByCoord.out.bam: Coordinate-sorted BAM file
+SJ.out.tab: Splice junction table with coordinates and read counts
+Log.final.out: Alignment statistics including mapping rate","- Genome index generated with correct --sjdbOverhang (read_length - 1)
+- Alignment produces sorted BAM with proper splice junction detection
+- Mapping rate >80% for high-quality RNA-seq data
+- Intron size parameters appropriate for organism (e.g., --alignIntronMax 1000000 for mammals)","Dobin A, Davis CA, Schlesinger F, et al. STAR: ultrafast universal RNA-seq aligner. Bioinformatics. 2013;29(1):15-21. doi:10.1093/bioinformatics/bts635"
+48,Category 2,62,featureCounts_Read_Summarization,bioinformatics_tool_usage,"Use featureCounts to count reads mapping to genomic features from RNA-seq or ChIP-seq experiments. Requires understanding of command-line parameters, paired-end fragment handling, multi-overlap read treatment, and performance characteristics.","BAM/SAM alignment files, GTF/GFF annotation file, experiment type (RNA-seq or ChIP-seq), paired-end or single-end reads","Gene-level or exon-level read counts, assignment statistics including assigned reads, unassigned_ambiguity, unassigned_multimapping, unassigned_nofeatures","- Correct parameter selection for experiment type (-O for ChIP-seq, exclude for RNA-seq)
+- Proper paired-end handling (-p flag)
+- Appropriate feature type and attribute specification (-t exon -g gene_id for gene-level)
+- Understanding of strand-specific counting (-s parameter)","Liao Y, Smyth GK, Shi W. featureCounts: an efficient general purpose program for assigning sequence reads to genomic features. Bioinformatics. 2014;30(7):923-930. doi:10.1093/bioinformatics/btt656"
+49,Category 2,63,CellRanger_Single_Cell_Analysis,bioinformatics_tool_usage,"Use Cell Ranger to process 10x Genomics Chromium single-cell RNA-seq data. Requires understanding of command-line parameters, GEM barcode structure, cell calling algorithms, and quality metrics interpretation.","FASTQ files from 10x Genomics Chromium platform, reference transcriptome (e.g., GRCh38), sample information","Gene-barcode matrix (filtered and raw), web_summary.html with QC metrics, BAM file with cell barcodes, cloupe file for Loupe Browser","- Correct cellranger count command with required parameters (--id, --fastqs, --transcriptome)
+- Understanding of barcode structure (14bp cell barcode + 10bp UMI)
+- Interpretation of QC metrics (median genes per cell, valid barcodes, sequencing saturation)
+- Understanding of cell calling algorithm and multiplet rate estimation","Zheng GXY, Terry JM, Belgrader P, et al. Massively parallel digital transcriptional profiling of single cells. Nature Communications. 2017;8:14049. doi:10.1038/ncomms14049"
+50,Category 2,64,Scanpy_Single_Cell_Analysis,bioinformatics_tool_usage,"Use Scanpy for large-scale single-cell RNA-seq data analysis in Python. Requires understanding of AnnData structure, preprocessing workflow order, dimensionality reduction, graph-based clustering, and differential expression testing.","AnnData object containing count matrix (adata.X), cell metadata (adata.obs), gene metadata (adata.var)","Processed AnnData with QC metrics, normalized counts, PCA embeddings (adata.obsm['X_pca']), UMAP coordinates (adata.obsm['X_umap']), cluster assignments (adata.obs['leiden']), marker genes (adata.uns['rank_genes_groups'])","- Correct preprocessing order (filter → normalize → log1p → HVG → scale → PCA)
+- Understanding of AnnData slots (X, obs, var, uns, obsm, layers)
+- Proper use of sc.pp (preprocessing), sc.tl (tools), sc.pl (plotting) modules
+- Correct parameters for clustering (resolution) and differential expression (method)","Wolf FA, Angerer P, Theis FJ. SCANPY: large-scale single-cell gene expression data analysis. Genome Biology. 2018;19:15. doi:10.1186/s13059-017-1382-0"
+51,Category 2,65,GATK_Variant_Calling,bioinformatics_tool_usage,"Use GATK (Genome Analysis Toolkit) for germline short variant discovery (SNPs and Indels) from next-generation sequencing data. Requires understanding of the GATK Best Practices workflow, HaplotypeCaller parameters, base quality score recalibration (BQSR), and variant filtering strategies.","Aligned BAM file (coordinate-sorted, indexed), reference genome (FASTA with .dict and .fai), known sites VCF files (dbSNP, HapMap, 1000G)","Per-sample GVCF files, joint-called VCF file, filtered VCF with PASS/FILTER annotations, recalibration tables and plots","- Correct GATK Best Practices workflow order (MarkDuplicates → BQSR → HaplotypeCaller → GenotypeGVCFs → VQSR/Filtering)
+- Proper use of -ERC GVCF for scalable cohort calling
+- Understanding of hard filtering thresholds (QD, FS, MQ, SOR, MQRankSum, ReadPosRankSum)
+- Correct parameter syntax (-R for reference, -I for input, -O for output)","McKenna A, Hanna M, Banks E, et al. The Genome Analysis Toolkit: A MapReduce framework for analyzing next-generation DNA sequencing data. Genome Research. 2010;20(9):1297-1303. doi:10.1101/gr.107524.110"
+52,Category 2,66,MultiQC_Report_Generation,bioinformatics_tool_usage,"Use MultiQC to aggregate quality control results from multiple bioinformatics tools and samples into a single interactive HTML report. Requires understanding of command-line parameters, module selection, sample naming, and output customization.","Directory containing log files and QC reports from various bioinformatics tools (FastQC, STAR, featureCounts, Picard, etc.)","Interactive HTML report (multiqc_report.html), parsed data directory (multiqc_data/) with tab-delimited/YAML/JSON files, optional exported plots","- Correct basic usage (multiqc . or multiqc <directory>)
+- Proper use of output options (-o for output directory, -n for report name, -f for force overwrite)
+- Understanding of module selection (-m/--module to include, -e/--exclude to exclude)
+- Correct sample name handling (-d for directory prefix, --ignore for excluding files)","Ewels P, Magnusson M, Lundin S, Kaller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016;32(19):3047-3048. doi:10.1093/bioinformatics/btw354"
+53,Category 3,1,KEGG_Pathway_ComplementCascade_Extraction,pathway_to_gene_mapping,"Given the KEGG pathway ""Complement and coagulation cascades"", retrieve the pathway ID and list core genes involved in the complement arm (classical, lectin, and alternative activation routes), as shown in KEGG pathway map04610.","query: ""Complement and coagulation cascades""","pathway_id: map04610
+complement_genes:
+  - C1QA
+  - C1QB
+  - C1QC
+  - C1R
+  - C1S
+  - C2
+  - C3
+  - C4A
+  - C4B
+  - C5
+  - C6
+  - C7
+  - C8A
+  - C8B
+  - C8G
+  - C9
+  - MASP1
+  - MASP2
+  - MBL2
+  - CFP
+  - CFH
+  - CFI
+  - SERPING1  # (C1INH)
+  - CFB
+  - CFD
+  - CD55
+  - CD59","- pathway_id matches map04610
+- Includes major genes in the classical, lectin, and alternative complement cascades (core components and key regulators)
+- Gene symbols are HGNC-compliant
+- Output format is valid and structured (e.g., for YAML/JSON parsing)","source_database: KEGG
+url: https://www.kegg.jp/pathway/map04610
+derived_from: uploaded pathway diagram
+pathway_focus: complement cascade only (not coagulation)"
+54,Category 3,2,KEGG_Pathway_NeuroactiveLigandReceptor_Extraction,pathway_to_gene_mapping,"Given the KEGG pathway name ""Neuroactive ligand-receptor interaction"" (map04080), identify the pathway ID and summarize major receptor families plus representative ligand-receptor relationships. Note that many ligands in this pathway are small molecules (not gene-encoded), while peptide/hormone ligands can be represented by their ligand genes.","query: ""Neuroactive ligand-receptor interaction""","pathway_id: map04080
+receptor_families_examples:
+  - CHRM (muscarinic acetylcholine receptors; ligand is acetylcholine, not gene-encoded)
+  - ADR (adrenergic receptors; ligands epinephrine/norepinephrine, not gene-encoded)
+  - DRD (dopamine receptors; ligand dopamine, not gene-encoded)
+  - HRH (histamine receptors; ligand histamine, not gene-encoded)
+  - HTR (serotonin receptors; ligand serotonin, not gene-encoded)
+  - TAAR (trace amine-associated receptors; ligands trace amines, not gene-encoded)
+peptide_or_hormone_pairs_examples:
+  - AGT -> AGTR
+  - APLN/APELA -> APLNR
+  - GRP -> GRPR
+  - GHRL -> GHSR
+  - KISS1 -> KISS1R
+  - MLN -> MLNR
+  - NMU/NMS -> NMUR
+  - NPS -> NPSR1
+  - NPY -> NPY1R/NPY2R/NPY4R/NPY5R
+  - NTS -> NTSR
+  - AVP -> AVPR
+  - PMCH -> MCHR
+  - TSHB -> TSHR
+  - FSHB -> FSHR
+  - LHB/CGB -> LHCGR
+prostanoid_example:
+  - prostaglandin D2 -> PTGDR (ligand is not gene-encoded)
+","- Correctly identifies KEGG pathway map04080
+- Distinguishes small-molecule ligands (not gene-encoded) from peptide/hormone ligand genes
+- Provides correct receptor-family examples (e.g., DRD for dopamine receptors)
+- Provides correct representative peptide/hormone ligand-gene to receptor-gene relationships
+- Output is consistently formatted and avoids treating receptor gene families as ligand genes","pathway_id: map04080
+name: Neuroactive ligand-receptor interaction
+kegg_url: https://www.kegg.jp/entry/map04080
+extracted_from: pathway image + KEGG DB
+focus: GPCRs, hormone receptors, neuropeptides, prostanoid signaling"
+55,Category 3,3,Disease_Gene_CysticFibrosis_TextMining,disease_to_gene_mapping,"Identify top genes associated with Cystic Fibrosis based on text-mining evidence
+from the DISEASES database. Use Z-score threshold of ≥5.7 to select genes.","disease_list:
+  - ""Cystic Fibrosis""
+confidence_cutoff: 5.7
+similarity_threshold: 80
+top_n: 10
+file_path: resource/diseases/human_disease_integrated_full.tsv","""Cystic Fibrosis"":
+  matched_disease: ""Cystic fibrosis""
+  similarity_score: 90
+  genes:
+    - gene: CFTR
+      z_score: 8.9
+      confidence: 4
+    - gene: ELANE
+      z_score: 6.5
+      confidence: 4
+    - gene: CXCL8
+      z_score: 6.2
+      confidence: 4
+    - gene: MUC5AC
+      z_score: 6.0
+      confidence: 3
+    - gene: MUC5B
+      z_score: 5.9
+      confidence: 3
+    - gene: SERPINA1
+      z_score: 5.9
+      confidence: 3
+    - gene: IL1B
+      z_score: 5.9
+      confidence: 3
+    - gene: IL6
+      z_score: 5.8
+      confidence: 3
+    - gene: TNF
+      z_score: 5.8
+      confidence: 2
+    - gene: SCNN1B
+      z_score: 5.7
+      confidence: 2
+  count: 10
+  note: ""Top 10 text-mined genes for Cystic Fibrosis from DISEASES database""","- CFTR must be ranked highest (Z-score 8.9)
+- All 10 genes should match the published list with Z-score ≥ 5.7
+- Output must list Z-score and confidence for each gene
+- Correct YAML format for parsing","database: DISEASES (Jensen Lab)
+disease_id: DOID:1485
+disease_name: Cystic Fibrosis
+url: https://diseases.jensenlab.org/Entity?order=textmining,knowledge,experiments&textmining=10&knowledge=10&experiments=10&type1=-26&type2=9606&id1=DOID:1485
+extracted_from: Text mining section
+accessed_on: 2025-07-23"
+56,Category 3,4,Disease_Gene_Association_ParkinsonsDisease,disease_gene_association,"Identify genes associated with Parkinson's disease (DOID:14330) using the DISEASES database
+with evidence derived from text mining. Top genes are selected based on Z-score ranking.","disease_id: DOID:14330
+disease_name: Parkinson's disease
+evidence_source: textmining
+max_genes: 10","associated_genes:
+  - gene: SNCA
+    z_score: 9.0
+  - gene: LRRK2
+    z_score: 7.9
+  - gene: TH
+    z_score: 7.8
+  - gene: PRKN
+    z_score: 7.7
+  - gene: SLC6A3
+    z_score: 7.7
+  - gene: PINK1
+    z_score: 7.7
+  - gene: PARK7
+    z_score: 7.6
+  - gene: MAOB
+    z_score: 7.4
+  - gene: BDNF
+    z_score: 7.2
+  - gene: APP
+    z_score: 7.1","- Each gene must appear in the top 10 list by Z-score.
+- Genes must have a Z-score >= 7.0 from text mining data.
+- Source must be traceable to the DISEASES database.
+- All genes must match the expected list (SNCA, LRRK2, TH, PRKN, etc.)
+- Z-scores must match the published values","database: DISEASES (Jensen Lab)
+disease_id: DOID:14330
+disease_name: Parkinson's disease
+url: https://diseases.jensenlab.org/Entity?order=textmining,knowledge,experiments&textmining=10&knowledge=10&experiments=10&type1=-26&type2=9606&id1=DOID:14330
+accessed_on: 2025-07-23"
+57,Category 3,5,Disease_Gene_Association_Parkinsons_Disease_Text_Mining,disease_to_gene_mapping,"Identify top genes associated with Parkinson's disease based on text-mining evidence
+from the DISEASES database. Use Z-score threshold of ≥7.1 to select genes.","disease_list:
+  - ""Parkinson's disease""
+confidence_cutoff: 7.1
+similarity_threshold: 80
+top_n: 10
+file_path: resource/diseases/human_disease_integrated_full.tsv","""Parkinson's disease"":
+  matched_disease: ""Parkinson's disease""
+  similarity_score: 90
+  genes:
+    - gene: SNCA
+      z_score: 9.0
+      confidence: 4
+    - gene: LRRK2
+      z_score: 7.9
+      confidence: 4
+    - gene: TH
+      z_score: 7.8
+      confidence: 4
+    - gene: PRKN
+      z_score: 7.7
+      confidence: 4
+    - gene: SLC6A3
+      z_score: 7.7
+      confidence: 4
+    - gene: PINK1
+      z_score: 7.7
+      confidence: 4
+    - gene: PARK7
+      z_score: 7.6
+      confidence: 4
+    - gene: MAOB
+      z_score: 7.4
+      confidence: 4
+    - gene: BDNF
+      z_score: 7.2
+      confidence: 4
+    - gene: APP
+      z_score: 7.1
+      confidence: 4
+  count: 10
+  note: ""Top 10 text-mined genes for Parkinson's disease from DISEASES database""","- SNCA must be ranked highest (Z-score 9.0)
+- All 10 genes should match the published list with Z-score ≥ 7.1
+- Output must list Z-score and confidence for each gene
+- Correct YAML format for parsing","database: DISEASES (Jensen Lab)
+disease_id: DOID:14330
+disease_name: Parkinson's disease
+url: https://diseases.jensenlab.org/Entity?order=textmining,knowledge,experiments&textmining=10&knowledge=10&experiments=10&type1=-26&type2=9606&id1=DOID:14330
+extracted_from: Text mining section
+accessed_on: 2025-07-23"
+58,Category 3,6,STRING_Protein_Interaction_PHB2,gene_to_interacting_partners,"Identify protein-protein interaction partners for PHB2 using the STRING database.
+Extract top interaction partners with combined scores ≥ 0.88 from STRING network output.
+Analyze functional enrichments including GO terms and PubMed references.","gene_list:
+  - PHB2
+score_cutoff: 0.88
+species_id: 9606
+limit: 1000","PHB2:
+  partners:
+    - gene: PHB
+      score: 0.999
+    - gene: ESR1
+      score: 0.985
+    - gene: C1QBP
+      score: 0.964
+    - gene: ARFGEF3
+      score: 0.962
+    - gene: HDAC1
+      score: 0.946
+    - gene: TUFM
+      score: 0.911
+    - gene: MFN1
+      score: 0.907
+    - gene: OPA1
+      score: 0.905
+    - gene: AFG3L2
+      score: 0.892
+    - gene: UQCRC1
+      score: 0.887
+  count: 10
+  enrichment:
+    biological_process:
+      - GO:0008053: ""Mitochondrial fusion""
+      - GO:1990051: ""Activation of protein kinase C activity""
+      - GO:0039529: ""RIG-I signaling pathway""
+      - GO:0033144: ""Negative regulation of intracellular steroid hormone receptor signaling""
+      - GO:0010863: ""Positive regulation of phospholipase C activity""
+    cellular_component:
+      - GO:0035632: ""Mitochondrial prohibitin complex""
+      - GO:0098800: ""Inner mitochondrial membrane protein complex""
+      - GO:0098798: ""Mitochondrial protein-containing complex""
+      - GO:0005743: ""Mitochondrial inner membrane""
+      - GO:0031966: ""Mitochondrial membrane""
+    reference_publications:
+      - PMID:26052702
+      - PMID:33130089
+      - PMID:21689744
+      - PMID:33257655
+      - PMID:34361072","- Must return top 10 PHB2 interactors with STRING score ≥ 0.88
+- Interactions must match STRING DB output for PHB2
+- GO terms and PubMed enrichment must match evidence shown in STRING interface","database: STRING v11.5
+gene: PHB2
+species: Homo sapiens
+species_id: 9606
+url: https://string-db.org/cgi/network?taskId=bPZNkPyVbrFo&sessionId=bIv2j7m6i0dn
+accessed_on: 2025-07-23"
+59,Category 3,7,Protein_Interaction_Network_NDC80_STRING,gene_interaction_prediction,"Identify predicted protein-protein interactions (PPI) for the human gene NDC80
+using STRING database. Report top interaction partners with score ≥ 0.99.","gene_list:
+  - ""NDC80""
+score_cutoff: 0.99
+species_id: 9606
+limit: 1000
+model_name: gemini-2.5-pro","NDC80:
+  partners:
+    - gene: NUF2
+      score: 0.999
+    - gene: SPC25
+      score: 0.999
+    - gene: SPC24
+      score: 0.999
+    - gene: BUB1
+      score: 0.998
+    - gene: KNL1
+      score: 0.995
+    - gene: CKAP5
+      score: 0.994
+    - gene: BUB1B
+      score: 0.992
+    - gene: TTK
+      score: 0.992
+    - gene: ZWINT
+      score: 0.991
+    - gene: MIS12
+      score: 0.991
+  count: 10
+  note: ""Top 10 predicted functional partners for NDC80 from STRING database.""","- At least 10 high-confidence partners (score ≥ 0.99)
+- Interactions must be supported by multiple evidence channels
+- Correct YAML structure for tool-based parsing","database: STRING v11.5
+url: https://string-db.org/cgi/network?taskId=buCjxdFuXCrg&sessionId=bIv2j7m6i0dn
+accessed_on: 2025-07-23
+input_gene: NDC80
+organism: Homo sapiens (NCBI:9606)"
+60,Category 3,8,GO_Gene_Association_Mitotic_Spindle_Checkpoint,go_term_to_gene_mapping,"Identify human genes associated with the GO term ""mitotic spindle assembly checkpoint signaling"" (GO:0007094),
+including known synonyms such as ""mitotic checkpoint"", ""SAC-independent checkpoint"", ""Mad2-dependent checkpoint"", and
+other related signaling pathway terms. The tool searches local GO annotation files and applies LLM-assisted matching
+for accurate term resolution.","query_list:
+  - ""mitotic checkpoint""
+  - ""SAC-independent checkpoint""
+  - ""Dma1-dependent checkpoint""
+  - ""Mad2-dependent checkpoint""
+  - ""signaling pathway involved in SAC-independent checkpoint""
+  - ""signaling cascade involved in Dma1-dependent checkpoint""
+max_candidates: 100
+similarity_threshold: 10
+model_name: gemini-2.5-pro","GO_term: ""GO:0007094 – Mitotic spindle assembly checkpoint signaling""
+expected_genes:  # Example genes based on STRING/QuickGO cross-reference (can vary with actual GO JSONs)
+  - gene: BUB1
+  - gene: BUB1B
+  - gene: MAD2L1
+  - gene: TTK
+  - gene: CDC20
+  - gene: NDC80
+  - gene: SPC25
+  - gene: KNL1
+min_expected_gene_count: 5
+score_metric: normalized_relevance_score","- GO:0007094 must be matched for at least one query
+- All listed genes should appear in the output for at least one synonym
+- Normalized scores assigned to valid genes
+- YAML must be parseable and complete","ontology: Gene Ontology (GO)
+go_id: GO:0007094
+term_name: Mitotic spindle assembly checkpoint signaling
+synonyms:
+  - mitotic checkpoint
+  - SAC-independent checkpoint
+  - Dma1-dependent checkpoint
+  - Mad2-dependent checkpoint
+  - signaling pathway involved in SAC-independent checkpoint
+  - signaling pathway involved in Dma1-dependent checkpoint
+  - signal transduction involved in Dma1-dependent checkpoint
+  - signaling cascade involved in Dma1-dependent checkpoint
+url: https://www.ebi.ac.uk/QuickGO/term/GO:0007094
+definition: >
+  A mitotic cell cycle checkpoint that delays mitotic sister chromatid separation and the metaphase/anaphase transition
+  until the spindle is correctly assembled and chromosomes are attached. Involves Mph kinase, MCC, and inhibition of APC/C.
+accessed_on: 2025-07-23"
+61,Category 3,9,Essential_Genes_U2OS_DepMap,cell_line_gene_dependency,"Analyze essential genes in the U2OS osteosarcoma cell line (ACH-000364)
+using CRISPR and RNAi datasets from DepMap (Chronos + DEMETER2).
+Identify top 10 preferentially essential genes and visualize gene effect scores.","cell_line: U2OS
+depmap_id: ACH-000364
+source: DepMap Public 25Q2
+methods: [CRISPR_Chronos, RNAi_DEMETER2]
+top_n: 10","CRISPR:
+  method: Chronos
+  top_essential_genes:
+    - DCAF12L1
+    - FBXL18
+    - SUB1
+    - ATCAY
+    - HS2ST1
+    - MAP2K7
+    - R3HCC1
+    - SLC35B2
+    - ZNF655
+    - ZNF700
+RNAi:
+  method: DEMETER2
+  top_essential_genes:
+    - NOM1
+    - SUB1
+    - GTPBP4
+    - GAL
+    - FIP1L1
+    - LONP1
+    - MPI
+    - ICOSLG
+    - OR2T11
+    - AVIL","- Extract and match top 10 essential genes from each screening method
+- Output must clearly separate CRISPR and RNAi results
+- Correct mapping to U2OS (ACH-000364) with link to DepMap portal","database: DepMap (Broad Institute)
+cell_line: U2OS
+depmap_id: ACH-000364
+oncotree_code: OS
+oncotree_disease: Osteosarcoma
+lineage: Bone
+url: https://depmap.org/portal/cell_line/ACH-000364?tab=overview
+accessed_on: 2025-07-23"
+62,Category 3,10,AML_General_Info_NCI,cancer_knowledge_summary,"Provide a structured summary of general information about adult acute myeloid leukemia (AML)
+from the National Cancer Institute (NCI) patient treatment guide. Covers definition, affected
+cell types, risk factors, symptoms, diagnostic steps, and prognosis considerations.",disease: Acute Myeloid Leukemia (AML),"summary: |
+  Acute myeloid leukemia (AML) is a type of cancer in which the bone marrow produces a large number
+  of abnormal blood cells. It can affect red blood cells, white blood cells, and platelets.
+  Blood stem cells in the bone marrow can develop into either myeloid or lymphoid stem cells.
+  Myeloid stem cells mature into:
+    - Red blood cells (oxygen transport)
+    - Granulocytes and other white blood cells (immune response)
+    - Platelets (blood clotting)
+  Key information includes:
+    - There are different subtypes of AML.
+    - Risk factors include smoking, previous chemotherapy, and radiation exposure.
+    - Common symptoms: fever, fatigue, easy bruising or bleeding.
+    - Diagnosis involves blood and bone marrow tests.
+    - Additional tests are done post-diagnosis to check cancer spread.
+    - Patients may seek second opinions.
+    - Prognosis and treatment depend on several individual factors.","The summary accurately reflects information from the NCI Adult AML patient guide, without adding unverified or speculative content.
+
+All required categories are covered: disease definition, affected cell types, relevant stem cell differentiation, risk factors, symptoms, diagnostic methods, post-diagnostic testing, and prognosis considerations.
+
+The output is structured, clearly formatted, and easy to read, preferably using bullet points or short paragraphs.
+
+Medical terminology is used correctly and clearly, with concise explanations appropriate for a general-audience biomedical summary.
+
+No hallucinations, unsupported claims, or content not directly inferable from the NCI source.
+
+Content is neutral in tone, informational, and free of personal opinions, extrapolations, or treatment recommendations beyond what is stated by NCI.
+
+The output fits cleanly in the summary: field and preserves correct indentation and formatting suitable for programmatic ingestion.","source_name: National Cancer Institute (NCI)
+page_title: Adult Acute Myeloid Leukemia Treatment (PDQ®)–Patient Version
+url: https://www.cancer.gov/types/leukemia/patient/adult-aml-treatment-pdq
+accessed_on: 2025-07-22"
+63,Category 3,11,PubChem_Structure_Info,drug_info_extraction,"Given a drug name and/or PubChem CID, retrieve key structural information from PubChem (IUPAC name, SMILES/InChI, molecular formula, weight) and return as a concise JSON object.","name: Imatinib
+pubchem_cid: 5291","iupac_name: >
+  4-[(4-methylpiperazin-1-yl)methyl]-N-[4-methyl-3-[(4-pyridin-3-ylpyrimidin-2-yl)amino]phenyl]benzamide
+inchi: >
+  InChI=1S/C29H31N7O/c1-21-5-10-25(18-27(21)34-29-31-13-11-26(33-29)24-4-3-12-30-19-24)
+  32-28(37)23-8-6-22(7-9-23)20-36-16-14-35(2)15-17-36/h3-13,18-19H,14-17,20H2,1-2H3,
+  (H,32,37)(H,31,33,34)
+smiles: >
+  CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC
+synonyms:
+  - Imatinib
+  - 152459-95-5
+  - Glamox
+  - BKJ8M8G5HI
+  - N-(4-Methyl-3-((4-(pyridin-3-yl)pyrimidin-2-yl)amino)phenyl)-4-((4-methylpiperazin-1-yl)methyl)benzamide
+hazards:
+  - Irritant
+  - Health Hazard","- Retrieves correct compound entry from PubChem using name or CID
+
+- Includes IUPAC name, SMILES, InChI, molecular formula, and molecular weight (if available)
+
+- Includes at least three synonyms from PubChem
+
+- Includes hazard / safety annotations if available
+
+- All returned fields correspond exactly to the correct PubChem record (no hallucinations)
+
+- Output formatting is concise and valid JSON","source_name: PubChem & National Cancer Institute (NCI)
+page_title: Imatinib | Compound Summary & Adult Acute Myeloid Leukemia Treatment (PDQ®)–Patient Version
+url: https://pubchem.ncbi.nlm.nih.gov/compound/5291
+accessed_on: 2025-07-22"
+64,Category 3,12,OMIM_Colorectal_Cancer_Gene_Mapping,gene_disease_association,"Using OMIM and domain sources, identify genes associated with the given disease (colorectal cancer), listing each gene with locus and brief evidence. Return a clean JSON list.","disease_query: ""Colorectal cancer""
+omim_id: ""608812""","associated_genes:
+  - gene: GALNT12
+    location: 9q22.33
+    evidence: >
+      Guda et al. (2009) identified six different heterozygous loss-of-function mutations in GALNT12
+      among 6 of 272 patients with late-onset colon cancer. These mutations affected catalytic or
+      lectin-binding domains, led to decreased enzymatic activity, and were absent in 192 controls.
+      Somatic mutations were also found in microsatellite-stable tumors. This suggests impaired
+      glycosylation of colon proteins may contribute to cancer development.
+  - gene: TGFBR1
+    location: 9q22
+    evidence: >
+      Valle et al. (2008) showed that allele-specific expression (ASE) of TGFBR1 occurs in 10–20% of
+      CRC patients and 1–3% of controls, causing reduced expression and impaired SMAD-mediated
+      TGF-beta signaling. ASE is dominantly inherited and increases CRC risk with an estimated odds
+      ratio of 8.7. No causative germline variants were found, but ASE segregates in families.
+genetic_linkage:
+  - study: Wiesner et al. (2003)
+    findings: >
+      Linkage to chromosome 9q22.2–q31.2 observed in 53 kindreds with non-FAP, non-HNPCC colorectal
+      cancer using sib-pair analysis (p = 0.00045). Suggests autosomal dominant inheritance of susceptibility loci.
+  - study: Skoglund et al. (2006)
+    findings: >
+      A Swedish family study identified linkage to 9q22.32–q31.1 with a multipoint LOD score of 2.4.
+      Adenomas were found in additional relatives under ongoing surveillance, supporting inherited susceptibility.","- Describes at least two associated genes with OMIM and chromosomal locations
+- Cites molecular evidence (e.g. germline/somatic mutations, ASE)
+- Summarizes genetic linkage studies supporting CRC susceptibility on 9q
+- Explains potential mechanisms (glycosylation, TGF-beta signaling)","source_name: OMIM
+page_title: COLORECTAL CANCER, SUSCEPTIBILITY TO, 1; CRCS1
+url: https://www.omim.org/entry/608812
+accessed_on: 2025-07-22"
+65,Category 3,13,GSEA_Gene_Set_Lookup,gene_set_enrichment,"Look up the specified GSEA gene set and return its canonical metadata (systematic name, collection, organism), brief description, and representative genes in a compact JSON.","query: ABBUD_LIF_SIGNALING_1_DN
+organism: Mus musculus
+database: MSigDB
+category: ""M2: Curated (CGP - Chemical and Genetic Perturbations)""","systematic_name: MM623
+brief_description: >
+  Genes down-regulated in AtT20 cells (pituitary cancer) after treatment with LIF [GeneID=3976].
+full_description: >
+  Leukemia inhibitory factor (LIF) mediates the hypothalamo-pituitary-adrenal stress response.
+  Transgenic mice overexpressing LIF in the developing pituitary have altered pituitary differentiation
+  with expansion of corticotropes, maintenance of Rathke's cleft cysts, and suppression of all other pituitary cell types.
+  Affymetrix GeneChips were used to identify modulators of LIF effects in corticotrope (AtT-20) and somatolactotrope (GH(3)) cells.
+  Notably, C/EBPbeta and GIF were identified as transcriptional regulators of POMC and SOCS-3, and AHSG/fetuin as an inhibitor of LIF signaling.
+species: Mus musculus
+gene_platform: MOUSE_SEQ_ACCESSION","- Retrieves the correct gene set associated with LIF signaling in AtT20 cells
+- Matches species and platform correctly (Mus musculus, MOUSE_SEQ_ACCESSION)
+- Includes key transcriptional regulators (e.g., C/EBPbeta, GIF, SOCS-3, AHSG)
+- Cites the original publication and dataset table","publication:
+  title: C/EBPbeta and GIF are downstream effectors of LIF action in corticotropes
+  authors: Abbud RA, Kelleher R, Melmed S
+  pubmed_id: 14576184
+  table: Table 2
+msigdb_link: https://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/ABBUD_LIF_SIGNALING_1_DN.html"
+66,Category 3,22,Cancer_Gene_Classification,cancer_biology_gene_classification,Classify genes as cancer-related vs normal using curated databases,"gene_databases:
+  cosmic_genes: Cancer_notes/data/COSMIC_genes.txt
+  pcawg_cancer: Cancer_notes/data/PCAWG_2020_PID_C_87_genes.txt
+  pcawg_normal: Cancer_notes/data/PCAWG_2020_PID_N_93_genes.txt
+file_formats:
+  cosmic: ""One gene symbol per line""
+  pcawg: ""One gene symbol per line""","gene_classifications: cancer_gene_classifications.txt
+classification_metrics: classification_performance.txt
+overlap_analysis: gene_list_overlaps.txt
+analysis_summary:
+  - cosmic_genes: ~700 genes
+  - pcawg_cancer: 87 genes
+  - pcawg_normal: 93 genes","- Can classify genes as cancer vs normal with >80% accuracy
+- Identifies overlapping genes across databases
+- Provides confidence scores for classifications","source_name: COSMIC Cancer Gene Census (CGC) & PCAWG 2020 Pan-Cancer dataset
+
+source_url_1: https://cancer.sanger.ac.uk/census
+
+source_url_2: https://dcc.icgc.org/pcawg
+
+origin_notes: COSMIC gene list (~700 genes) + PCAWG 2020 gene panels (87 cancer genes, 93 normal genes)"
+67,Category 3,67,DGIdb_Gene_Interactions_ABL1,gene_drug_interaction_extraction,"Using DGIdb, search for gene-centric interactions for human gene ABL1 and extract interaction summary fields (total interactions, dominant interaction type) and the interaction results table schema (column names and total rows).","website: DGIdb
+search_type: Interactions by Gene
+query_gene: ABL1","{
+  ""gene"": ""ABL1"",
+  ""total_interactions"": 143,
+  ""dominant_interaction_type"": ""inhibitor"",
+  ""interaction_type_categories_present"": [
+    ""inhibitor"",
+    ""antagonist"",
+    ""antibody"",
+    ""agonist""
+  ],
+  ""results_table_columns"": [
+    ""Term"",
+    ""Gene"",
+    ""Drug"",
+    ""Regulatory Approval"",
+    ""Indication"",
+    ""Interaction Score""
+  ],
+  ""results_table_total_rows"": 143
+}","- Output gene is ABL1
+- total_interactions and results_table_total_rows are consistent
+- dominant_interaction_type matches DGIdb infographic
+- results_table_columns match the displayed interaction results table header","source_database: DGIdb
+base_url: https://dgidb.org/
+page_section: Interactions by Gene
+query: ABL1
+accessed_on: 2026-02-12"
+68,Category 3,68,GEPIA2_TP53_Gene_Summary,gene_annotation_extraction,"Using GEPIA2 Single Gene Analysis, search TP53 and extract stable gene identifiers and summary metadata (Ensembl ID, gene description, aliases, and isoform panel summary).","website: GEPIA2
+page: Single Gene Analysis
+query_gene: TP53","{
+  ""gene_symbol"": ""TP53"",
+  ""ensembl_id"": ""ENSG00000141510"",
+  ""description"": ""Tumor protein p53"",
+  ""alias"": [
+    ""BCC7"",
+    ""LFS1"",
+    ""P53"",
+    ""TP53""
+  ],
+  ""isoforms_total"": 27,
+  ""isoforms_table_columns"": [
+    ""Isoform Symbol"",
+    ""Isoform ID"",
+    ""Transcript Type"",
+    ""Transcript Support Level""
+  ]
+}","- gene_symbol is TP53
+- ensembl_id matches the GEPIA2 gene page
+- description matches the gene full name
+- alias list includes common TP53 synonyms
+- isoforms_total is an integer and isoforms_table_columns reflect the isoform table headers","source_database: GEPIA2
+base_url: http://gepia2.cancer-pku.cn/#index
+page_section: Single Gene Analysis
+query: TP53
+accessed_on: 2026-02-12"
+69,Category 3,69,TTD_Cabozantinib_Drug_Summary,drug_target_summary_extraction,"Using the Therapeutic Target Database (TTD), search for the drug Cabozantinib and extract key summary fields from the drug entry list: Drug ID, status, listed diseases, and representative target.","website: TTD
+search_type: Drug Search (Whole Database)
+query_drug: Cabozantinib","{
+  ""drug_id"": ""DOIQ6P"",
+  ""drug_name"": ""Cabozantinib"",
+  ""drug_status"": ""Approved"",
+  ""diseases_listed"": [
+    ""Thyroid cancer"",
+    ""Ovarian cancer""
+  ],
+  ""representative_target"": ""Vascular endothelial growth factor receptor 2 (KDR)""
+}","- drug_name is Cabozantinib
+- drug_id matches the entry shown
+- drug_status matches the entry shown
+- representative_target matches the entry shown
+- diseases_listed contains the diseases displayed for the entry","source_database: Therapeutic Target Database (TTD)
+base_url: https://ttd.idrblab.cn/
+page_section: List of Drug Entries
+query: Cabozantinib
+accessed_on: 2026-02-12"
+70,Category 3,70,GTEx_ATAD3C_Gene_Page,gene_annotation_extraction,"Using GTEx Portal (Genotype-Tissue Expression), follow the specified input/actions to obtain the result page and extract the structured output fields.","{
+  ""website"": ""GTEx Portal (Genotype-Tissue Expression)"",
+  ""url"": ""https://gtexportal.org/home/"",
+  ""page_section"": ""Gene Search"",
+  ""input"": {
+    ""input_mode"": ""site_search"",
+    ""query"": ""ATAD3C"",
+    ""search_type"": ""Gene search"",
+    ""ui_state"": {
+      ""search_box_empty"": true
+    }
+  }
+}","{
+  ""gene_symbol"": ""ATAD3C"",
+  ""gencode_id"": ""ENSG00000215915.10"",
+  ""entrez_gene_id"": ""219293"",
+  ""gene_description"": ""ATPase family AAA domain containing 3C"",
+  ""location"": ""chr1:1449689-1470163"",
+  ""tabs_available"": [
+    ""Bulk Gene Expression"",
+    ""Single-Cell Expression"",
+    ""Bulk Transcript Expression"",
+    ""Bulk Single Tissue eQTLs"",
+    ""Bulk Single Tissue sQTLs"",
+    ""ieQTLs/isQTLs""
+  ],
+  ""bulk_expression_panel"": {
+    ""data_source"": ""GTEx Analysis Release V10"",
+    ""unit"": ""TPM (Transcripts Per Million)"",
+    ""plot_type"": ""Violin plot"",
+    ""tissues_displayed"": ""Multiple human tissues"",
+    ""outliers"": true
+  }
+}","- Return the requested fields exactly as shown on the result page / captured output.
+- Do not add information that is not supported by the page.","source_website: GTEx Portal (Genotype-Tissue Expression)
+url: https://gtexportal.org/home/
+page_section: Gene Search
+accessed_on: 2026-02-12"
+71,Category 3,71,GTEx_BRCA1_Gene_Page,gene_annotation_extraction,"Using GTEx Portal (Genotype-Tissue Expression), follow the specified input/actions to obtain the result page and extract the structured output fields.","{
+  ""website"": ""GTEx Portal (Genotype-Tissue Expression)"",
+  ""url"": ""https://gtexportal.org/home/"",
+  ""page_section"": ""Gene Expression"",
+  ""input"": {
+    ""input_mode"": ""site_search"",
+    ""query"": ""BRCA1"",
+    ""search_type"": ""Gene search"",
+    ""ui_state"": {
+      ""search_box_empty"": true
+    }
+  }
+}","{
+  ""gene_symbol"": ""BRCA1"",
+  ""gencode_id"": ""ENSG00000012048.23"",
+  ""entrez_gene_id"": ""672"",
+  ""gene_description"": ""BRCA1 DNA repair associated"",
+  ""location"": ""chr17:43044295-43125483"",
+  ""tabs_available"": [
+    ""Bulk Gene Expression"",
+    ""Single-Cell Expression"",
+    ""Bulk Transcript Expression"",
+    ""Bulk Single Tissue eQTLs"",
+    ""Bulk Single Tissue sQTLs"",
+    ""ieQTLs/isQTLs""
+  ],
+  ""bulk_expression_panel"": {
+    ""data_source"": ""GTEx Analysis Release V10"",
+    ""unit"": ""TPM (Transcripts Per Million)"",
+    ""plot_type"": ""Violin plot"",
+    ""tissues_displayed"": ""Multiple human tissues"",
+    ""outliers"": true
+  }
+}","- Return the requested fields exactly as shown on the result page / captured output.
+- Do not add information that is not supported by the page.","source_website: GTEx Portal (Genotype-Tissue Expression)
+url: https://gtexportal.org/home/
+page_section: Gene Expression
+accessed_on: 2026-02-12"
+72,Category 3,72,GEO2R_GSE7305_Series_Page,geo_series_metadata_extraction,"Using NCBI GEO2R (Gene Expression Omnibus), follow the specified input/actions to obtain the result page and extract the structured output fields.","{
+  ""website"": ""NCBI GEO2R (Gene Expression Omnibus)"",
+  ""url"": ""https://www.ncbi.nlm.nih.gov/geo/geo2r/"",
+  ""page_section"": ""GEO2R"",
+  ""input"": {
+    ""input_mode"": ""site_search"",
+    ""query"": ""GSE7305"",
+    ""search_type"": ""GEO accession""
+  }
+}","{
+  ""geo_accession"": ""GSE7305"",
+  ""series_title"": ""Human endometriosis vs normal endometrium study - transcriptional profiling"",
+  ""total_samples"": 20,
+  ""selected_samples"": 0,
+  ""available_tabs"": [
+    ""GEO2R"",
+    ""Options"",
+    ""Profile graph"",
+    ""R script""
+  ],
+  ""primary_controls"": [
+    ""Define groups"",
+    ""Analyze""
+  ]
+}","- Return the requested fields exactly as shown on the result page / captured output.
+- Do not add information that is not supported by the page.","source_website: NCBI GEO2R (Gene Expression Omnibus)
+url: https://www.ncbi.nlm.nih.gov/geo/geo2r/
+page_section: GEO2R
+accessed_on: 2026-02-12"
+73,Category 3,73,ExpressionAtlas_REG1B_Baseline,expression_atlas_baseline_summary,"Using Expression Atlas (EMBL-EBI), follow the specified input/actions to obtain the result page and extract the structured output fields.","{
+  ""website"": ""Expression Atlas (EMBL-EBI)"",
+  ""url"": ""https://www.ebi.ac.uk/gxa/home"",
+  ""page_section"": ""Baseline Expression"",
+  ""input"": {
+    ""input_mode"": ""site_search"",
+    ""query"": ""REG1B"",
+    ""search_fields"": {
+      ""gene_or_gene_properties"": ""REG1B"",
+      ""species"": ""Any"",
+      ""biological_conditions"": """"
+    }
+  }
+}","{
+  ""gene"": ""REG1B"",
+  ""result_type"": ""Baseline expression"",
+  ""species_results_present"": [
+    ""Homo sapiens"",
+    ""Chlorocebus sabaeus"",
+    ""Macaca mulatta""
+  ],
+  ""experiments_summary"": {
+    ""homo_sapiens"": {
+      ""organism_part_experiments"": 12,
+      ""data_sources"": [
+        ""GTEx"",
+        ""FANTOM5"",
+        ""Uhlen's Lab"",
+        ""HPA""
+      ]
+    },
+    ""chlorocebus_sabaeus"": {
+      ""organism_part_experiments"": 12,
+      ""data_source"": ""UCLA""
+    },
+    ""macaca_mulatta"": {
+      ""organism_part_experiments"": 1,
+      ""data_source"": ""Merkin et al., 2012""
+    }
+  },
+  ""visualization"": {
+    ""plot_type"": ""Expression heatmap"",
+    ""expression_levels"": [
+      ""High"",
+      ""Medium"",
+      ""Low"",
+      ""Below cutoff""
+    ]
+  }
+}","- Return the requested fields exactly as shown on the result page / captured output.
+- Do not add information that is not supported by the page.","source_website: Expression Atlas (EMBL-EBI)
+url: https://www.ebi.ac.uk/gxa/home
+page_section: Baseline Expression
+accessed_on: 2026-02-12"
+74,Category 3,74,ProteomicsDB_TP53_Search,protein_search_summary_extraction,"Using ProteomicsDB, follow the specified input/actions to obtain the result page and extract the structured output fields.","{
+  ""website"": ""ProteomicsDB"",
+  ""url"": ""https://www.proteomicsdb.org/"",
+  ""page_section"": ""Protein Search"",
+  ""input"": {
+    ""input_mode"": ""site_search"",
+    ""query"": ""TP53"",
+    ""search_type"": ""Protein"",
+    ""search_fields"": {
+      ""entity_type"": ""Protein"",
+      ""organism"": ""Homo sapiens"",
+      ""protein_name"": ""TP53""
+    }
+  }
+}","{
+  ""result_type"": ""Protein search results"",
+  ""query"": ""TP53"",
+  ""results_summary"": {
+    ""primary_gene"": ""TP53"",
+    ""uniprot_accession_main"": ""P04637"",
+    ""description"": ""Cellular tumor antigen p53"",
+    ""isoforms_present"": true,
+    ""example_isoforms"": [
+      ""P04637-2"",
+      ""P04637-3"",
+      ""P04637-4"",
+      ""P04637-5"",
+      ""P04637-6"",
+      ""P04637-7""
+    ]
+  }
+}","- Return the requested fields exactly as shown on the result page / captured output.
+- Do not add information that is not supported by the page.","source_website: ProteomicsDB
+url: https://www.proteomicsdb.org/
+page_section: Protein Search
+accessed_on: 2026-02-12"
+75,Category 3,75,HMDB_Sepsis_Disease_Search,metabolite_disease_search_summary,"Using HMDB, follow the specified input/actions to obtain the result page and extract the structured output fields.","{
+  ""website"": ""HMDB"",
+  ""url"": ""https://hmdb.ca/"",
+  ""page_section"": ""Search Results"",
+  ""input"": {
+    ""input_mode"": ""site_search"",
+    ""query"": ""sepsis"",
+    ""search_fields"": {
+      ""category"": ""diseases"",
+      ""keyword"": ""sepsis""
+    }
+  }
+}","{
+  ""summary"": {
+    ""matched_diseases"": [
+      ""Sepsis"",
+      ""Septic shock""
+    ],
+    ""total_diseases_returned"": 2,
+    ""note"": ""Results are approximate matches, not exact.""
+  }
+}","- Return the requested fields exactly as shown on the result page / captured output.
+- Do not add information that is not supported by the page.","source_website: HMDB
+url: https://hmdb.ca/
+page_section: Search Results
+accessed_on: 2026-02-12"
+76,Category 3,76,OrthoDB_TP53_Search,orthology_group_search_summary,"Using OrthoDB, follow the specified input/actions to obtain the result page and extract the structured output fields.","{
+  ""website"": ""OrthoDB"",
+  ""url"": ""https://www.orthodb.org/"",
+  ""page_section"": ""Search"",
+  ""input"": {
+    ""input_mode"": ""site_search"",
+    ""query"": ""TP53"",
+    ""search_fields"": {
+      ""text"": ""TP53""
+    }
+  }
+}","{
+  ""total_groups_found"": 1915,
+  ""top_results"": [
+    {
+      ""group_id"": ""2709330at2759"",
+      ""level"": ""Eukaryota"",
+      ""description"": ""DNA repair protein"",
+      ""genes"": 2272,
+      ""species"": 2151
+    },
+    {
+      ""group_id"": ""4312549at2759"",
+      ""level"": ""Eukaryota"",
+      ""description"": ""TP53-binding protein 1"",
+      ""genes"": 2095,
+      ""species"": 1954
+    },
+    {
+      ""group_id"": ""765577at7742"",
+      ""level"": ""Vertebrata"",
+      ""description"": ""TP53-binding protein 1"",
+      ""genes"": 1008,
+      ""species"": 960
+    }
+  ]
+}","- Return the requested fields exactly as shown on the result page / captured output.
+- Do not add information that is not supported by the page.","source_website: OrthoDB
+url: https://www.orthodb.org/
+page_section: Search
+accessed_on: 2026-02-12"
+77,Category 3,77,GEO2R_GSE7305_Samples_Panel,geo_series_metadata_extraction,"Using NCBI GEO2R, load GEO Series GSE7305 and extract the samples panel metadata (total samples, selected samples, table columns), available tabs, and primary controls visible.","{
+  ""website"": ""NCBI GEO2R (Gene Expression Omnibus)"",
+  ""url"": ""https://www.ncbi.nlm.nih.gov/geo/geo2r/"",
+  ""page_section"": ""GEO2R"",
+  ""input"": {
+    ""input_mode"": ""site_search"",
+    ""query"": ""GSE7305"",
+    ""search_type"": ""GEO accession"",
+    ""ui_state"": {
+      ""geo_accession_field_empty"": true
+    }
+  }
+}","{
+  ""geo_accession"": ""GSE7305"",
+  ""series_title"": ""Human endometriosis vs normal endometrium study - transcriptional profiling"",
+  ""samples_panel"": {
+    ""total_samples"": 20,
+    ""selected_samples"": 0,
+    ""table_visible"": true,
+    ""table_columns_include"": [
+      ""Group"",
+      ""Accession"",
+      ""Title"",
+      ""Source name""
+    ]
+  },
+  ""available_tabs"": [
+    ""GEO2R"",
+    ""Options"",
+    ""Profile graph"",
+    ""R script""
+  ],
+  ""primary_controls_visible"": [
+    ""Define groups"",
+    ""Analyze""
+  ]
+}","- geo_accession is GSE7305
+- samples_panel.total_samples and samples_panel.table_columns_include match the result page
+- available_tabs and primary_controls_visible match the result page","source_website: NCBI GEO2R (Gene Expression Omnibus)
+url: https://www.ncbi.nlm.nih.gov/geo/geo2r/
+page_section: GEO2R
+accessed_on: 2026-02-12"
+78,Category 3,78,ExpressionAtlas_REG1B_Baseline_2,expression_atlas_baseline_summary,"Using Expression Atlas baseline expression results for REG1B, extract the species list and Homo sapiens experiment summary fields (organism_part_experiments and data_sources) as shown on the result page.","{
+  ""website"": ""Expression Atlas (EMBL-EBI)"",
+  ""url"": ""https://www.ebi.ac.uk/gxa/home"",
+  ""page_section"": ""Baseline Expression"",
+  ""input"": {
+    ""input_mode"": ""site_search"",
+    ""query"": ""REG1B"",
+    ""search_fields"": {
+      ""gene_or_gene_properties"": ""REG1B"",
+      ""species"": ""Any"",
+      ""biological_conditions"": """"
+    },
+    ""direct_result_url"": ""https://www.ebi.ac.uk/gxa/search?geneQuery=[{\""value\"":\""REG1B\""}]"",
+    ""direct_result_url_note"": ""Use this URL to open the Expression Atlas results page for REG1B (Baseline expression), matching .""
+  }
+}","{
+  ""gene"": ""REG1B"",
+  ""result_type"": ""Baseline expression"",
+  ""species_results_present"": [
+    ""Homo sapiens"",
+    ""Chlorocebus sabaeus"",
+    ""Macaca mulatta""
+  ],
+  ""experiments_summary"": {
+    ""homo_sapiens"": {
+      ""organism_part_experiments"": 12,
+      ""data_sources"": [
+        ""GTEx"",
+        ""FANTOM5"",
+        ""Uhlen's Lab"",
+        ""HPA""
+      ]
+    },
+    ""chlorocebus_sabaeus"": {
+      ""organism_part_experiments"": 12,
+      ""data_sources"": [
+        ""UCLA""
+      ]
+    },
+    ""macaca_mulatta"": {
+      ""organism_part_experiments"": 1,
+      ""data_sources"": [
+        ""Merkin et al., 2012""
+      ]
+    }
+  },
+  ""visualization"": {
+    ""plot_type"": ""Expression heatmap"",
+    ""expression_levels"": [
+      ""High"",
+      ""Medium"",
+      ""Low"",
+      ""Below cutoff""
+    ]
+  }
+}","- gene is REG1B
+- species_results_present matches the result page
+- experiments_summary.homo_sapiens fields match the result page","source_website: Expression Atlas (EMBL-EBI)
+url: https://www.ebi.ac.uk/gxa/home
+page_section: Baseline Expression
+accessed_on: 2026-02-12"
+79,Category 3,79,ProteomicsDB_HEK293_CellLine_Search,cell_line_search_summary_extraction,"Using ProteomicsDB Cell Line Search, query HEK293 and extract the displayed cell line results (names and total results displayed) from the result page.","{
+  ""website"": ""ProteomicsDB"",
+  ""url"": ""https://www.proteomicsdb.org/"",
+  ""page_section"": ""Cell Line Search"",
+  ""input"": {
+    ""input_mode"": ""site_search"",
+    ""search_type"": ""Cell Line"",
+    ""query"": ""HEK293""
+  }
+}","{
+  ""result_type"": ""Cell line search results"",
+  ""query"": ""HEK293"",
+  ""results_summary"": {
+    ""total_results_displayed"": 2,
+    ""cell_lines"": [
+      ""HEK293T"",
+      ""HEK293""
+    ]
+  }
+}","- query is HEK293
+- results_summary.total_results_displayed and cell_lines match the result page","source_website: ProteomicsDB
+url: https://www.proteomicsdb.org/
+page_section: Cell Line Search
+accessed_on: 2026-02-12"
+80,Category 3,80,MGnify_MGYS00000410_Study_Summary,metagenomics_study_summary_extraction,"Using MGnify (EBI Metagenomics) search, locate the study MGYS00000410 and extract stable study identifiers and summary fields (ENA accession, biome, analyses count, study name) from the result page.","{
+  ""website"": ""MGnify"",
+  ""url"": ""https://www.ebi.ac.uk/metagenomics"",
+  ""page_section"": ""Search"",
+  ""input"": {
+    ""input_mode"": ""site_search"",
+    ""query"": ""MGYS00000410"",
+    ""search_fields"": {
+      ""search_type"": ""Text search""
+    }
+  }
+}","{
+  ""study"": {
+    ""mgnify_id"": ""MGYS00000410"",
+    ""ena_accession"": ""PRJEB1787"",
+    ""biome"": ""Marine"",
+    ""name"": ""Shotgun Sequencing of Tara Oceans DNA samples corresponding to size fractions for prokaryotes"",
+    ""analyses_count"": 249
+  }
+}","- study.mgnify_id is MGYS00000410
+- study.ena_accession, biome, analyses_count, and name match the result page","source_website: MGnify
+url: https://www.ebi.ac.uk/metagenomics
+page_section: Search
+accessed_on: 2026-02-12"
+81,Category 3,81,NCBI_Gene_BRCA1_Summary,gene_annotation_extraction,"Using NCBI Gene (Datasets Gene page), search BRCA1 and extract the stable identifiers (gene_symbol, gene_id) and organism from the result page.","{
+  ""website"": ""NCBI Gene"",
+  ""url"": ""https://www.ncbi.nlm.nih.gov/datasets/gene/"",
+  ""page_section"": ""Gene search"",
+  ""input"": {
+    ""input_mode"": ""site_search"",
+    ""query"": ""672"",
+    ""search_fields"": {
+      ""gene_identifier"": ""672"",
+      ""identifier_type"": ""GeneID"",
+      ""taxon"": ""Homo sapiens (human)""
+    }
+  }
+}","{
+  ""gene_symbol"": ""BRCA1"",
+  ""gene_id"": 672,
+  ""organism"": ""Homo sapiens""
+}","- gene_symbol is BRCA1
+- gene_id is 672
+- organism is Homo sapiens","source_website: NCBI Gene
+url: https://www.ncbi.nlm.nih.gov/datasets/gene/
+page_section: Gene search
+accessed_on: 2026-02-12"
+82,Category 3,82,ClinVar_BRCA1_Gene_Search_Filters,clinvar_variant_search_filter_extraction,"Using ClinVar search, query BRCA1[gene] and extract (1) the reference assembly link shown under the graphical view of search results, (2) the classification-type counts, (3) the germline classification counts, and (4) the types-of-conflicts counts shown in the left filter panel.","website: ClinVar
+page: Search results
+search_query: BRCA1[gene]","{
+  ""search_query"": ""BRCA1[gene]"",
+  ""graphical_view_reference"": ""GRCh37"",
+  ""classification_type_counts"": {
+    ""Germline"": 13573,
+    ""Somatic"": 10
+  },
+  ""germline_classification_counts"": {
+    ""Conflicting classifications"": 2877,
+    ""Benign"": 830,
+    ""Likely benign"": 2838,
+    ""Uncertain significance"": 2440,
+    ""Likely pathogenic"": 548,
+    ""Pathogenic"": 4300
+  },
+  ""types_of_conflicts_counts"": {
+    ""P/LP vs LB/B"": 7,
+    ""P/LP vs VUS"": 101,
+    ""VUS vs LB/B"": 2775
+  }
+}","- Output search_query is BRCA1[gene]
+- graphical_view_reference matches the link shown under Graphical view of search results
+- All counts match the left filter panel values shown on the webpage results page","source_database: ClinVar
+base_url: https://www.ncbi.nlm.nih.gov/clinvar/
+page_section: Search results (gene query)
+query: BRCA1[gene]
+accessed_on: 2026-02-12"
+83,Category 3,83,ClinVar_Pathogenic_ClnSig_Search_Metadata,clinvar_variant_search_metadata_extraction,"Using ClinVar search, query pathogenic[clnsig] and extract the warning message shown on the results page, the total item count and page count shown near the top of the results, and the displayed results table column headers.","website: ClinVar
+page: Search results
+search_query: pathogenic[clnsig]","{
+  ""search_query"": ""pathogenic[clnsig]"",
+  ""warning_message"": ""Unknown field was ignored: [clnsig]."",
+  ""items_total"": 714719,
+  ""page_of_total"": ""Page 1 of 7148"",
+  ""results_table_columns"": [
+    ""Variation"",
+    ""Gene (Protein Change)"",
+    ""Type (Consequence)"",
+    ""Condition"",
+    ""Classification, Review status""
+  ]
+}","- Output search_query is pathogenic[clnsig]
+- warning_message matches the warning shown on the results page
+- items_total and page_of_total match the values shown near the top of the results
+- results_table_columns match the displayed table header","source_database: ClinVar
+base_url: https://www.ncbi.nlm.nih.gov/clinvar/
+page_section: Search results (clinical significance query)
+query: pathogenic[clnsig]
+accessed_on: 2026-02-12"
+84,Category 3,84,FPbase_mNeonGreen_Attributes,fluorescent_protein_attribute_extraction,"Using FPbase, locate the fluorescent protein mNeonGreen and extract the Attributes table values (Ex λ, Em λ, EC, QY, Brightness, pKa, Maturation (min), Lifetime (ns)) and FPbase ID shown on the result page.","website: FPbase
+page: Protein entry
+protein_name: mNeonGreen","{
+  ""protein_name"": ""mNeonGreen"",
+  ""fpbase_id"": ""ZRKRV"",
+  ""attributes"": {
+    ""Ex λ"": ""506"",
+    ""Em λ"": ""517"",
+    ""EC (M^-1 cm^-1)"": ""116,000"",
+    ""QY"": ""0.8"",
+    ""Brightness"": ""92.8"",
+    ""pKa"": ""5.7"",
+    ""Maturation (min)"": ""10.0"",
+    ""Lifetime (ns)"": ""3.1""
+  }
+}","- Output protein_name is mNeonGreen
+- fpbase_id matches the FPbase ID shown on the page
+- attributes match the values shown in the Attributes table on the FPbase protein page","source_website: FPbase
+url: https://www.fpbase.org/
+page_section: Protein page (Attributes)
+query: mNeonGreen
+accessed_on: 2026-02-14"
+85,Category 3,85,FPbase_mCherry_Attributes,fluorescent_protein_attribute_extraction,"Using FPbase, locate the fluorescent protein mCherry and extract the Attributes table values (Ex λ, Em λ, EC, QY, Brightness, pKa, Maturation (min), Lifetime (ns)) and FPbase ID shown on the result page.","website: FPbase
+page: Protein entry
+protein_name: mCherry","{
+  ""protein_name"": ""mCherry"",
+  ""fpbase_id"": ""ZERB6"",
+  ""attributes"": {
+    ""Ex λ"": ""587"",
+    ""Em λ"": ""610"",
+    ""EC (M^-1 cm^-1)"": ""72,000"",
+    ""QY"": ""0.22"",
+    ""Brightness"": ""15.84"",
+    ""pKa"": ""4.5"",
+    ""Maturation (min)"": ""15.0"",
+    ""Lifetime (ns)"": ""1.4""
+  }
+}","- Output protein_name is mCherry
+- fpbase_id matches the FPbase ID shown on the page
+- attributes match the values shown in the Attributes table on the FPbase protein page","source_website: FPbase
+url: https://www.fpbase.org/
+page_section: Protein page (Attributes)
+query: mCherry
+accessed_on: 2026-02-14"
+86,Category 3,86,PlantTFDB_LFY_Search_Results,plant_tfdb_search_results_extraction,"Using PlantTFDB v5.0, search for the query LFY and extract the first search-result row fields (TF ID, species, and description) shown in the results table.","website: PlantTFDB
+page: Search
+query: LFY","{
+  ""query"": ""LFY"",
+  ""first_result"": {
+    ""tf_id"": ""AT5G61850.1"",
+    ""species"": ""Arabidopsis thaliana"",
+    ""description"": ""floral meristem identity control protein LEAFY (LFY)""
+  }
+}","- Output query is LFY
+- first_result.tf_id, species, and description match the first row of the PlantTFDB search results table","source_website: PlantTFDB
+url: https://planttfdb.gao-lab.org/
+page_section: Search results
+query: LFY
+accessed_on: 2026-02-12"
+87,Category 3,87,PlantTFDB_AT5G61850_1_TF_Detail,plant_tfdb_tf_detail_extraction,"Using PlantTFDB v5.0, search for TF ID AT5G61850.1 and extract stable fields from the TF detail page, including TF ID, common names, organism, taxonomic ID, protein length, and the Protein Features Pfam/InterPro identifiers.","website: PlantTFDB
+page: Search
+query: AT5G61850.1","{
+  ""tf_id"": ""AT5G61850.1"",
+  ""common_names"": [
+    ""LFY"",
+    ""LFY3"",
+    ""MAC9.18""
+  ],
+  ""organism"": ""Arabidopsis thaliana"",
+  ""taxonomic_id"": 3702,
+  ""protein_length_aa"": 420,
+  ""protein_features"": {
+    ""pfam_entry_id"": ""PF01698"",
+    ""interpro_id"": ""IPR002910""
+  }
+}","- Output tf_id is AT5G61850.1
+- common_names, organism, taxonomic_id, and protein_length_aa match the Basic Information section
+- protein_features.pfam_entry_id and protein_features.interpro_id match the Protein Features table","source_website: PlantTFDB
+url: https://planttfdb.gao-lab.org/
+page_section: TF detail page
+query: AT5G61850.1
+accessed_on: 2026-02-12"
+88,Category 3,88,STRING_trpA_EcoliK12_Network_Summary,string_network_summary_extraction,"Using STRING, search for the protein trpA in the organism Escherichia coli str. K-12 substr. MG1655 and extract the displayed query protein label under “Your Input”, the organism name shown under “Your Current Organism”, and the NCBI taxonomy ID shown for the organism.","website: STRING
+page: Search
+query_protein: trpA
+organism: Escherichia coli str. K-12 substr. MG1655","{
+  ""query_protein"": ""trpA"",
+  ""your_input_label"": ""trpA"",
+  ""organism_display"": ""Escherichia coli K12"",
+  ""ncbi_taxonomy_id"": 511145
+}","- Output query_protein is trpA
+- your_input_label matches the protein label shown under “Your Input”
+- organism_display and ncbi_taxonomy_id match the values shown under “Your Current Organism”","source_website: STRING
+url: https://string-db.org/
+page_section: Protein network
+query: trpA (Escherichia coli str. K-12 substr. MG1655)
+accessed_on: 2026-02-12"
+89,Category 3,89,STRING_ANP1_Yeast_Sequence_Search_Summary,string_sequence_search_summary_extraction,"Using STRING sequence search (Proteins by sequences), submit the amino acid sequence with header ANP1_YEAST for organism Saccharomyces cerevisiae and extract the mapped protein name shown under “Your Input”, the organism name shown under “Your Current Organism”, the NCBI taxonomy ID, and whether MNN10 appears in the Predicted Functional Partners list.","website: STRING
+page: Proteins by sequences
+sequence_type: Amino acid
+sequence_header: ANP1_YEAST
+organism: Saccharomyces cerevisiae","{
+  ""sequence_header"": ""ANP1_YEAST"",
+  ""mapped_protein"": ""ANP1"",
+  ""organism_display"": ""Saccharomyces cerevisiae"",
+  ""ncbi_taxonomy_id"": 4932,
+  ""predicted_functional_partners_contains_MNN10"": true
+}","- Output sequence_header is ANP1_YEAST
+- mapped_protein matches the mapped protein shown under “Your Input”
+- organism_display and ncbi_taxonomy_id match “Your Current Organism”
+- predicted_functional_partners_contains_MNN10 is true if MNN10 appears in the Predicted Functional Partners list","source_website: STRING
+url: https://string-db.org/
+page_section: Proteins by sequences
+query: ANP1_YEAST (Saccharomyces cerevisiae)
+accessed_on: 2026-02-12"
+90,Category 3,90,TCoffee_Expresso_Alignment_Result_Files,tcoffee_alignment_result_extraction,"Using T-Coffee Expresso, paste the provided FASTA sequences, run the alignment, and from the result webpage extract the Mode shown in the Info section and whether the Result files section includes a Template List (template_list file) and a Multiple Alignment FASTA output (fasta_aln file).","website: T-Coffee Expresso
+url: https://tcoffee.crg.eu/apps/tcoffee/do:expresso
+input_mode: fasta_paste
+raw_input_fasta:
+>1aboA
+NLFVALYDFVASGDNTLSITKGEKLRVLGYNHNGEWCEAQTKNGQGWVPS
+NYITPVN
+>1ycsB
+KGVIYALWDYEPQNDDELPMKEGDCMTIIHREDEDEIEWWWARLNDKEGY
+VPRNLLGLYP
+>1pht
+GYQYRALYDYKKEREEDIDLHLGDILTVNKGSLVALGFSDGQEARPEEIG
+WLNGYNETTGERGDFPGTYVEYIGRKKISP
+>1vie
+DRVRKKSGAAWQGQIVGWYCTNLTPEGYAVESEAHPGSVQIYPVAALERI
+N
+>1ihvA
+NFRVYYRDSRDPVWKGPAKLLWKGEGAVVIQDNSDIKVVPRRKAKIIRD","{
+  ""mode"": ""Expresso"",
+  ""result_files"": {
+    ""has_template_list_file"": true,
+    ""has_multiple_alignment_fasta_aln_file"": true
+  }
+}","- mode matches the Mode shown in the Info section
+- Result files section contains template_list file (Template List)
+- Result files section contains fasta_aln file under Multiple Alignment","source_website: T-Coffee Expresso
+url: https://tcoffee.crg.eu/apps/tcoffee/do:expresso
+page_section: Alignment result
+accessed_on: 2026-02-01"
+91,Category 3,91,TCoffee_MCoffee_Alignment_Result_Files,tcoffee_alignment_result_extraction,"Using T-Coffee M-Coffee, paste the provided FASTA sequences, run the alignment, and from the result webpage extract the Mode shown in the Info section and whether the Result files section includes a Tree PH output (ph file).","website: T-Coffee (M-Coffee)
+url: https://tcoffee.crg.eu/apps/tcoffee/do:mcoffee
+input_mode: fasta_paste
+raw_input_fasta:
+>1aboA
+NLFVALYDFVASGDNTLSITKGEKLRVLGYNHNGEWCEAQTKNGQGWVPS
+NYITPVN
+>1ycsB
+KGVIYALWDYEPQNDDELPMKEGDCMTIIHREDEDEIEWWWARLNDKEGY
+VPRNLLGLYP
+>1pht
+GYQYRALYDYKKEREEDIDLHLGDILTVNKGSLVALGFSDGQEARPEEIG
+WLNGYNETTGERGDFPGTYVEYIGRKKISP
+>1vie
+DRVRKKSGAAWQGQIVGWYCTNLTPEGYAVESEAHPGSVQIYPVAALERI
+N
+>1ihvA
+NFRVYYRDSRDPVWKGPAKLLWKGEGAVVIQDNSDIKVVPRRKAKIIRD","{
+  ""mode"": ""M-Coffee"",
+  ""result_files"": {
+    ""has_tree_ph_file"": true
+  }
+}","- mode matches the Mode shown in the Info section
+- Result files section contains ph file under Tree","source_website: T-Coffee (M-Coffee)
+url: https://tcoffee.crg.eu/apps/tcoffee/do:mcoffee
+page_section: Alignment result
+accessed_on: 2026-02-01"
+92,Category 3,92,TCoffee_RCoffee_Alignment_Result_Files,tcoffee_alignment_result_extraction,"Using T-Coffee R-Coffee, paste the provided RNA sequences, run the alignment, and from the result webpage extract the Mode shown in the Info section and whether the Result files section includes Template RNA Fold outputs (rfold file).","website: T-Coffee (R-Coffee)
+url: https://tcoffee.crg.eu/apps/tcoffee/do:rcoffee
+input_mode: fasta_paste
+raw_input_fasta:
+>D11467.1-6989_6916
+GCAUCCAUGGCUGAAUGGUUAAAGCGCCCAACUCAUAAUUGGCGAACUCGCGGGUUCAAU
+UCCUGCUGGAUGCA
+>AC092686.3-29631_29561
+GCAUUGGUGGUUCAGUGGUAGAAUUCUCGCCUGCCACGCGGGAGGCCCGGGUUCGAUUCC
+CGGCCAAUGCA
+>X53649.1-160_231
+UGGGCUAUGGUGUAAUUGGCAGCACGACUGAUUCUGGUUCAGUUAGUCUAGGUUCGAGUC
+CUGGUAGCCCAG
+>AE008874.1-15640_15730
+GAAGAUCGUCGUCUCCGGUGAGGCGGCUGGACUUCAAAUCCAGUUGGGGCCGCCAGCGGU
+CCCGGGCAGGUUCGACUCCUGUGAUCUUCCG
+>X02167.1-268_340
+CUAAAUAUAUUUCAAUGGUUAGCAAAAUACGCUUGUGGUGCGUUAAAUCUAAGUUCGAUU
+CUUAGUAUUUACC","{
+  ""mode"": ""R-Coffee"",
+  ""result_files"": {
+    ""has_template_rna_fold_rfold_file"": true
+  }
+}","- mode matches the Mode shown in the Info section
+- Result files section contains rfold file under Template RNA Fold","source_website: T-Coffee (R-Coffee)
+url: https://tcoffee.crg.eu/apps/tcoffee/do:rcoffee
+page_section: Alignment result
+accessed_on: 2026-02-01"
+93,Category 3,93,UCSC_InSilicoPCR_hg38_Amplicon_Summary,ucsc_insilico_pcr_result_extraction,"Using UCSC In-Silico PCR (hg38), enter the given forward and reverse primers and extract the amplicon region, amplicon length (bp), and the forward/reverse primer melting temperatures shown on the results webpage.","website: UCSC In-Silico PCR
+url: https://genome.ucsc.edu/cgi-bin/hgPcr
+genome: Human
+assembly: Dec. 2013 (GRCh38/hg38)
+forward_primer: CTTGCCACAGGTCTCCCCAA
+reverse_primer: AGGGGTCAGAGGCAAGCAGA
+max_product_size: 4000
+min_perfect_match: 15
+min_good_match: 15
+flip_reverse_primer: false","{
+  ""match_found"": true,
+  ""amplicon_region"": ""chr17:7674113-7674349"",
+  ""amplicon_length_bp"": 237,
+  ""forward_primer_tm_c"": 65.7,
+  ""reverse_primer_tm_c"": 64.7
+}","- match_found is true
+- amplicon_region and amplicon_length_bp match the amplicon header shown on the results page
+- forward_primer_tm_c and reverse_primer_tm_c match the Primer Melting Temperatures section","source_website: UCSC Genome Browser
+url: https://genome.ucsc.edu/cgi-bin/hgPcr
+page_section: In-Silico PCR results (hg38)
+accessed_on: 2026-02-17"
+94,Category 3,94,UCSC_InSilicoPCR_hs1_NoMatch_Message,ucsc_insilico_pcr_result_extraction,"Using UCSC In-Silico PCR on the T2T CHM13v2.0 (hs1) assembly, enter the given primers and extract whether a match is found, the no-match message line, and the forward/reverse primer melting temperatures shown on the results webpage.","website: UCSC In-Silico PCR
+url: https://genome.ucsc.edu/cgi-bin/hgPcr
+genome: Human
+assembly: Jan. 2022 (T2T CHM13v2.0/hs1)
+forward_primer: CTGCTCAGGGCTATCCTCTC
+reverse_primer: AGCTCCTGGCACTGGTAGAG
+max_product_size: 4000
+min_perfect_match: 15
+min_good_match: 15
+flip_reverse_primer: false","{
+  ""match_found"": false,
+  ""message"": ""No matches to ctgctcagggctatcctctc agctcctggcactggtagag in hub_3671779_Human Jan. 2022 (T2T CHM13v2.0/hs1)."",
+  ""forward_primer_tm_c"": 59.1,
+  ""reverse_primer_tm_c"": 59.6
+}","- match_found is false
+- message matches the no-match line shown at the top of the results page
+- forward_primer_tm_c and reverse_primer_tm_c match the Primer Melting Temperatures section","source_website: UCSC Genome Browser
+url: https://genome.ucsc.edu/cgi-bin/hgPcr
+page_section: In-Silico PCR results (hs1)
+accessed_on: 2026-02-17"
+95,Category 3,95,UCSC_TableBrowser_T2T_CatLiftOffGenes_DataPreview,ucsc_table_browser_data_preview_extraction,"Using UCSC Table Browser on the T2T CHM13v2.0 (hs1) assembly, configure the given table/region settings and extract the data preview format, the list of preview column names, and key fields from the example row (chrom, geneName, geneType).","website: UCSC Table Browser
+url: https://genome.ucsc.edu/cgi-bin/hgTables
+clade: Mammal
+genome: Human
+assembly: Jan. 2022 (T2T CHM13v2.0/hs1)
+group: Genes and Gene Predictions
+track: CAT/Liftoff Genes
+table: hub_3671779_catLiftOffGenesV1
+region_type: Position
+region: chr17:7,668,421-7,687,490
+output_format: All fields from selected table
+output_field_separator: tsv
+file_type_returned: Plain text","{
+  ""data_preview_format"": ""tsv"",
+  ""columns"": [
+    ""chrom"",
+    ""chromStart"",
+    ""chromEnd"",
+    ""name"",
+    ""score"",
+    ""strand"",
+    ""txId"",
+    ""geneName"",
+    ""geneType"",
+    ""sourceGene"",
+    ""sourceTranscript""
+  ],
+  ""example_row"": {
+    ""chrom"": ""chr17"",
+    ""geneName"": ""DNAH2"",
+    ""geneType"": ""protein_coding""
+  }
+}","- data_preview_format is tsv
+- columns match the preview column header list shown on the output preview
+- example_row fields match the example row values shown on the output preview","source_website: UCSC Table Browser
+url: https://genome.ucsc.edu/cgi-bin/hgTables
+page_section: Output data preview
+accessed_on: 2026-02-17"
+96,Category 3,96,Antibodypedia_PhosphoAkt_Ser473_Search_Results,antibodypedia_search_results_extraction,"Using Antibodypedia, search for “Phospho-Akt (Ser473)” with application filter set to “Any application”, and extract the number of gene products found plus the results table fields for each gene product (gene, description, tissue specificity, predicted location, and antibody/provider counts).","website: Antibodypedia
+url: https://www.antibodypedia.com/
+input_mode: site_search
+query: Phospho-Akt (Ser473)
+application_filter: Any application","{
+  ""query"": ""Phospho-Akt (Ser473)"",
+  ""application_filter"": ""Any application"",
+  ""gene_products_found"": 2,
+  ""gene_products"": [
+    {
+      ""gene"": ""AKT1"",
+      ""description"": ""AKT serine/threonine kinase 1"",
+      ""tissue_specificity"": ""Low tissue specificity"",
+      ""predicted_location"": ""Intracellular"",
+      ""antibodies_count"": 5299,
+      ""providers_count"": 59
+    },
+    {
+      ""gene"": ""AKT2"",
+      ""description"": ""AKT serine/threonine kinase 2"",
+      ""tissue_specificity"": ""Low tissue specificity"",
+      ""predicted_location"": ""Intracellular"",
+      ""antibodies_count"": 1667,
+      ""providers_count"": 50
+    }
+  ]
+}","- Output query is Phospho-Akt (Ser473) and application_filter is Any application
+- gene_products_found matches the number of gene products reported on the results page
+- Each gene_products entry matches the corresponding row fields shown in the results table","source_website: Antibodypedia
+url: https://www.antibodypedia.com/
+page_section: Search results
+query: Phospho-Akt (Ser473)
+accessed_on: 2026-02-12"
+97,Category 3,97,Antibodypedia_AntiHistoneH3_acetylK27_Search_Results,antibodypedia_search_results_extraction,"Using Antibodypedia, search for “Anti-Histone H3 (acetyl K27)” with application filter set to “Any application”, and extract the number of gene products found plus the first row gene product fields (gene product name, description, tissue specificity, predicted location, and antibody/provider counts).","website: Antibodypedia
+url: https://www.antibodypedia.com/
+input_mode: site_search
+query: Anti-Histone H3 (acetyl K27)
+application_filter: Any application","{
+  ""query"": ""Anti-Histone H3 (acetyl K27)"",
+  ""application_filter"": ""Any application"",
+  ""gene_products_found"": 8,
+  ""first_result"": {
+    ""gene_product"": ""H3-4"",
+    ""description"": ""H3.4 histone"",
+    ""tissue_specificity"": ""Tissue enhanced (brain, testis)"",
+    ""predicted_location"": ""Intracellular"",
+    ""antibodies_count"": 1919,
+    ""providers_count"": 34
+  }
+}","- Output query is Anti-Histone H3 (acetyl K27) and application_filter is Any application
+- gene_products_found matches the number of gene products reported on the results page
+- first_result fields match the first row shown in the results table","source_website: Antibodypedia
+url: https://www.antibodypedia.com/
+page_section: Search results
+query: Anti-Histone H3 (acetyl K27)
+accessed_on: 2026-02-12"
+98,Category 3,98,DrugBank_Ozempic_Drug_Summary,drugbank_drug_summary_extraction,"Using DrugBank, search for the drug “ozempic” and extract the DrugBank ID, modality, and the short description/summary shown on the drug page.","website: DrugBank
+url: https://go.drugbank.com/
+input_mode: site_search
+query: ozempic","{
+  ""query"": ""ozempic"",
+  ""drugbank_id"": ""DB13928"",
+  ""modality"": ""Protein Based Therapies: Peptides"",
+  ""description"": ""A medication used to control blood sugar in diabetes, reduce weight, and prevent heart diseases in selected adults.""
+}","- Output query is ozempic
+- drugbank_id, modality, and description match the values shown on the DrugBank drug page","source_website: DrugBank
+url: https://go.drugbank.com/
+page_section: Drug entry
+query: ozempic
+accessed_on: 2026-02-12"
+99,Category 3,99,DrugBank_Metformin_Drug_Summary,drugbank_drug_summary_extraction,"Using DrugBank, search for the drug “metformin” and extract the DrugBank ID, modality, and the short description/summary shown on the drug page.","website: DrugBank
+url: https://go.drugbank.com/
+input_mode: site_search
+query: metformin","{
+  ""query"": ""metformin"",
+  ""drugbank_id"": ""DB00331"",
+  ""modality"": ""Small Molecule"",
+  ""description"": ""A medication used alongside diet and exercise to control blood sugar in patients with type 2 diabetes.""
+}","- Output query is metformin
+- drugbank_id, modality, and description match the values shown on the DrugBank drug page","source_website: DrugBank
+url: https://go.drugbank.com/
+page_section: Drug entry
+query: metformin
+accessed_on: 2026-02-12"
