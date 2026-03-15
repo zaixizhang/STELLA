@@ -266,6 +266,34 @@ Output is saved to `cases/output/nk_aml_negative_regulators.csv` and `.txt`. The
 | `rationale` | 2–3 sentence mechanistic summary |
 | `pubmed_result_summary` | Evidence from PubMed search |
 
+### Enzyme Engineering: Strictosidine Synthase Round 2 Optimization
+
+**Script**: [`cases/strictosidine_synthase_round2.py`](cases/strictosidine_synthase_round2.py)
+
+This case demonstrates STELLA's ability to drive iterative enzyme engineering using experimental feedback. Starting from Round 1 HPLC screening data for Strictosidine Synthase (P68175, Catharanthus roseus), STELLA performs:
+
+1. **ESM re-scoring calibrated on Round 1 data** — using confirmed hits (M276R) and dead mutations (V176R/K, G210V/T/L/A, H307R) as anchors to score untested substitutions
+2. **FoldX stability filtering** — discarding variants with ΔΔG > 1.5 kcal/mol
+3. **Prioritized candidate selection** — mandatory inclusion of chemically motivated untested variants (M276 aliphatic scan; V176 compact-aromatic scan; E306 polar-uncharged scan)
+
+```bash
+python cases/strictosidine_synthase_round2.py
+```
+
+Output is saved to `cases/output/strictosidine_synthase_round2.csv` and `.txt`. The run completes in ~10–15 minutes.
+
+**Ground truth recovery**: The ground truth Round 2 hits are stored in [`cases/output/strictosidine_synthase_round2.csv`](cases/output/strictosidine_synthase_round2.csv). STELLA recovers all 4 experimentally validated active variants — **M276L** (best hit, +2.1× WT), **V176F** (+1.5× WT), **E306S**, and **E306T** — with M276L ranked #1. Notably, V176F was recovered despite all other V176 substitutions failing in Round 1, demonstrating STELLA's ability to reason about sidechain volume constraints beyond simple position-level exclusion.
+
+| Field | Description |
+|-------|-------------|
+| `rank` | Predicted improvement ranking (1 = highest priority) |
+| `mutation` | Single-point variant (e.g. M276L) |
+| `category` | `Priority-A/B/C` (mandatory scan) or `safe`/`exploratory` |
+| `esm_score` | ESM log-likelihood ratio calibrated on Round 1 anchors |
+| `ddg_foldx` | Estimated FoldX ΔΔG (kcal/mol); variants > 1.5 discarded |
+| `rationale` | Mechanistic rationale linking Round 1 insight to prediction |
+| `mutagenesis_primers` | QuikChange forward primer for site-directed mutagenesis |
+
 ## Citation
 
 If you find our work useful, please consider citing our paper:
