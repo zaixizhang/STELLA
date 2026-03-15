@@ -1,11 +1,11 @@
 # Tool Creation Benchmark
 
-This benchmark evaluates biomedical AI agents across three capability groups organized into two difficulty tiers:
+This benchmark evaluates biomedical AI agents across two difficulty tiers:
 
-| Set | Categories | Tasks | Evaluation |
-|-----|-----------|-------|------------|
-| **Simple Set** | Category 2 (Protocol/Design/Computation) + Category 3 (Database/Web Retrieval) | 99 tasks, 308 MCQs | Objective multiple-choice questions |
-| **Hard Set** | Category 4 (Biology-Oriented ML) | 18 tasks (8 ProteinGym + 10 TDC/Polaris) | Metric-based predictions graded against task-specific leaderboards |
+| Set | Tasks | Evaluation |
+|-----|-------|------------|
+| **Simple Set** | 99 tasks, 308 MCQs — protocol/design/computation and database/web retrieval | Objective multiple-choice questions |
+| **Hard Set** | 18 tasks (8 ProteinGym + 10 TDC/Polaris) | Metric-based predictions graded against task-specific leaderboards |
 
 ---
 
@@ -13,13 +13,13 @@ This benchmark evaluates biomedical AI agents across three capability groups org
 
 ```
 Tool_Creation_Benchmark/
-├── simple_set/          # Category 2 + Category 3 (MCQ-based)
+├── simple_set/          # Protocol/design/computation + database/web retrieval (MCQ-based)
 │   ├── tasks.csv        # Unified task definitions (99 tasks)
 │   ├── mcq.csv          # MCQ answer-key table (308 questions)
 │   ├── run_benchmark.py # Main benchmark runner
 │   ├── score_results.py # Scoring script
 │   └── config_example.json
-└── hard_set/            # Category 4 (biology ML)
+└── hard_set/            # Biology-oriented ML tasks
     ├── task_ids.csv          # 18 evaluated tasks
     ├── run_benchmark.py      # Full-panel runner (STELLA + baselines)
     ├── run_openrouter_batch.py  # OpenRouter/baseline runner
@@ -29,14 +29,16 @@ Tool_Creation_Benchmark/
 
 ---
 
-## Simple Set (Categories 2 & 3)
+## Simple Set
 
 ### Overview
 
-- **Category 2** — Protocol, design, and computational analysis tasks (52 tasks, 167 MCQs).
+The Simple Set contains 99 tasks spanning two task types:
+
+- **Protocol, design, and computational analysis** (52 tasks, 167 MCQs).
   Representative tasks: PCR primer design, restriction digest planning, molecular cloning, bioinformatics workflow reasoning.
 
-- **Category 3** — Database and information retrieval tasks (47 tasks, 141 MCQs).
+- **Database and information retrieval** (47 tasks, 141 MCQs).
   Representative tasks: KEGG pathway extraction, DGIdb interaction summaries, GEPIA2 gene pages, structured web retrieval.
 
 Each task is paired with 2–4 objective MCQs derived from verified reference outputs and source materials. Scores are binary (correct = 1, incorrect = 0), aggregated as mean accuracy per task and then per model.
@@ -105,7 +107,7 @@ This produces:
 
 ---
 
-## Hard Set (Category 4)
+## Hard Set
 
 ### Overview
 
@@ -167,10 +169,10 @@ The `results/` directory contains reviewer-facing summary tables from our benchm
 
 ## Key Results
 
-### Simple Set (Categories 2 & 3 combined, strict accuracy)
+### Simple Set (strict accuracy)
 
-| Model | Category 2 | Category 3 | Overall |
-|-------|-----------|-----------|---------|
+| Model | Protocol/Design | Database Retrieval | Overall |
+|-------|----------------|--------------------|---------|
 | STELLA | 0.9132 | **0.8735** | **0.9082** |
 | Biomni | **0.9341** | 0.8333 | 0.9033 |
 | o3 | 0.9311 | 0.7870 | 0.8919 |
@@ -179,7 +181,7 @@ The `results/` directory contains reviewer-facing summary tables from our benchm
 
 Results reported as mean over 3 independent runs.
 
-### Hard Set (Category 4, penalized avg. leaderboard percentile)
+### Hard Set (penalized avg. leaderboard percentile)
 
 | Model | Valid Tasks | Avg Leaderboard %ile (penalized) |
 |-------|------------|----------------------------------|
