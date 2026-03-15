@@ -318,7 +318,17 @@ python cases/strictosidine_synthase_round2.py
 
 Output is saved to `cases/output/strictosidine_synthase_round2.csv` and `.txt`. The run completes in ~10–15 minutes.
 
-**Ground truth recovery**: The ground truth Round 2 hits are stored in [`cases/output/strictosidine_synthase_round2.csv`](cases/output/strictosidine_synthase_round2.csv). STELLA recovers all 4 experimentally validated active variants — **M276L** (best hit, +2.1× WT), **V176F** (+1.5× WT), **E306S**, and **E306T** — with M276L ranked #1. Notably, V176F was recovered despite all other V176 substitutions failing in Round 1, demonstrating STELLA's ability to reason about sidechain volume constraints beyond simple position-level exclusion.
+**Ground truth recovery**: The ground truth Round 2 variants are stored in [`cases/output/strictosidine_synthase_round2.csv`](cases/output/strictosidine_synthase_round2.csv), covering all 5 experimentally tested variants including both active hits and a confirmed dead mutation:
+
+| Variant | Avg HPLC Area | vs WT | Experimental Outcome |
+|---------|--------------|-------|----------------------|
+| M276L | ~480 | +2.1× | Best hit |
+| V176F | ~334 | +1.5× | Hit |
+| E306S | ~56 | −75% | Reduced |
+| E306T | ~83 | −64% | Reduced |
+| G210S | 0 | Dead | Dead |
+
+STELLA proposes all 5 variants, with M276L ranked #1. Notably, **V176F** is recovered despite all other V176 substitutions failing in Round 1 — demonstrating STELLA's ability to reason about sidechain volume constraints rather than applying blanket position-level exclusion. **G210S** is included as an exploratory candidate (the sole untested G210 substitution) and correctly predicted as high-risk; its confirmed dead outcome validates the G210 dead-zone constraint identified from Round 1.
 
 | Field | Description |
 |-------|-------------|
