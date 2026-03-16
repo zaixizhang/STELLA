@@ -218,8 +218,8 @@ The **Tool Creation Benchmark** evaluates biomedical AI agents across 117 tasks 
 
 | Set | Categories | Tasks | Evaluation |
 |-----|-----------|-------|------------|
-| **Simple Set** | Category 2 (Protocol/Design/Computation) + Category 3 (Database/Web Retrieval) | 99 tasks, 308 MCQs | Objective multiple-choice questions |
-| **Hard Set** | Category 4 (Biology-Oriented ML) | 18 tasks (8 ProteinGym + 10 TDC/Polaris) | Metric-based predictions graded against task-specific leaderboards |
+| **Simple Set** | Protocol/Design/Computation/Database/Web Retrieval | 99 tasks, 308 MCQs | Objective multiple-choice questions |
+| **Hard Set** | Biology-Oriented ML | 18 tasks (8 ProteinGym + 10 TDC/Polaris) | Metric-based predictions graded against task-specific leaderboards |
 
 ### Quick Start
 
