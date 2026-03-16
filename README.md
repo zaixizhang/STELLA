@@ -36,10 +36,8 @@ Ruofan Jin<sup>1</sup>, Mingyang Xu<sup>2</sup>, Fei Meng<sup>3,4</sup>, Guanche
 ## Contents
 
 - [Overview](#overview)
-- [What's New in v2](#whats-new-in-v2)
 - [Demo Video](#demo-video)
 - [Key Results](#key-results)
-- [System Architecture](#system-architecture)
 - [Quick Start](#quick-start)
 - [Installation](#installation)
 - [Resource Download](#resource-download--setup)
@@ -52,22 +50,25 @@ Ruofan Jin<sup>1</sup>, Mingyang Xu<sup>2</sup>, Fei Meng<sup>3,4</sup>, Guanche
 
 ## Overview
 
-Recent advancements in Large Language Models (LLMs) have demonstrated their potential in specialized fields such as biomedical research. However, their performance is often limited by the lack of domain-specific knowledge and reasoning abilities. **STELLA** addresses this by introducing a self-evolving mechanism that enables the agent to continuously learn and adapt from new data and experiences.
+<img src="asset/stella_illustration.png" width="800"/>
 
-The agent architecture integrates a dynamic knowledge base, a reasoning module, and a self-correction component, allowing it to perform intricate tasks such as literature analysis, experimental design, and data interpretation. STELLA achieves superior performance over existing state-of-the-art models on comprehensive biomedical benchmarks.
+*Overview of the STELLA framework. The framework consists of four main components: a manager agent, a dev agent, a critic agent, and a tool ocean. The template system provides structured workflows learned from successful runs.*
+
+| Component | Description |
+|-----------|-------------|
+| **Manager Agent** | Decomposes scientific objectives, retrieves relevant templates, orchestrates sub-agents |
+| **Dev Agent** | Executes bioinformatics analyses, runs code, queries databases and literature |
+| **Critic Agent** | Evaluates result quality, identifies gaps, recommends improvements |
+| **Tool Creation Agent** | Dynamically creates new tools when existing ones are insufficient |
+| **Tool Ocean** | 60+ predefined and self-evolving tools for literature search, databases, virtual screening |
+| **Template System** | Retrieves, applies, and auto-creates structured workflow skills from successful runs |
+
+Models are configurable via [OpenRouter](https://openrouter.ai/). Edit model variables in `stella_core.py` to switch between GPT, Claude, Gemini, and other providers.
+
+
 
 **Try STELLA online at [stella-agent.com](https://stella-agent.com/) — no installation required.**
 
-## What's New in v2
-
-This revision introduces a **structured skill management system** that replaces the previous template/memory architecture:
-
-- **Skill System** — YAML-based skill definitions with 3-stage hybrid retrieval (tag matching → TF-IDF similarity → quality-weighted re-ranking). Skills are auto-created from successful runs and deduplicated.
-- **Tool Governance** — Every tool now has a YAML manifest recording its interface, dependencies, validation rules, and usage statistics. The `ToolIndex` validates tools and detects dependency conflicts.
-- **Expanded Tool Library** — 11 new biomedical tools including molecular docking, ligand-based screening, KEGG pathway search, ESM-2 protein embeddings, and protocol evaluation.
-- **6 Prebuilt Skills** — Curated workflows for gene resistance analysis, protein structure analysis, drug screening, literature review, expression data analysis, and CRISPR experiment design.
-- **Docker Support** — Dockerfile and docker-compose for containerized deployment.
-- **Cleaner Codebase** — Removed legacy memory system, hardcoded API keys, and unused configs. All API keys are now loaded from environment variables.
 
 ## Demo Video
 
@@ -77,32 +78,14 @@ This revision introduces a **structured skill management system** that replaces 
 
 ## Key Results
 
-<img src="asset/Stella_result.png" width="800"/>
-
-*Performance of STELLA on various benchmarks. (A) Comparison of STELLA with other LLMs on Humanity's Last Exam (HLE) Biomedicine, LAB-Bench (DBQA), and LAB-Bench (LitQA). (B) Self-evolving performance of STELLA on the same benchmarks with increasing computation budget.*
+<img src="asset/Stella_results.png" width="800"/>
 
 Key achievements:
-- **4.01/5** score on custom benchmark with **100% task completion**
-- Identified **BTN3A1** as a novel regulator in acute myeloid leukemia, verified through CRISPR studies
+- Best performance on built tool creation benchmark and public benchmark (LabBench, HLE)
+- Identified **BTN3A1** as a novel regulator in acute myeloid leukemia, verified through CRISPR studies across 4 cell lines
 - Developed enzyme variants showing **>2x improvement** in catalytic activity
 - Robotic laboratory automation with success rates improving from **17% to 82%**
 
-## System Architecture
-
-<img src="asset/stella_illustration.png" width="800"/>
-
-*Overview of the STELLA framework. The framework consists of four main components: a manager agent, a dev agent, a critic agent, and a tool ocean. The skill system provides structured workflows learned from successful runs.*
-
-| Component | Description |
-|-----------|-------------|
-| **Manager Agent** | Decomposes scientific objectives, retrieves relevant skills, orchestrates sub-agents |
-| **Dev Agent** | Executes bioinformatics analyses, runs code, queries databases and literature |
-| **Critic Agent** | Evaluates result quality, identifies gaps, recommends improvements |
-| **Tool Creation Agent** | Dynamically creates new tools when existing ones are insufficient |
-| **Tool Ocean** | 60+ predefined and self-evolving tools for literature search, databases, virtual screening |
-| **Skill System** | Retrieves, applies, and auto-creates structured workflow skills from successful runs |
-
-Models are configurable via [OpenRouter](https://openrouter.ai/). Edit model variables in `stella_core.py` to switch between GPT, Claude, Gemini, and other providers.
 
 ## Quick Start
 
