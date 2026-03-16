@@ -72,7 +72,7 @@ Models are configurable via [OpenRouter](https://openrouter.ai/). Edit model var
 
 ## Demo Video
 
-[![Watch the demo](video_image.png)](https://drive.google.com/file/d/1a6PoJWZMMix8zyccWVOZxU47NKhABO_W/view?usp=sharing)
+[![Watch the demo](asset/video_image.png)](https://drive.google.com/file/d/1a6PoJWZMMix8zyccWVOZxU47NKhABO_W/view?usp=sharing)
 
 *Click the thumbnail above to watch the STELLA demonstration video on Google Drive.*
 
