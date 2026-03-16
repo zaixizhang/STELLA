@@ -6,10 +6,6 @@
 
 ### Self-Evolving Multimodal Agents for Biomedical Research
 
-<p>
-    <em>A self-evolving multi-agent framework that continuously learns and adapts — integrating dynamic knowledge bases, reasoning templates, and self-correction to accelerate biomedical discovery.</em>
-</p>
-
 [![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/zaixizhang/STELLA)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Paper](https://img.shields.io/badge/bioRxiv-2025.07.01.662467v2-b31b1b.svg)](https://www.biorxiv.org/content/10.1101/2025.07.01.662467v2)
