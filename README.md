@@ -89,7 +89,11 @@ Key achievements:
 
 Visit [stella-agent.com](https://stella-agent.com/) to use STELLA directly in your browser.
 
-**Option 2: Run locally (from source)**
+**Option 2: Docker image**
+
+A pre-built Docker image package (including ablation variants) is available on [Google Drive](https://drive.google.com/file/d/1iN9AOJpi0FBDz7i_gjmW8EbcjTY0z8bF/view). See [`docker/README.md`](docker/README.md) for download and usage instructions.
+
+**Option 3: Run locally (from source)**
 
 ```bash
 # Clone and install
@@ -105,10 +109,6 @@ python stella_core.py
 ```
 
 Open http://localhost:7860 in your browser. A public Gradio link is also generated automatically.
-
-**Option 3: Docker image**
-
-A pre-built Docker image package (including ablation variants) is available on [Google Drive](https://drive.google.com/file/d/1iN9AOJpi0FBDz7i_gjmW8EbcjTY0z8bF/view). See [`docker/README.md`](docker/README.md) for download and usage instructions.
 
 ### Usage Options
 
