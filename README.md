@@ -89,7 +89,7 @@ Key achievements:
 
 Visit [stella-agent.com](https://stella-agent.com/) to use STELLA directly in your browser.
 
-**Option 2: Run locally**
+**Option 2: Run locally (from source)**
 
 ```bash
 # Clone and install
@@ -106,6 +106,10 @@ python stella_core.py
 
 Open http://localhost:7860 in your browser. A public Gradio link is also generated automatically.
 
+**Option 3: Docker image**
+
+A pre-built Docker image package (including ablation variants) is available on [Google Drive](https://drive.google.com/file/d/1iN9AOJpi0FBDz7i_gjmW8EbcjTY0z8bF/view). See [`docker/README.md`](docker/README.md) for download and usage instructions.
+
 ### Usage Options
 
 | Mode | Command | Description |
@@ -115,7 +119,6 @@ Open http://localhost:7860 in your browser. A public Gradio link is also generat
 | **Tool Creation** | `python stella_core.py --enable_tool_creation` | Enable dynamic tool creation agent |
 | **Custom Port** | `python stella_core.py --port 8080` | Run on a different port |
 | **Web Launcher** | `python start_stella_web.py` | Alternative launcher with preset config |
-| **Basic** | `python start_stella_basic.py` | Minimal launcher |
 
 ### Programmatic Usage
 
@@ -154,12 +157,8 @@ pip install -r requirements.txt
 ```
 
 ### Option 3: Using Docker
-```bash
-cd docker_files
-docker-compose up
-```
 
-See `docker_files/README-Docker.md` for details.
+A pre-built Docker image package is available. See [`docker/README.md`](docker/README.md) for download and usage instructions.
 
 ### Optional Dependencies
 ```bash
