@@ -268,7 +268,7 @@ python cases/nk_aml_negative_regulators.py
 
 Output is saved to `cases/output/nk_aml_negative_regulators.csv` and `.txt`. The run completes in ~5–10 minutes.
 
-**Expected results**: An example output is provided in [`cases/output/nk_aml_negative_regulators_example.csv`](cases/output/nk_aml_negative_regulators_example.csv). The exact gene list may vary across runs due to LLM stochasticity and literature index freshness, but the biological gene families and ranking criteria are consistent. Across repeated runs, ~30–40% of the top-40 genes overlap with the example output, and key discoveries such as **BTN3A1** consistently rank in the top positions.
+**Expected results**: An example output is provided in [`cases/output/nk_aml_negative_regulators_example.csv`](cases/output/nk_aml_negative_regulators_example.csv). The exact gene list may vary across runs due to LLM stochasticity and literature index freshness, but the biological gene families and ranking criteria are consistent. Across repeated runs, most of the top-40 genes overlap with the example output, and key discoveries such as **BTN3A1** consistently rank in the top positions.
 
 | Field | Description |
 |-------|-------------|
