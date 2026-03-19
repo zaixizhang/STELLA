@@ -288,7 +288,7 @@ This case demonstrates STELLA's ability to drive iterative enzyme engineering us
 
 1. **ESM re-scoring calibrated on Round 1 data** — using confirmed hits (M276R) and dead mutations (V176R/K, G210V/T/L/A, H307R) as anchors to score untested substitutions
 2. **FoldX stability filtering** — discarding variants with ΔΔG > 1.5 kcal/mol
-3. **Prioritized candidate selection** — mandatory inclusion of chemically motivated untested variants (M276 aliphatic scan; V176 compact-aromatic scan; E306 polar-uncharged scan)
+3. **Prioritized candidate selection** 
 
 ```bash
 python cases/strictosidine_synthase_round2.py
