@@ -1,0 +1,87 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stella-agent"
+version = "0.1.0"
+description = "STELLA: Self-Evolving Multimodal Agents for Biomedical Research"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [
+    { name = "Zaixi Zhang", email = "zaixizhang@gmail.com" },
+]
+keywords = [
+    "AI", "agents", "biomedical", "multi-agent", "LLM",
+    "drug-discovery", "bioinformatics", "self-evolving"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "requests>=2.31.0",
+    "markdownify>=0.11.6",
+    "PyYAML>=6.0",
+    "python-dotenv>=1.0.0",
+    "jinja2>=3.1.2",
+    "smolagents>=0.1.0",
+    "openai>=1.0.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "scikit-learn>=1.3.0",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+    "beautifulsoup4>=4.12.0",
+    "googlesearch-python>=1.2.0",
+    "PyPDF2>=3.0.0",
+    "gradio>=4.0.0",
+    "ipython>=8.14.0",
+    "mcp>=0.1.0",
+    "threadpoolctl>=3.2.0",
+]
+
+[project.optional-dependencies]
+bio = [
+    "biopython>=1.81",
+    "rdkit",
+]
+memory = [
+    "mem0ai>=0.0.20",
+]
+all = [
+    "biopython>=1.81",
+    "rdkit",
+    "mem0ai>=0.0.20",
+]
+
+[project.urls]
+Homepage = "https://github.com/zaixizhang/STELLA"
+Repository = "https://github.com/zaixizhang/STELLA"
+"Bug Tracker" = "https://github.com/zaixizhang/STELLA/issues"
+
+[project.scripts]
+stella-web = "start_stella_web:main"
+stella = "stella_core:main"
+
+[tool.setuptools]
+py-modules = [
+    "stella_core",
+    "memory_manager",
+    "Knowledge_base",
+    "predefined_tools",
+    "stella_ui_english",
+    "start_stella_web",
+]
+packages = ["new_tools", "stella"]
+
+[tool.setuptools.package-data]
+"*" = ["prompts/*.yaml", "asset/*", "py.typed"]

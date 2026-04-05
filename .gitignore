@@ -9,7 +9,10 @@ __pycache__/
 *.pyd
 .Python
 *.so
+
+# Build artifacts
 *.egg-info/
+*.egg
 dist/
 build/
 
@@ -50,3 +53,4 @@ docker_files/*.npz
 # Temporary files
 *.tmp
 *.bak
+stella_base64.tmp

@@ -1,11 +1,14 @@
 """
 STELLA New Tools Package
 
-This package provides biomedical research tools for STELLA AI Assistant.
+Professional biomedical tool library providing:
+- Literature search (PubMed, arXiv, DOI)
+- Biomedical database queries
+- Virtual screening and drug discovery
+- Enzyme and biochemical analysis
+- LLM integration utilities
+- Biosecurity filtering
 """
 
-# Only import modules that actually exist
-# Avoid importing missing modules to prevent import errors
-
+__version__ = "0.1.0"
 __all__ = []
-__version__ = '1.0.0'
