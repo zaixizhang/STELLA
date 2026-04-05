@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build distribution
+    name: Build Python distribution
     runs-on: ubuntu-latest
 
     steps:
@@ -51,12 +51,9 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        # Uses PyPI Trusted Publishing (no API token needed).
-        # Configure at: https://pypi.org/manage/account/publishing/
-        # Set publisher: owner=zaixizhang, repo=STELLA, workflow=publish.yml
 
-  publish-github-packages:
-    name: Publish to GitHub Packages
+  publish-docker:
+    name: Publish Docker image to GitHub Packages
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -64,22 +61,29 @@ jobs:
       packages: write
 
     steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          name: dist
-          path: dist/
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Extract version tag
+        id: meta
+        uses: docker/metadata-action@v5
         with:
-          python-version: "3.12"
+          images: ghcr.io/zaixizhang/stella
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest
 
-      - name: Install twine
-        run: pip install twine
-
-      - name: Publish to GitHub Packages
-        run: twine upload --repository-url https://pypi.pkg.github.com/zaixizhang/ dist/*
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
