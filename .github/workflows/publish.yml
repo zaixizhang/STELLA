@@ -1,4 +1,4 @@
-name: Publish to PyPI
+name: Publish Package
 
 on:
   push:
@@ -34,6 +34,7 @@ jobs:
   publish-pypi:
     name: Publish to PyPI
     needs: build
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -54,16 +55,13 @@ jobs:
         # Configure at: https://pypi.org/manage/account/publishing/
         # Set publisher: owner=zaixizhang, repo=STELLA, workflow=publish.yml
 
-  publish-testpypi:
-    name: Publish to TestPyPI (on manual trigger)
-    if: github.event_name == 'workflow_dispatch'
+  publish-github-packages:
+    name: Publish to GitHub Packages
     needs: build
     runs-on: ubuntu-latest
-    environment:
-      name: testpypi
-      url: https://test.pypi.org/p/stella-agent
     permissions:
-      id-token: write
+      contents: read
+      packages: write
 
     steps:
       - name: Download build artifacts
@@ -72,8 +70,16 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Publish to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          repository-url: https://upload.pypi.org/legacy/
-          # For TestPyPI use: https://test.pypi.org/legacy/
+          python-version: "3.12"
+
+      - name: Install twine
+        run: pip install twine
+
+      - name: Publish to GitHub Packages
+        run: twine upload --repository-url https://pypi.pkg.github.com/zaixizhang/ dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
