@@ -139,7 +139,7 @@ def select_scores(
     direction_map: dict[str, str],
     *,
     top_k: int = 3,
-    expected_observations: int = 3,
+    expected_observations: int = 6,
 ) -> list[dict[str, Any]]:
     if top_k <= 0:
         raise ValueError("top_k must be positive")
@@ -314,8 +314,8 @@ def main() -> int:
     p.add_argument(
         "--expected-observations",
         type=int,
-        default=3,
-        help="Required attempted runs per task-model group (default: 3).",
+        default=6,
+        help="Required attempted runs per task-model group (default: 6).",
     )
     args = p.parse_args()
 
