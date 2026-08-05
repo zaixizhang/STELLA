@@ -155,20 +155,15 @@ python summarize_eval.py \
   --expected-observations 3
 ```
 
-### Pre-Computed Results
+### Results
 
-The `results/` directory contains reviewer-facing summary tables from our benchmark runs:
+The `results/` directory contains two benchmark tables:
 
 | File | Description |
 |------|-------------|
-| `current_model_summary.csv` | Per-model task-normalized percentile summary |
-| `current_model_official_lb_summary.csv` | Non-penalized leaderboard percentile (uniform top-3 valid-run mean) |
-| `current_model_official_lb_penalized_summary.csv` | Penalized leaderboard percentile |
-| `current_model_official_lb_summary_all_mean.csv` | All-valid-runs mean (non-penalized) |
-| `current_model_official_lb_penalized_summary_all_mean.csv` | All-valid-runs mean (penalized) |
-| `current_model_robustness_summary.csv` | Run-to-run variance and completion rates |
-| `current_task_model_selected.csv` | Per-task per-model selected score |
-| `current_task_model_selected_official_lb.csv` | Per-task per-model leaderboard percentile |
+| `task_model_results.csv` | Per-task, per-model scores using a uniform top-3 aggregation rule |
+| `model_summary.csv` | Per-model leaderboard and completion summary |
+
 
 ---
 
