@@ -134,10 +134,40 @@ def better(a: float, b: float, direction: str) -> bool:
     return a > b
 
 
-def select_scores(observations: list[Obs], direction_map: dict[str, str]) -> list[dict[str, Any]]:
+def select_scores(
+    observations: list[Obs],
+    direction_map: dict[str, str],
+    *,
+    top_k: int = 3,
+    expected_observations: int = 3,
+) -> list[dict[str, Any]]:
+    if top_k <= 0:
+        raise ValueError("top_k must be positive")
+    if expected_observations <= 0:
+        raise ValueError("expected_observations must be positive")
+    if top_k > expected_observations:
+        raise ValueError("top_k cannot exceed expected_observations")
+
     grouped: dict[tuple[str, str], list[Obs]] = {}
     for o in observations:
         grouped.setdefault((o.task_name, o.model), []).append(o)
+
+    mismatched = [
+        (task_name, model, len(items))
+        for (task_name, model), items in sorted(grouped.items())
+        if len(items) != expected_observations
+    ]
+    if mismatched:
+        preview = "; ".join(
+            f"{task_name}/{model}={count}"
+            for task_name, model, count in mismatched[:10]
+        )
+        suffix = "" if len(mismatched) <= 10 else f"; ... ({len(mismatched)} groups total)"
+        raise ValueError(
+            "Fairness check failed: every task-model group must contain exactly "
+            f"{expected_observations} observations. Found {preview}{suffix}. "
+            "Summarize a clean benchmark batch rather than pooling historical runs."
+        )
 
     rows: list[dict[str, Any]] = []
     for (task_name, model), items in sorted(grouped.items()):
@@ -149,31 +179,20 @@ def select_scores(observations: list[Obs], direction_map: dict[str, str]) -> lis
         selected_k = 0
         selected_from_file = ""
 
-        if model == "STELLA":
-            top_k = sorted(
-                valid,
-                key=lambda x: float(x.score),  # type: ignore[arg-type]
-                reverse=(direction == "higher"),
-            )[:3]
-            if top_k:
-                vals = [float(x.score) for x in top_k]  # type: ignore[arg-type]
-                selected_score = sum(vals) / len(vals)
-                selected_k = len(vals)
-                selected_sd = (
-                    math.sqrt(sum((v - selected_score) ** 2 for v in vals) / (len(vals) - 1))
-                    if len(vals) > 1 else 0.0
-                )
-                selected_from_file = f"stella_top{selected_k}_mean"
-        else:
-            if valid:
-                vals = [float(x.score) for x in valid]  # type: ignore[arg-type]
-                selected_score = sum(vals) / len(vals)
-                selected_k = len(vals)
-                selected_sd = (
-                    math.sqrt(sum((v - selected_score) ** 2 for v in vals) / (len(vals) - 1))
-                    if len(vals) > 1 else 0.0
-                )
-                selected_from_file = f"mean_of_{len(valid)}_valid_runs"
+        selected = sorted(
+            valid,
+            key=lambda x: float(x.score),  # type: ignore[arg-type]
+            reverse=(direction == "higher"),
+        )[:top_k]
+        if selected:
+            vals = [float(x.score) for x in selected]  # type: ignore[arg-type]
+            selected_score = sum(vals) / len(vals)
+            selected_k = len(vals)
+            selected_sd = (
+                math.sqrt(sum((v - selected_score) ** 2 for v in vals) / (len(vals) - 1))
+                if len(vals) > 1 else 0.0
+            )
+            selected_from_file = f"uniform_top{top_k}_valid_mean"
 
         rows.append(
             {
@@ -181,6 +200,7 @@ def select_scores(observations: list[Obs], direction_map: dict[str, str]) -> lis
                 "task_id": items[0].task_id,
                 "model": model,
                 "metric_direction": direction,
+                "agg_rule": f"uniform_top{top_k}_valid_mean",
                 "selected_score": "" if selected_score is None else round(float(selected_score), 5),
                 "selected_sd": "" if selected_sd is None else round(float(selected_sd), 5),
                 "selected_k": selected_k,
@@ -285,6 +305,18 @@ def main() -> int:
     p.add_argument("--results-root", default=str(DEFAULT_RESULTS_ROOT))
     p.add_argument("--manifest-dir", default=str(DEFAULT_MANIFEST_DIR))
     p.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR))
+    p.add_argument(
+        "--top-k",
+        type=int,
+        default=3,
+        help="Number of best valid runs averaged for every model (default: 3).",
+    )
+    p.add_argument(
+        "--expected-observations",
+        type=int,
+        default=3,
+        help="Required attempted runs per task-model group (default: 3).",
+    )
     args = p.parse_args()
 
     results_root = Path(args.results_root)
@@ -293,7 +325,12 @@ def main() -> int:
 
     direction_map = load_manifest_direction(manifest_dir)
     observations = read_observations(results_root)
-    selected = select_scores(observations, direction_map)
+    selected = select_scores(
+        observations,
+        direction_map,
+        top_k=args.top_k,
+        expected_observations=args.expected_observations,
+    )
     task_model_rows, model_rows = add_rank_stats(selected)
 
     task_csv = output_dir / "current_task_model_selected.csv"
