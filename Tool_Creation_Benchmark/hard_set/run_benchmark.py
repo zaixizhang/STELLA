@@ -6,6 +6,7 @@ import csv
 import json
 import subprocess
 import sys
+from collections import Counter
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -45,19 +46,13 @@ def _read_rows(path: Path) -> list[dict[str, Any]]:
         return list(csv.DictReader(f))
 
 
-def _append_rows(path: Path, rows: list[dict[str, Any]]) -> None:
+def _write_rows(path: Path, rows: list[dict[str, Any]]) -> None:
     if not rows:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
-    existing_rows: list[dict[str, Any]] = []
-    if path.exists() and path.stat().st_size > 0:
-        with path.open("r", encoding="utf-8", newline="") as f:
-            existing_rows = list(csv.DictReader(f))
-
-    all_rows = existing_rows + rows
     # Keep deterministic column order across mixed runners (bioml + openrouter)
     fieldnames: list[str] = []
-    for r in all_rows:
+    for r in rows:
         for k in r.keys():
             if k not in fieldnames:
                 fieldnames.append(k)
@@ -65,7 +60,7 @@ def _append_rows(path: Path, rows: list[dict[str, Any]]) -> None:
     with path.open("w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
         w.writeheader()
-        w.writerows(all_rows)
+        w.writerows(rows)
 
 
 def _run_cmd(cmd: list[str], cwd: Path) -> int:
@@ -147,8 +142,12 @@ def main() -> int:
         default=",".join(MODEL_ORDER),
         help="Comma-separated model names from: STELLA,Biomni,GPT4o,DeepSeek,Gemini,Grok,o3,ClaudeOpus",
     )
-    p.add_argument("--stella-repeats", type=int, default=3)
-    p.add_argument("--others-repeats", type=int, default=1)
+    p.add_argument(
+        "--repeats",
+        type=int,
+        default=3,
+        help="Uniform attempted runs per task-model pair; must be at least 3 (default: 3).",
+    )
     p.add_argument(
         "--run-id",
         default=f"category4_full_panel_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
@@ -166,6 +165,9 @@ def main() -> int:
         help="Run Biomni via local runner (recommended) or biomlbench docker agent",
     )
     args = p.parse_args()
+
+    if args.repeats < 3:
+        raise SystemExit("--repeats must be at least 3 for uniform top-3 aggregation")
 
     selected = [m.strip() for m in args.models.split(",") if m.strip()]
     invalid = [m for m in selected if m not in MODEL_ORDER]
@@ -189,9 +191,9 @@ def main() -> int:
 
     for model in selected:
         if model == "Biomni" and args.biomni_mode == "local":
-            print(f"[RUN] Biomni via local runner | repeats={args.others_repeats}")
+            print(f"[RUN] Biomni via local runner | repeats={args.repeats}")
             try:
-                rows = _run_biomni_local(base_bioml, args.run_id, args.others_repeats, Path(args.out_dir))
+                rows = _run_biomni_local(base_bioml, args.run_id, args.repeats, Path(args.out_dir))
                 all_rows.extend(rows)
             except Exception as e:
                 print(f"[WARN] Biomni local run failed: {e}")
@@ -200,7 +202,7 @@ def main() -> int:
         if model in ("STELLA", "Biomni"):
             cfg = dict(base_bioml)
             cfg["agents"] = [model.lower() if model == "STELLA" else "biomni"]
-            cfg["repeats"] = args.stella_repeats if model == "STELLA" else args.others_repeats
+            cfg["repeats"] = args.repeats
             cfg["run_id"] = f"{args.run_id}_{model}"
             cfg_path = tmp_cfg_dir / f"{model}_bioml.json"
             _write_json(cfg_path, cfg)
@@ -223,7 +225,7 @@ def main() -> int:
         name, model_id = OPENROUTER_MODEL_MAP[model]
         cfg = dict(base_openrouter)
         cfg["models"] = [{"name": name, "model_id": model_id}]
-        cfg["repeats"] = args.others_repeats
+        cfg["repeats"] = args.repeats
         cfg["run_id"] = f"{args.run_id}_{model}"
         cfg_path = tmp_cfg_dir / f"{model}_openrouter.json"
         _write_json(cfg_path, cfg)
@@ -239,7 +241,21 @@ def main() -> int:
             r["panel_model"] = model
         all_rows.extend(rows)
 
-    _append_rows(merged_csv, all_rows)
+    observation_counts = Counter(str(r.get("panel_model", "")) for r in all_rows)
+    mismatched = {
+        model: observation_counts.get(model, 0)
+        for model in selected
+        if observation_counts.get(model, 0) != args.repeats
+    }
+    if mismatched:
+        details = ", ".join(f"{model}={count}" for model, count in mismatched.items())
+        raise RuntimeError(
+            "Fairness check failed: every selected model must emit exactly "
+            f"{args.repeats} observations for this task; found {details}"
+        )
+
+    # Replace this run's merged summary so retries cannot inflate an observation pool.
+    _write_rows(merged_csv, all_rows)
     print(f"merged_summary={merged_csv}")
     return 0
 
