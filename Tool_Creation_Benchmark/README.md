@@ -116,7 +116,7 @@ This produces:
 - **8 ProteinGym tasks** — deep mutational scanning / protein engineering (e.g., `SPIKE_SARS2_Starr_2020_binding`, `BRCA1_HUMAN_Findlay_2018`)
 - **10 TDC / Polaris tasks** — ADMET and drug-discovery properties (e.g., `tdcommons-bbb-martins`, `tdcommons-caco2-wang`)
 
-Tasks are run end-to-end inside a standardized containerized CPU-only runtime (`biomlbench`) with an 8-hour per-task time limit. Each task-model pair is run 3 independent times. The reported metric is `leaderboard_percentile` (higher = better), aggregated as:
+Tasks run end-to-end in a standardized CPU-only `biomlbench` container with an 8-hour per-task limit. Every task-model pair uses three independent attempts under the same budget, and every model is scored with the same top-3 valid-run mean. The reported metric is `leaderboard_percentile` (higher = better):
 
 - **Non-penalized**: mean over valid/gradable runs only.
 - **Penalized**: missing/invalid runs assigned percentile 0.
@@ -132,7 +132,11 @@ Tasks are run end-to-end inside a standardized containerized CPU-only runtime (`
 **STELLA full panel:**
 ```bash
 cd Tool_Creation_Benchmark/hard_set
-python run_benchmark.py --config <config.json> --out_dir outputs/stella_run
+python run_benchmark.py \\
+  --bioml-config <bioml_config.json> \\
+  --openrouter-config <openrouter_config.json> \\
+  --repeats 3 \\
+  --out-dir outputs/stella_run
 ```
 
 **OpenRouter / baseline models:**
@@ -157,7 +161,7 @@ The `results/` directory contains reviewer-facing summary tables from our benchm
 | File | Description |
 |------|-------------|
 | `current_model_summary.csv` | Per-model task-normalized percentile summary |
-| `current_model_official_lb_summary.csv` | Non-penalized leaderboard percentile (top-k repeat mean) |
+| `current_model_official_lb_summary.csv` | Non-penalized leaderboard percentile (uniform top-3 valid-run mean) |
 | `current_model_official_lb_penalized_summary.csv` | Penalized leaderboard percentile |
 | `current_model_official_lb_summary_all_mean.csv` | All-valid-runs mean (non-penalized) |
 | `current_model_official_lb_penalized_summary_all_mean.csv` | All-valid-runs mean (penalized) |
