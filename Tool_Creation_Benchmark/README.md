@@ -142,16 +142,17 @@ python run_benchmark.py \\
 **OpenRouter / baseline models:**
 ```bash
 python run_openrouter_batch.py \
-  --config config_openrouter_tdc_r3.json \
-  --out_dir outputs/openrouter_run
+  --config config_openrouter_tdc_r3.json
 ```
 
 **Summarize results:**
 ```bash
 python summarize_eval.py \
-  --run_dirs outputs/stella_run outputs/openrouter_run \
-  --task_csv task_ids.csv \
-  --out_dir results/
+  --results-root outputs/official_batch \
+  --manifest-dir manifests/ \
+  --output-dir results/ \
+  --top-k 3 \
+  --expected-observations 3
 ```
 
 ### Pre-Computed Results
