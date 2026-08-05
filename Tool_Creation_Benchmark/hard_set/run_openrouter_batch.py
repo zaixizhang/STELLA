@@ -166,7 +166,7 @@ def main() -> int:
     if group not in {"tdc", "proteingym", "all"}:
         raise SystemExit("group must be one of: tdc, proteingym, all")
 
-    repeats = int(cfg.get("repeats", 3))
+    repeats = int(cfg.get("repeats", 6))
     max_parallel = int(cfg.get("max_parallel", 3))
     config_glob = str(cfg.get("config_glob", "benchmark_config_c4_*_openrouter_tasktext_others.json"))
     batch_tag = str(cfg.get("batch_tag", "")).strip()
