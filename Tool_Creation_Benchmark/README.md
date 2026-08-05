@@ -116,7 +116,7 @@ This produces:
 - **8 ProteinGym tasks** — deep mutational scanning / protein engineering (e.g., `SPIKE_SARS2_Starr_2020_binding`, `BRCA1_HUMAN_Findlay_2018`)
 - **10 TDC / Polaris tasks** — ADMET and drug-discovery properties (e.g., `tdcommons-bbb-martins`, `tdcommons-caco2-wang`)
 
-Tasks run end-to-end in a standardized CPU-only `biomlbench` container with an 8-hour per-task limit. Every task-model pair uses three independent attempts under the same budget, and every model is scored with the same top-3 valid-run mean. The reported metric is `leaderboard_percentile` (higher = better):
+Tasks run end-to-end in a standardized CPU-only `biomlbench` container with an 8-hour per-task limit. Every task-model pair uses six independent attempts under the same budget, and every model is scored with the same best-three-run mean. The reported metric is `leaderboard_percentile` (higher = better):
 
 - **Non-penalized**: mean over valid/gradable runs only.
 - **Penalized**: missing/invalid runs assigned percentile 0.
@@ -135,14 +135,14 @@ cd Tool_Creation_Benchmark/hard_set
 python run_benchmark.py \\
   --bioml-config <bioml_config.json> \\
   --openrouter-config <openrouter_config.json> \\
-  --repeats 3 \\
+  --repeats 6 \\
   --out-dir outputs/stella_run
 ```
 
 **OpenRouter / baseline models:**
 ```bash
 python run_openrouter_batch.py \
-  --config config_openrouter_tdc_r3.json
+  --config <openrouter_config.json>
 ```
 
 **Summarize results:**
@@ -152,7 +152,7 @@ python summarize_eval.py \
   --manifest-dir manifests/ \
   --output-dir results/ \
   --top-k 3 \
-  --expected-observations 3
+  --expected-observations 6
 ```
 
 ### Results
@@ -161,7 +161,7 @@ The `results/` directory contains two benchmark tables:
 
 | File | Description |
 |------|-------------|
-| `task_model_results.csv` | Per-task, per-model scores using a uniform top-3 aggregation rule |
+| `task_model_results.csv` | Per-task, per-model scores using a uniform best-three-of-six aggregation rule |
 | `model_summary.csv` | Per-model leaderboard and completion summary |
 
 
