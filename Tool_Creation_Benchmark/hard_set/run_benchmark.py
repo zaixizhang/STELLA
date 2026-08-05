@@ -145,8 +145,8 @@ def main() -> int:
     p.add_argument(
         "--repeats",
         type=int,
-        default=3,
-        help="Uniform attempted runs per task-model pair; must be at least 3 (default: 3).",
+        default=6,
+        help="Uniform attempted runs per task-model pair; must be at least 3 (default: 6).",
     )
     p.add_argument(
         "--run-id",
