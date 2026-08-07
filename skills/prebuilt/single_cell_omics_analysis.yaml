@@ -1,0 +1,91 @@
+skill_id: single_cell_omics_analysis
+version: "1.0.0"
+name: Single-Cell Omics Analysis
+domain: single_cell_omics
+description: "Analyzes single-cell transcriptomic or multimodal data using quality control, normalization, clustering, cell-state annotation, and differential testing."
+
+workflow:
+  - step: 1
+    action: inspect_and_qc_cells
+    description: "Inspect matrix dimensions and metadata, quantify library quality, and flag low-quality cells and likely doublets."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      report_thresholds: true
+      preserve_raw_counts: true
+    agent: dev
+
+  - step: 2
+    action: normalize_and_embed
+    description: "Normalize data, select informative features, reduce dimensionality, and generate a reproducible neighborhood graph."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      record_random_seed: true
+      check_batch_structure: true
+    agent: dev
+
+  - step: 3
+    action: cluster_and_annotate
+    description: "Cluster cells and annotate cell types or states using marker evidence and reference knowledge."
+    tools_required: ["create_and_run_script", "multi_source_search"]
+    parameters:
+      retain_marker_evidence: true
+      allow_unknown_labels: true
+    agent: dev
+
+  - step: 4
+    action: test_cell_state_changes
+    description: "Test differential abundance or expression with replicate-aware models and appropriate covariates."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      replicate_aware: true
+      multiple_testing_correction: true
+    agent: dev
+
+  - step: 5
+    action: audit_single_cell_results
+    description: "Evaluate cluster stability, annotation support, batch effects, and pseudoreplication risks."
+    tools_required: []
+    parameters:
+      require_replicate_check: true
+    agent: critic
+
+tools_required:
+  - tool_id: create_and_run_script
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: multi_source_search
+    version: ">=1.0.0"
+    optional: true
+
+tags:
+  - "single-cell"
+  - "scRNA-seq"
+  - "cell annotation"
+  - "clustering"
+  - "differential expression"
+
+applicable_queries:
+  - "*single*cell*analysis*"
+  - "*scRNA*seq*"
+  - "*cell*type*annotation*"
+  - "*cell*clusters*"
+
+quality_metrics:
+  success_count: 0
+  failure_count: 0
+  avg_completion_time_sec: 0.0
+  avg_critic_score: 0.0
+  last_used: ""
+  created_at: "2026-08-06"
+  last_updated: "2026-08-06"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-08-06"
+      changes: "Initial literature-informed prebuilt template for single-cell omics analysis."
+
+status: active
