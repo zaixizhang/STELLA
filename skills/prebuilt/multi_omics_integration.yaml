@@ -1,0 +1,93 @@
+skill_id: multi_omics_integration
+version: "1.0.0"
+name: Multi-Omics Integration
+domain: multi_omics
+description: "Integrates two or more omics layers with explicit sample alignment, scale-aware preprocessing, cross-modal modeling, and biologically grounded validation."
+
+workflow:
+  - step: 1
+    action: align_samples_and_features
+    description: "Audit identifiers, sample overlap, biological replicates, covariates, and missing modalities before integration."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      require_sample_alignment: true
+      report_missing_modalities: true
+    agent: dev
+
+  - step: 2
+    action: preprocess_each_modality
+    description: "Apply modality-appropriate quality control and scaling without erasing meaningful biological differences."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      process_modalities_separately: true
+      record_transformations: true
+    agent: dev
+
+  - step: 3
+    action: fit_integrative_models
+    description: "Fit transparent cross-modal or latent-factor models and compare against simple single-modality baselines."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      use_held_out_validation: true
+      record_random_seed: true
+    agent: dev
+
+  - step: 4
+    action: interpret_cross_modal_signals
+    description: "Connect robust factors or associations to pathways, cell states, mechanisms, and literature evidence."
+    tools_required: ["multi_source_search", "query_pubmed"]
+    parameters:
+      require_cross_modal_support: true
+    agent: manager
+
+  - step: 5
+    action: audit_integration
+    description: "Check leakage, batch-driven factors, modality dominance, stability, and unsupported causal claims."
+    tools_required: []
+    parameters:
+      require_stability_analysis: true
+    agent: critic
+
+tools_required:
+  - tool_id: create_and_run_script
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: multi_source_search
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: query_pubmed
+    version: ">=1.0.0"
+    optional: true
+
+tags:
+  - "multi-omics"
+  - "data integration"
+  - "cross-modal analysis"
+  - "systems biology"
+  - "latent factors"
+
+applicable_queries:
+  - "*multi*omics*integration*"
+  - "*integrate*transcriptomic*proteomic*"
+  - "*cross*omics*"
+  - "*multiomic*analysis*"
+
+quality_metrics:
+  success_count: 0
+  failure_count: 0
+  avg_completion_time_sec: 0.0
+  avg_critic_score: 0.0
+  last_used: ""
+  created_at: "2026-08-06"
+  last_updated: "2026-08-06"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-08-06"
+      changes: "Initial literature-informed prebuilt template for multi-omics integration."
+
+status: active
