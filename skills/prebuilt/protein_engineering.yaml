@@ -1,0 +1,103 @@
+skill_id: protein_engineering
+version: "1.0.0"
+name: Protein Engineering and Variant Design
+domain: protein_engineering
+description: "Designs protein variants by combining sequence conservation, structural context, functional constraints, and multi-objective filtering for activity and stability."
+
+workflow:
+  - step: 1
+    action: define_engineering_objective
+    description: "Specify target sequence, desired property, assay constraints, immutable residues, and acceptable risk."
+    tools_required: ["extract_protein_sequence"]
+    parameters:
+      require_objective_metric: true
+      protect_known_active_sites: true
+    agent: manager
+
+  - step: 2
+    action: collect_sequence_structure_evidence
+    description: "Retrieve structural context, compare homologs, and identify conserved, catalytic, interface, and pocket residues."
+    tools_required: ["fetch_pdb_structure", "sequence_alignment", "analyze_binding_pocket", "multi_source_search"]
+    parameters:
+      retain_structure_quality: true
+      report_alignment_coverage: true
+    agent: dev
+
+  - step: 3
+    action: generate_candidate_variants
+    description: "Propose a diverse, bounded set of single or combinatorial mutations with mechanistic rationales."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      limit_candidate_count: true
+      include_control_variants: true
+    agent: dev
+
+  - step: 4
+    action: score_and_filter_candidates
+    description: "Score activity-related plausibility, stability, novelty, and manufacturability; reject conflicts with hard constraints."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      multi_objective_ranking: true
+      report_score_uncertainty: true
+    agent: dev
+
+  - step: 5
+    action: audit_design_plan
+    description: "Check residue numbering, structural assumptions, training-data leakage risks, and experimental testability."
+    tools_required: []
+    parameters:
+      require_numbering_validation: true
+    agent: critic
+
+tools_required:
+  - tool_id: extract_protein_sequence
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: fetch_pdb_structure
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: sequence_alignment
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: analyze_binding_pocket
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: multi_source_search
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: create_and_run_script
+    version: ">=1.0.0"
+    optional: false
+
+tags:
+  - "protein engineering"
+  - "variant design"
+  - "enzyme engineering"
+  - "mutagenesis"
+  - "protein stability"
+
+applicable_queries:
+  - "*engineer*protein*"
+  - "*design*protein*variant*"
+  - "*enzyme*mutation*"
+  - "*improve*protein*activity*"
+
+quality_metrics:
+  success_count: 0
+  failure_count: 0
+  avg_completion_time_sec: 0.0
+  avg_critic_score: 0.0
+  last_used: ""
+  created_at: "2026-08-06"
+  last_updated: "2026-08-06"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-08-06"
+      changes: "Initial literature-informed prebuilt template for protein engineering and variant design."
+
+status: active
