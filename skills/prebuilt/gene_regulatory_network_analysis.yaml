@@ -1,0 +1,93 @@
+skill_id: gene_regulatory_network_analysis
+version: "1.0.0"
+name: Gene Regulatory Network Analysis
+domain: systems_biology
+description: "Infers and evaluates gene-regulatory networks from expression or multi-omic evidence, prioritizing reproducible regulator-target relationships over dense speculative graphs."
+
+workflow:
+  - step: 1
+    action: prepare_network_inputs
+    description: "Validate samples, normalize inputs, identify regulators, and remove features unsupported by the assay."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      require_replicates: true
+      define_regulator_set: true
+    agent: dev
+
+  - step: 2
+    action: infer_candidate_edges
+    description: "Infer regulator-target associations using complementary methods and retain signed confidence scores."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      compare_methods: true
+      record_random_seed: true
+    agent: dev
+
+  - step: 3
+    action: annotate_regulators_and_edges
+    description: "Add motif, perturbation, pathway, and literature evidence without treating association as causation."
+    tools_required: ["multi_source_search", "query_pubmed"]
+    parameters:
+      separate_evidence_types: true
+    agent: dev
+
+  - step: 4
+    action: prioritize_robust_regulons
+    description: "Rank regulators and modules by stability, external support, and relevance to the biological contrast."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      bootstrap_stability: true
+      limit_network_density: true
+    agent: manager
+
+  - step: 5
+    action: audit_network_quality
+    description: "Check stability, confounding, edge calibration, circular validation, and biological plausibility."
+    tools_required: []
+    parameters:
+      require_null_comparison: true
+    agent: critic
+
+tools_required:
+  - tool_id: create_and_run_script
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: multi_source_search
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: query_pubmed
+    version: ">=1.0.0"
+    optional: true
+
+tags:
+  - "gene regulatory network"
+  - "transcription factors"
+  - "network inference"
+  - "regulons"
+  - "systems biology"
+
+applicable_queries:
+  - "*gene*regulatory*network*"
+  - "*infer*regulon*"
+  - "*transcription*factor*targets*"
+  - "*GRN*analysis*"
+
+quality_metrics:
+  success_count: 0
+  failure_count: 0
+  avg_completion_time_sec: 0.0
+  avg_critic_score: 0.0
+  last_used: ""
+  created_at: "2026-08-06"
+  last_updated: "2026-08-06"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-08-06"
+      changes: "Initial literature-informed prebuilt template for gene regulatory network analysis."
+
+status: active
