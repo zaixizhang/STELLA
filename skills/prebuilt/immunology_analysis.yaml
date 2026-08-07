@@ -1,0 +1,94 @@
+skill_id: immunology_analysis
+version: "1.0.0"
+name: Immunology and Immune-Response Analysis
+domain: immunology
+description: "Analyzes immune phenotypes and mechanisms by integrating cell populations, cytokines, receptors, perturbations, and literature evidence with context-aware validation."
+
+workflow:
+  - step: 1
+    action: define_immune_context
+    description: "Specify species, tissue, disease, intervention, immune compartment, time point, and outcome."
+    tools_required: []
+    parameters:
+      require_context_fields: true
+      avoid_cross_context_transfer: true
+    agent: manager
+
+  - step: 2
+    action: assemble_immune_evidence
+    description: "Collect relevant cell-marker, receptor-ligand, cytokine, perturbation, and literature evidence."
+    tools_required: ["multi_source_search", "query_pubmed"]
+    parameters:
+      separate_human_and_model_evidence: true
+      retain_source_dates: true
+    agent: dev
+
+  - step: 3
+    action: analyze_immune_measurements
+    description: "Apply assay-appropriate, replicate-aware analysis to immune-cell, expression, functional, or multiplex data."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      replicate_aware: true
+      control_fdr: true
+    agent: dev
+
+  - step: 4
+    action: prioritize_mechanisms_or_targets
+    description: "Rank mechanisms or targets by convergent evidence, context specificity, novelty, and experimental tractability."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      require_multiple_evidence_types: true
+      report_conflicts: true
+    agent: manager
+
+  - step: 5
+    action: audit_immunology_conclusions
+    description: "Check marker specificity, species transfer, cell-state confounding, causal language, and safety caveats."
+    tools_required: []
+    parameters:
+      require_context_audit: true
+    agent: critic
+
+tools_required:
+  - tool_id: multi_source_search
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: query_pubmed
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: create_and_run_script
+    version: ">=1.0.0"
+    optional: false
+
+tags:
+  - "immunology"
+  - "immune response"
+  - "cytokines"
+  - "immune cells"
+  - "immunotherapy"
+
+applicable_queries:
+  - "*immune*response*analysis*"
+  - "*immunology*mechanism*"
+  - "*immune*cell*phenotype*"
+  - "*immunotherapy*target*"
+
+quality_metrics:
+  success_count: 0
+  failure_count: 0
+  avg_completion_time_sec: 0.0
+  avg_critic_score: 0.0
+  last_used: ""
+  created_at: "2026-08-06"
+  last_updated: "2026-08-06"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-08-06"
+      changes: "Initial literature-informed prebuilt template for immunology and immune-response analysis."
+
+status: active
