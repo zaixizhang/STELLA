@@ -1,0 +1,88 @@
+skill_id: biomedical_imaging_pathology
+version: "1.0.0"
+name: Biomedical Imaging and Computational Pathology
+domain: biomedical_imaging
+description: "Analyzes microscopy, radiology, or pathology images through data auditing, preprocessing, segmentation or feature extraction, model evaluation, and visual quality review."
+
+workflow:
+  - step: 1
+    action: audit_images_and_labels
+    description: "Inspect formats, resolution, channels, patient grouping, label provenance, class balance, and corrupted files."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      group_by_patient: true
+      report_label_quality: true
+    agent: dev
+
+  - step: 2
+    action: preprocess_without_leakage
+    description: "Apply modality-appropriate normalization, registration, tiling, or augmentation after defining patient-level splits."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      patient_level_split: true
+      fit_preprocessing_on_train: true
+    agent: dev
+
+  - step: 3
+    action: segment_or_extract_features
+    description: "Generate regions, objects, embeddings, or handcrafted features and visually inspect representative outputs."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      save_qc_overlays: true
+      record_parameters: true
+    agent: dev
+
+  - step: 4
+    action: train_and_evaluate_models
+    description: "Evaluate against suitable baselines using held-out data, calibrated metrics, and subgroup analysis."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      use_held_out_test: true
+      report_confidence_intervals: true
+    agent: dev
+
+  - step: 5
+    action: audit_imaging_results
+    description: "Check leakage, scanner or site confounding, annotation noise, failure cases, calibration, and deployment limits."
+    tools_required: []
+    parameters:
+      require_failure_case_review: true
+    agent: critic
+
+tools_required:
+  - tool_id: create_and_run_script
+    version: ">=1.0.0"
+    optional: false
+
+tags:
+  - "biomedical imaging"
+  - "computational pathology"
+  - "microscopy"
+  - "segmentation"
+  - "image analysis"
+
+applicable_queries:
+  - "*biomedical*image*analysis*"
+  - "*pathology*image*"
+  - "*microscopy*segmentation*"
+  - "*radiology*model*"
+
+quality_metrics:
+  success_count: 0
+  failure_count: 0
+  avg_completion_time_sec: 0.0
+  avg_critic_score: 0.0
+  last_used: ""
+  created_at: "2026-08-06"
+  last_updated: "2026-08-06"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-08-06"
+      changes: "Initial literature-informed prebuilt template for biomedical imaging and computational pathology."
+
+status: active
