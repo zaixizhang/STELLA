@@ -1,0 +1,91 @@
+skill_id: microbiome_analysis
+version: "1.0.0"
+name: Microbiome Analysis
+domain: microbiome
+description: "Analyzes amplicon, metagenomic, or metatranscriptomic data with contamination control, compositional statistics, diversity analysis, and cautious functional interpretation."
+
+workflow:
+  - step: 1
+    action: inspect_design_and_contamination
+    description: "Validate metadata, controls, sequencing depth, batch structure, and likely reagent or environmental contaminants."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      require_negative_controls: true
+      report_batch_structure: true
+    agent: dev
+
+  - step: 2
+    action: profile_taxa_or_functions
+    description: "Perform assay-appropriate preprocessing and generate traceable taxonomic or functional abundance tables."
+    tools_required: ["create_and_run_script", "run_shell_command"]
+    parameters:
+      record_reference_database: true
+      retain_unclassified_reads: true
+    agent: dev
+
+  - step: 3
+    action: analyze_diversity
+    description: "Estimate alpha and beta diversity with sampling-aware and covariate-aware statistical tests."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      use_permutation_constraints: true
+      report_effect_sizes: true
+    agent: dev
+
+  - step: 4
+    action: test_differential_features
+    description: "Use compositionality-aware models for taxa or pathways and control multiple testing."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      compositional_method: true
+      control_fdr: true
+    agent: dev
+
+  - step: 5
+    action: audit_microbiome_results
+    description: "Check contamination, sequencing depth, database bias, compositional artifacts, and limits of functional inference."
+    tools_required: []
+    parameters:
+      require_contamination_review: true
+    agent: critic
+
+tools_required:
+  - tool_id: create_and_run_script
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: run_shell_command
+    version: ">=1.0.0"
+    optional: true
+
+tags:
+  - "microbiome"
+  - "metagenomics"
+  - "amplicon sequencing"
+  - "microbial ecology"
+  - "compositional data"
+
+applicable_queries:
+  - "*microbiome*analysis*"
+  - "*metagenomic*data*"
+  - "*16S*analysis*"
+  - "*microbial*community*"
+
+quality_metrics:
+  success_count: 0
+  failure_count: 0
+  avg_completion_time_sec: 0.0
+  avg_critic_score: 0.0
+  last_used: ""
+  created_at: "2026-08-06"
+  last_updated: "2026-08-06"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-08-06"
+      changes: "Initial literature-informed prebuilt template for microbiome analysis."
+
+status: active
