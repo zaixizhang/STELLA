@@ -1,0 +1,91 @@
+skill_id: metabolomics_analysis
+version: "1.0.0"
+name: Metabolomics Analysis
+domain: metabolomics
+description: "Analyzes targeted or untargeted metabolomics data through feature quality control, normalization, metabolite annotation, statistical testing, and pathway interpretation."
+
+workflow:
+  - step: 1
+    action: inspect_features_and_qc
+    description: "Validate sample metadata, internal standards, blanks, pooled controls, feature missingness, and batch structure."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      use_pooled_qc: true
+      inspect_blank_signal: true
+    agent: dev
+
+  - step: 2
+    action: normalize_and_filter_features
+    description: "Correct drift or batch effects, normalize intensities, and filter unstable or contaminant-like features."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      record_qc_thresholds: true
+      avoid_data_leakage: true
+    agent: dev
+
+  - step: 3
+    action: annotate_metabolites
+    description: "Assign candidate metabolite identities with confidence levels and retain unresolved or isomeric ambiguity."
+    tools_required: ["multi_source_search", "create_and_run_script"]
+    parameters:
+      report_annotation_level: true
+      retain_multiple_candidates: true
+    agent: dev
+
+  - step: 4
+    action: test_and_interpret_changes
+    description: "Run design-aware statistical tests and pathway analysis using an explicit measured-feature background."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      control_fdr: true
+      report_effect_sizes: true
+    agent: dev
+
+  - step: 5
+    action: audit_metabolomics_results
+    description: "Check annotation confidence, batch correction, pathway coverage, and robustness to preprocessing choices."
+    tools_required: []
+    parameters:
+      require_annotation_caveats: true
+    agent: critic
+
+tools_required:
+  - tool_id: create_and_run_script
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: multi_source_search
+    version: ">=1.0.0"
+    optional: true
+
+tags:
+  - "metabolomics"
+  - "metabolite annotation"
+  - "mass spectrometry"
+  - "metabolic pathways"
+  - "biomarkers"
+
+applicable_queries:
+  - "*metabolomic*analysis*"
+  - "*metabolite*profiling*"
+  - "*metabolic*biomarker*"
+  - "*LC*MS*metabolite*"
+
+quality_metrics:
+  success_count: 0
+  failure_count: 0
+  avg_completion_time_sec: 0.0
+  avg_critic_score: 0.0
+  last_used: ""
+  created_at: "2026-08-06"
+  last_updated: "2026-08-06"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-08-06"
+      changes: "Initial literature-informed prebuilt template for metabolomics analysis."
+
+status: active
