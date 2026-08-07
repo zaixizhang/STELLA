@@ -1,0 +1,106 @@
+skill_id: pharmacology_admet_toxicology
+version: "1.0.0"
+name: Pharmacology, ADMET, and Toxicology Assessment
+domain: pharmacology
+description: "Assesses compound developability through structure standardization, physicochemical profiling, ADMET and toxicity prediction, evidence review, and uncertainty-aware ranking."
+
+workflow:
+  - step: 1
+    action: standardize_compound_structures
+    description: "Validate and standardize molecular structures, salts, stereochemistry, duplicates, and identifiers."
+    tools_required: ["create_and_run_script"]
+    parameters:
+      preserve_parent_structure: true
+      report_invalid_records: true
+    agent: dev
+
+  - step: 2
+    action: calculate_physicochemical_profile
+    description: "Calculate descriptors and drug-likeness indicators with applicability checks."
+    tools_required: ["calculate_molecular_descriptors", "filter_by_drug_likeness"]
+    parameters:
+      report_rule_violations: true
+      retain_continuous_values: true
+    agent: dev
+
+  - step: 3
+    action: predict_admet_properties
+    description: "Predict absorption, distribution, metabolism, and excretion endpoints with model-domain caveats."
+    tools_required: ["predict_admet_properties"]
+    parameters:
+      report_confidence: true
+      avoid_binary_only_summary: true
+    agent: dev
+
+  - step: 4
+    action: predict_and_review_toxicity
+    description: "Estimate toxicity liabilities and compare predictions with available experimental or literature evidence."
+    tools_required: ["predict_toxicity", "multi_source_search", "query_pubmed"]
+    parameters:
+      separate_prediction_from_evidence: true
+    agent: dev
+
+  - step: 5
+    action: audit_and_rank_compounds
+    description: "Rank compounds by the stated use case and audit contradictory endpoints, uncertainty, and model applicability."
+    tools_required: []
+    parameters:
+      multi_objective_ranking: true
+      require_uncertainty_summary: true
+    agent: critic
+
+tools_required:
+  - tool_id: create_and_run_script
+    version: ">=1.0.0"
+    optional: false
+  - tool_id: calculate_molecular_descriptors
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: filter_by_drug_likeness
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: predict_admet_properties
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: predict_toxicity
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: multi_source_search
+    version: ">=1.0.0"
+    optional: true
+  - tool_id: query_pubmed
+    version: ">=1.0.0"
+    optional: true
+
+tags:
+  - "pharmacology"
+  - "ADMET"
+  - "toxicology"
+  - "drug likeness"
+  - "compound prioritization"
+
+applicable_queries:
+  - "*ADMET*assessment*"
+  - "*predict*toxicity*"
+  - "*drug*likeness*"
+  - "*compound*pharmacology*"
+
+quality_metrics:
+  success_count: 0
+  failure_count: 0
+  avg_completion_time_sec: 0.0
+  avg_critic_score: 0.0
+  last_used: ""
+  created_at: "2026-08-06"
+  last_updated: "2026-08-06"
+
+provenance:
+  created_by: prebuilt
+  source_run_id: ""
+  parent_skill_id: null
+  changelog:
+    - version: "1.0.0"
+      date: "2026-08-06"
+      changes: "Initial literature-informed prebuilt template for pharmacology, admet, and toxicology assessment."
+
+status: active
