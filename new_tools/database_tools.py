@@ -79,29 +79,29 @@ def parse_hpo_obo(obo_file_path: str) -> Dict[str, str]:
         
     return hpo_dict
 
-gemini_model = OpenAIServerModel(
-    model_id="google/gemini-2.5-pro",
+llm_model = OpenAIServerModel(
+    model_id="anthropic/claude-sonnet-4",
     api_base="https://openrouter.ai/api/v1",
     api_key=OPENROUTER_API_KEY_STRING,
     temperature=0.1,  # Lower temperature for more consistent analysis
 )
 
-def _query_gemini_for_api(prompt, schema, system_template, model=None):
+def _query_llm_for_api(prompt, schema, system_template, model=None):
     """
-    Helper function to query Gemini for generating API calls based on natural language prompts.
+    Helper function to query the LLM for generating API calls based on natural language prompts.
     
     Args:
     prompt (str): Natural language query to process
     schema (dict): API schema to include in the system prompt
     system_template (str): Template string for the system prompt (should have {schema} placeholder)
-    model: Gemini model instance to use (defaults to global gemini_model)
+    model: LLM model instance to use (defaults to global llm_model)
     
     Returns:
         
     dict: Dictionary with 'success', 'data' (if successful), 'error' (if failed), and optional 'raw_response'
     """
-    # Use global gemini_model if none provided
-    model = gemini_model
+    # Use global llm_model if none provided
+    model = llm_model
     
     try:
         if schema is not None:
@@ -111,7 +111,7 @@ def _query_gemini_for_api(prompt, schema, system_template, model=None):
         else:
             system_prompt = system_template
         
-        # Combine system prompt and user prompt for Gemini
+        # Combine system prompt and user prompt for the LLM
         full_prompt = f"{system_prompt}\n\nUser query: {prompt}"
         
         # Create messages in the correct format for OpenAIServerModel
@@ -120,37 +120,37 @@ def _query_gemini_for_api(prompt, schema, system_template, model=None):
         
         # Extract content from ChatMessage response
         if hasattr(response, 'content'):
-            gemini_text = response.content.strip()
+            llm_text = response.content.strip()
         else:
-            gemini_text = str(response).strip()
+            llm_text = str(response).strip()
         
-        # Find JSON boundaries (in case Gemini adds explanations)
-        json_start = gemini_text.find('{')
-        json_end = gemini_text.rfind('}') + 1
+        # Find JSON boundaries (in case the LLM adds explanations)
+        json_start = llm_text.find('{')
+        json_end = llm_text.rfind('}') + 1
         
         if json_start >= 0 and json_end > json_start:
-            json_text = gemini_text[json_start:json_end]
+            json_text = llm_text[json_start:json_end]
             result = json.loads(json_text)
         else:
             # If no JSON found, try the whole response
-            result = json.loads(gemini_text)
+            result = json.loads(llm_text)
         
         return {
             "success": True,
             "data": result,
-            "raw_response": gemini_text
+            "raw_response": llm_text
         }
             
     except (json.JSONDecodeError, KeyError, IndexError) as e:
         return {
             "success": False,
-            "error": f"Failed to parse Gemini's response: {str(e)}",
-            "raw_response": gemini_text if 'gemini_text' in locals() else "No content found"
+            "error": f"Failed to parse the LLM response: {str(e)}",
+            "raw_response": llm_text if 'llm_text' in locals() else "No content found"
         }
     except Exception as e:
         return {
             "success": False,
-            "error": f"Error querying Gemini: {str(e)}"
+            "error": f"Error querying the LLM: {str(e)}"
         }
 
 # Function to map HPO terms to names
@@ -579,25 +579,25 @@ def query_uniprot(prompt: str = None, endpoint: str = None, max_results: int = 5
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=uniprot_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the full URL from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the full URL from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("full_url", "")
         description = query_info.get("description", "")
         
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Use provided endpoint directly
@@ -822,25 +822,25 @@ def query_interpro(prompt: str = None, endpoint: str = None, max_results: int = 
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=interpro_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Extract the full URL from Gemini's response
-        query_info = gemini_result["data"]
+        # Extract the full URL from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("full_url", "")
         description = query_info.get("description", "")
         
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Process provided endpoint
@@ -929,21 +929,21 @@ def query_pdb(prompt: str = None, query: dict = None, max_results: int = 3) -> d
         Generate a well-formed Search API query JSON object. Return ONLY the JSON with no additional explanation.
         """
 
-        # Query Gemini to generate the search query
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the search query
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
+        if not llm_result["success"]:
             return {
-                "error": gemini_result["error"],
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "error": llm_result["error"],
+                "llm_response": llm_result.get("raw_response", "No response")
             }
         
-        # Get the query from Gemini's response
-        query_json = gemini_result["data"]
+        # Get the query from the LLM response
+        query_json = llm_result["data"]
     else:
         # Use provided query directly
         query_json = query if query else {
@@ -1162,25 +1162,25 @@ def query_kegg(prompt: str, endpoint: str = None, verbose: bool = True) -> dict:
         - For "Convert NCBI gene ID 672 to KEGG ID": {{"full_url": "https://rest.kegg.jp/conv/genes/ncbi-geneid:672", "description": "Converting NCBI Gene ID 672 to KEGG gene identifier"}}
         """
 
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=kegg_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-            # Extract the query info from Gemini's response
-        query_info = gemini_result["data"]
+            # Extract the query info from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info["full_url"]
         description = query_info["description"]
 
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
         
     if endpoint:
@@ -1261,18 +1261,18 @@ def query_stringdb(prompt: str = None, endpoint: str = None, api_key: str = None
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=stringdb_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the full URL from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the full URL from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("full_url", "")
         description = query_info.get("description", "")
         output_format = query_info.get("output_format", "json")
@@ -1280,7 +1280,7 @@ def query_stringdb(prompt: str = None, endpoint: str = None, api_key: str = None
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Use direct endpoint
@@ -1429,25 +1429,25 @@ def query_paleobiology(prompt: str = None, endpoint: str = None, api_key: str = 
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=pbdb_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the full URL from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the full URL from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("full_url", "")
         description = query_info.get("description", "")
         
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Process provided endpoint
@@ -1561,25 +1561,25 @@ def query_jaspar(prompt: str = None, endpoint: str = None, api_key: str = None, 
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=jaspar_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the full URL from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the full URL from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("full_url", "")
         description = query_info.get("description", "")
         
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Process provided endpoint
@@ -1666,25 +1666,25 @@ def query_worms(prompt: str = None, endpoint: str = None, api_key: str = None,  
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=worms_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the full URL and details from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the full URL and details from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("full_url", "")
         description = query_info.get("description", "")
         
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Process provided endpoint
@@ -1767,25 +1767,25 @@ def query_cbioportal(prompt: str = None, endpoint: str = None, api_key: str = No
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=cbioportal_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the full URL from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the full URL from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("full_url", "")
         description = query_info.get("description", "")
         
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Process provided endpoint
@@ -1865,24 +1865,24 @@ def query_clinvar(prompt: str = None, search_term: str = None, max_results: int 
         - If query asks for pathogenicity of a variant, it's asking for all possible germline classifications of the variant, so just [gene] AND [variant] is needed
         """
 
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=clinvar_schema,
             system_template=system_prompt_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the full URL from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the full URL from the LLM response
+        query_info = llm_result["data"]
         search_term = query_info.get("search_term", "")
     
         if not search_term:
             return {
                 "error": "Failed to generate a valid search term from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
 
         
@@ -1955,25 +1955,25 @@ def query_geo(prompt: str = None, search_term: str = None, max_results: int = 3)
         - For "Expression profiles of TP53 in lung cancer": {"search_term": "TP53[Gene Symbol] AND lung cancer", "database": "geoprofiles"}
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=geo_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the search term and database from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the search term and database from the LLM response
+        query_info = llm_result["data"]
         search_term = query_info.get("search_term", "")
         database = query_info.get("database", "gds")
         
         if not search_term:
             return {
                 "error": "Failed to generate a valid search term from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     
     # Execute the GEO query using the helper function
@@ -2039,24 +2039,24 @@ def query_dbsnp(prompt: str = None, search_term: str = None, max_results: int = 
         - For "common SNPs in EGFR": "EGFR[Gene Name] AND common[COMMON]"
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=dbsnp_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the search term from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the search term from the LLM response
+        query_info = llm_result["data"]
         search_term = query_info.get("search_term", "")
         
         if not search_term:
             return {
                 "error": "Failed to generate a valid search term from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     
     # Execute the dbSNP query using the helper function
@@ -2126,25 +2126,25 @@ def query_ucsc(prompt: str = None, endpoint: str = None, verbose: bool = True) -
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=ucsc_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the full URL from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the full URL from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("full_url", "")
         description = query_info.get("description", "")
         
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
             
     else:
@@ -2230,18 +2230,18 @@ def query_ensembl(prompt: str = None, endpoint: str = None, verbose: bool = True
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=ensembl_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the endpoint and parameters from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the endpoint and parameters from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("endpoint", "")
         params = query_info.get("params", {})
         description = query_info.get("description", "")
@@ -2249,7 +2249,7 @@ def query_ensembl(prompt: str = None, endpoint: str = None, verbose: bool = True
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Process provided endpoint
@@ -2346,18 +2346,18 @@ def query_opentarget_genetics(prompt: str = None, query: str = None, variables: 
         Return ONLY the JSON object with no additional text or explanations.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=opentarget_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the query and variables from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the query and variables from the LLM response
+        query_info = llm_result["data"]
         query = query_info.get("query", "")
         if variables is None:  # Only use Claude's variables if none provided
             variables = query_info.get("variables", {})
@@ -2365,7 +2365,7 @@ def query_opentarget_genetics(prompt: str = None, query: str = None, variables: 
         if not query:
             return {
                 "error": "Failed to generate a valid GraphQL query from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     
     # Execute the GraphQL query
@@ -2440,18 +2440,18 @@ def query_opentarget(prompt: str = None, query: str = None, variables: dict = No
         Return ONLY the JSON object with no additional text or explanations.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=opentarget_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the query and variables from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the query and variables from the LLM response
+        query_info = llm_result["data"]
         query = query_info.get("query", "")
         if variables is None:  # Only use Claude's variables if none provided
             variables = query_info.get("variables", {})
@@ -2459,7 +2459,7 @@ def query_opentarget(prompt: str = None, query: str = None, variables: dict = No
         if not query:
             return {
                 "error": "Failed to generate a valid GraphQL query from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     
     # Execute the GraphQL query
@@ -2536,18 +2536,18 @@ def query_gwas_catalog(prompt: str = None, endpoint: str = None, max_results: in
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=gwas_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the endpoint and parameters from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the endpoint and parameters from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("endpoint", "")
         params = query_info.get("params", {})
         description = query_info.get("description", "")
@@ -2555,7 +2555,7 @@ def query_gwas_catalog(prompt: str = None, endpoint: str = None, max_results: in
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         if endpoint is None:
@@ -2639,24 +2639,24 @@ def query_gnomad(prompt: str = None, gene_symbol: str = None, verbose: bool = Tr
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=gnomad_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the gene symbol from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the gene symbol from the LLM response
+        query_info = llm_result["data"]
         query_str = query_info.get("query", "")
         
         if not query_str:
             return {
                 "error": "Failed to extract a valid query from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Load gnomAD schema for gene_symbol substitution
@@ -2841,18 +2841,18 @@ def query_reactome(prompt: str = None, endpoint: str = None, download: bool = Fa
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=reactome_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the endpoint and parameters from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the endpoint and parameters from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("endpoint", "")
         base = query_info.get("base", "content")  # Default to ContentService
         params = query_info.get("params", {})
@@ -2862,7 +2862,7 @@ def query_reactome(prompt: str = None, endpoint: str = None, download: bool = Fa
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Process provided endpoint
@@ -2986,24 +2986,24 @@ def query_regulomedb(prompt: str = None, endpoint: str = None, api_key: str = No
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=None,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the variant or coordinates from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the variant or coordinates from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("endpoint", "")
         
         if not endpoint:
             return {
                 "error": "Failed to extract a valid variant ID or coordinates from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         description = f"Query RegulomeDB for {endpoint}"
@@ -3082,18 +3082,18 @@ def query_pride(prompt: str = None, endpoint: str = None, api_key: str = None,  
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=pride_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the endpoint and parameters from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the endpoint and parameters from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("endpoint", "")
         params = query_info.get("params", {})
         description = query_info.get("description", "")
@@ -3101,7 +3101,7 @@ def query_pride(prompt: str = None, endpoint: str = None, api_key: str = None,  
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Process provided endpoint
@@ -3183,25 +3183,25 @@ def query_gtopdb(prompt: str = None, endpoint: str = None, api_key: str = None, 
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=gtopdb_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the endpoint and parameters from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the endpoint and parameters from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("endpoint", "")
         description = query_info.get("description", "")
         
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Process provided endpoint
@@ -3452,25 +3452,25 @@ def query_remap(prompt: str = None, endpoint: str = None, api_key: str = None,  
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=remap_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the endpoint and parameters from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the endpoint and parameters from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("endpoint", "")
         description = query_info.get("description", "")
         
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Process provided endpoint
@@ -3553,25 +3553,25 @@ def query_mpd(prompt: str = None, endpoint: str = None, api_key: str = None,  ve
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=mpd_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the endpoint and parameters from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the endpoint and parameters from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("endpoint", "")
         description = query_info.get("description", "")
         
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Process provided endpoint
@@ -3657,18 +3657,18 @@ def query_emdb(prompt: str = None, endpoint: str = None, api_key: str = None,  v
         Return ONLY the JSON object with no additional text.
         """
         
-        # Query Gemini to generate the API call
-        gemini_result = _query_gemini_for_api(
+        # Query the LLM to generate the API call
+        llm_result = _query_llm_for_api(
             prompt=prompt,
             schema=emdb_schema,
             system_template=system_template
         )
         
-        if not gemini_result["success"]:
-            return gemini_result
+        if not llm_result["success"]:
+            return llm_result
         
-        # Get the endpoint and parameters from Gemini's response
-        query_info = gemini_result["data"]
+        # Get the endpoint and parameters from the LLM response
+        query_info = llm_result["data"]
         endpoint = query_info.get("endpoint", "")
         params = query_info.get("params", {})
         description = query_info.get("description", "")
@@ -3676,7 +3676,7 @@ def query_emdb(prompt: str = None, endpoint: str = None, api_key: str = None,  v
         if not endpoint:
             return {
                 "error": "Failed to generate a valid endpoint from the prompt",
-                "gemini_response": gemini_result.get("raw_response", "No response")
+                "llm_response": llm_result.get("raw_response", "No response")
             }
     else:
         # Process provided endpoint

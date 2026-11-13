@@ -949,7 +949,7 @@ Return JSON with top {max_tools} most relevant tools:
         
         # Use LLM to select tools intelligently
         try:
-            llm_response = json_llm_call(llm_prompt, "gemini-3-pro")
+            llm_response = json_llm_call(llm_prompt, "claude-4-sonnet")
             
             if "error" in llm_response:
                 # Fallback to simple keyword matching if LLM fails
@@ -1452,22 +1452,23 @@ list_knowledge_base_status = get_skill_system_status
 search_templates_by_keyword = search_skills_by_keyword
 
 
-claude_model = OpenAIServerModel(
-    model_id="google/gemini-3-flash-preview",
+dev_model = OpenAIServerModel(
+    model_id="anthropic/claude-sonnet-4",
     api_base="https://openrouter.ai/api/v1",
     api_key=OPENROUTER_API_KEY_STRING,
 )
 
-# Create a more capable model for manager and critic agents
-gemini_model = OpenAIServerModel(
-    model_id="google/gemini-3-flash-preview",
+# All STELLA agents (Manager, Dev, Critic, Tool Creation) use Claude 4 Sonnet,
+# as reported in the Methods section of the paper. Only temperature differs.
+critic_model = OpenAIServerModel(
+    model_id="anthropic/claude-sonnet-4",
     api_base="https://openrouter.ai/api/v1",
     api_key=OPENROUTER_API_KEY_STRING,
     temperature=0.1,
 )
 
-gpt_model = OpenAIServerModel(
-    model_id="google/gemini-3-flash-preview",
+manager_model = OpenAIServerModel(
+    model_id="anthropic/claude-sonnet-4",
     api_base="https://openrouter.ai/api/v1",
     api_key=OPENROUTER_API_KEY_STRING,
     temperature=0.1,
@@ -1569,7 +1570,7 @@ dev_tools = base_tools
 
 dev_agent = ToolCallingAgent(
     tools=dev_tools,
-    model=claude_model,
+    model=dev_model,
     max_steps=30,  # Increased for complex tasks
     name="dev_agent",
     description="""A specialist agent for code execution and environment management through tool-based programming.
@@ -1644,7 +1645,7 @@ tool_creation_tools = [
 
 tool_creation_agent = ToolCallingAgent(
     tools=tool_creation_tools,
-    model=gpt_model,
+    model=manager_model,
     max_steps=25,  # Reasonable for tool creation tasks
     name="tool_creation_agent",
     description="""A specialized agent for creating new Python tools and utilities.
@@ -1700,7 +1701,7 @@ critic_tools = [
 
 critic_agent = ToolCallingAgent(
     tools=critic_tools,  # ✅ Fixed: Added necessary tools
-    model=gemini_model,
+    model=critic_model,
     max_steps=10,  # Reasonable for quality evaluation tasks
     name="critic_agent", 
     description="""Expert critic agent that evaluates task completion quality and determines if specialized tools are needed.
@@ -1745,7 +1746,7 @@ manager_agent = None
 # --- Launch Gradio Interface ---
 def main():
     """Launch the Gradio interface for interactive agent communication with optional knowledge base."""
-    global global_memory_manager, use_templates, gemini_model
+    global global_memory_manager, use_templates, critic_model
     
     # Parse command line arguments
     parser = argparse.ArgumentParser(description="Stella - Self-Evolving AI Assistant with Enhanced Memory")
@@ -1849,7 +1850,7 @@ def main():
             print("✅ Custom prompt templates rendered with Jinja variables")
             manager_agent = CodeAgent(
                 tools=manager_tool_management,  # 使用完整的工具管理权限
-                model=gpt_model,
+                model=manager_model,
                 managed_agents=managed_agents_list,
                 additional_authorized_imports=[
         # 基于环境检测的已安装模块
@@ -1893,7 +1894,7 @@ def main():
             # Use default templates
             manager_agent = CodeAgent(
                 tools=manager_tool_management,  
-                model=gpt_model,
+                model=manager_model,
                 managed_agents=managed_agents_list,
                 additional_authorized_imports=[
         # 基于环境检测的已安装模块
@@ -1931,7 +1932,7 @@ def main():
         print("🔄 Creating basic manager agent without custom prompts...")
         manager_agent = CodeAgent(
             tools=manager_tool_management,
-            model=gpt_model,
+            model=manager_model,
             managed_agents=managed_agents_list,
             executor_kwargs={
                 "additional_functions": {
@@ -1950,7 +1951,7 @@ def main():
         try:
             # Create LLM call function for skill summarizer
             from new_tools.llm import simple_llm_call
-            llm_call_fn = lambda prompt: simple_llm_call(prompt, model_name="gemini-3-pro")
+            llm_call_fn = lambda prompt: simple_llm_call(prompt, model_name="claude-4-sonnet")
 
             global_skill_manager = SkillManager(llm_call=llm_call_fn)
             print(f"✅ Skill system initialized: {len(global_skill_manager.store.list_all())} skills, "
@@ -1984,7 +1985,7 @@ def main():
         print("🔧 Creating emergency fallback manager agent...")
         manager_agent = CodeAgent(
             tools=manager_tool_management[:3],  # Use only first 3 tools to avoid issues
-            model=gpt_model,
+            model=manager_model,
             managed_agents=[dev_agent, critic_agent],  # Minimal agents (no tool creation)
             executor_kwargs={
                 "additional_functions": {
@@ -2011,7 +2012,7 @@ def main():
 # --- Initialize function for external usage ---
 def initialize_stella(use_template=True, use_mem0=True, enable_tool_creation=True):
     """Initialize Stella without launching Gradio interface - for use by other UIs"""
-    global global_memory_manager, use_templates, custom_prompt_templates, manager_agent, gemini_model
+    global global_memory_manager, use_templates, custom_prompt_templates, manager_agent, critic_model
     
     use_templates = use_template
     
@@ -2084,7 +2085,7 @@ def initialize_stella(use_template=True, use_mem0=True, enable_tool_creation=Tru
             print("✅ Custom prompt templates rendered with Jinja variables")
             manager_agent = CodeAgent(
                 tools=manager_tool_management,
-                model=gpt_model,
+                model=manager_model,
                 managed_agents=managed_agents_list,
                 additional_authorized_imports=[
         # 基于环境检测的已安装模块
@@ -2128,7 +2129,7 @@ def initialize_stella(use_template=True, use_mem0=True, enable_tool_creation=Tru
             # Use default templates
             manager_agent = CodeAgent(
                 tools=manager_tool_management,
-                model=gpt_model,
+                model=manager_model,
                 managed_agents=managed_agents_list,
                 additional_authorized_imports=[
         # 基于环境检测的已安装模块
@@ -2171,7 +2172,7 @@ def initialize_stella(use_template=True, use_mem0=True, enable_tool_creation=Tru
         print("🧠 Initializing Skill Management System...")
         try:
             from new_tools.llm import simple_llm_call
-            llm_call_fn = lambda prompt: simple_llm_call(prompt, model_name="gemini-3-pro")
+            llm_call_fn = lambda prompt: simple_llm_call(prompt, model_name="claude-4-sonnet")
             global_skill_manager = SkillManager(llm_call=llm_call_fn)
             print(f"✅ Skill system initialized: {len(global_skill_manager.store.list_all())} skills")
         except Exception as e:

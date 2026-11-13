@@ -240,12 +240,12 @@ def search_with_serpapi(query: str, num_results: int = 5) -> str:
 
 
 @tool 
-def enhanced_knowledge_search(query: str, model_name: str = "gemini-2.5-pro") -> str:
+def enhanced_knowledge_search(query: str, model_name: str = "anthropic/claude-sonnet-4") -> str:
     """Use LLM's internal knowledge to provide detailed information.
     
     Args:
         query: Knowledge query or research question
-        model_name: LLM model to use for knowledge expansion
+        model_name: Full OpenRouter model id to use for knowledge expansion
         
     Returns:
         Detailed information based on LLM's training knowledge
@@ -271,7 +271,7 @@ Please provide:
 Be comprehensive and accurate."""
 
         payload = {
-            "model": f"google/{model_name}",
+            "model": model_name,
             "messages": [
                 {
                     "role": "system", 

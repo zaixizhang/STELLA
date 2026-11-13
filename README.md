@@ -10,12 +10,12 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Paper](https://img.shields.io/badge/bioRxiv-2025.07.01.662467v2-b31b1b.svg)](https://www.biorxiv.org/content/10.1101/2025.07.01.662467v2)
 [![arXiv](https://img.shields.io/badge/arXiv-2507.02004-b31b1b.svg)](https://arxiv.org/abs/2507.02004)
-[![Web](https://img.shields.io/badge/Web-stella--agent.com-orange.svg)](https://stella-agent.com/)
+[![Web](https://img.shields.io/badge/Web-stella--agent.app-orange.svg)](https://stella-agent.app/)
 
-[**Paper**](https://www.biorxiv.org/content/10.1101/2025.07.01.662467v2) | [**Online Demo**](https://stella-agent.com/) | [**arXiv**](https://arxiv.org/abs/2507.02004) | [**Twitter**](https://x.com/BiologyAIDaily/status/1941122955850993966)
+[**Paper**](https://www.biorxiv.org/content/10.1101/2025.07.01.662467v2) | [**Online Demo**](https://stella-agent.app/) | [**arXiv**](https://arxiv.org/abs/2507.02004) | [**Twitter**](https://x.com/BiologyAIDaily/status/1941122955850993966)
 
-### :rocket: [Try STELLA Online — No Installation, No API Keys, One Click to Start!](https://stella-agent.com/)
-**[:globe_with_meridians: stella-agent.com](https://stella-agent.com/)**
+### :rocket: [Try STELLA Online — No Installation, No API Keys, One Click to Start!](https://stella-agent.app/)
+**[:globe_with_meridians: stella-agent.app](https://stella-agent.app/)**
 
 **Authors:**
 Ruofan Jin<sup>1</sup>, Mingyang Xu<sup>2</sup>, Fei Meng<sup>3,4</sup>, Guancheng Wan<sup>5</sup>, Qingran Cai<sup>6</sup>, Yize Jiang<sup>7</sup>, Jin Han<sup>8</sup>, Yuanyuan Chen<sup>9</sup>, Wanqing Lu<sup>9</sup>, Mengyang Wang<sup>10</sup>, Zhiqian Lan<sup>11</sup>, Yuxuan Jiang<sup>11</sup>, Junhong Liu<sup>7,✉</sup>, Dongyao Wang<sup>3,4,✉</sup>, Le Cong<sup>12,✉</sup>, and Zaixi Zhang<sup>1,✉</sup>
@@ -59,11 +59,11 @@ Ruofan Jin<sup>1</sup>, Mingyang Xu<sup>2</sup>, Fei Meng<sup>3,4</sup>, Guanche
 | **Tool Ocean** | 60+ predefined and self-evolving tools for literature search, databases, virtual screening |
 | **Template System** | Retrieves, applies, and auto-creates structured workflow skills from successful runs |
 
-Models are configurable via [OpenRouter](https://openrouter.ai/). Edit model variables in `stella_core.py` to switch between GPT, Claude, Gemini, and other providers.
+All four agents use **Claude 4 Sonnet** (`anthropic/claude-sonnet-4`) by default, as reported in the paper. Models are configurable via [OpenRouter](https://openrouter.ai/) — edit the model variables in `stella_core.py` to switch between Claude, GPT, Gemini, and other providers.
 
 
 
-**Try STELLA online at [stella-agent.com](https://stella-agent.com/) — no installation required.**
+**Try STELLA online at [stella-agent.app](https://stella-agent.app/) — no installation required.**
 
 
 ## Demo Video
@@ -87,7 +87,7 @@ Key achievements:
 
 **Option 1: Use the online version (recommended)**
 
-Visit [stella-agent.com](https://stella-agent.com/) to use STELLA directly in your browser.
+Visit [stella-agent.app](https://stella-agent.app/) to use STELLA directly in your browser.
 
 **Option 2: Docker image**
 
@@ -187,7 +187,7 @@ unzip resource_backup_20250719_055729.zip -d resource/
 
 ## API Keys
 
-> **Don't have API keys?** No worries — you can directly try our online version at **[stella-agent.com](https://stella-agent.com/)**. No installation, no API keys needed — just one click and start using STELLA right away!
+> **Don't have API keys?** No worries — you can directly try our online version at **[stella-agent.app](https://stella-agent.app/)**. No installation, no API keys needed — just one click and start using STELLA right away!
 
 For local deployment, configure the following API keys:
 
@@ -250,73 +250,33 @@ The `cases/` directory contains end-to-end scripts that demonstrate STELLA's aut
 
 **Script**: [`cases/nk_aml_negative_regulators.py`](cases/nk_aml_negative_regulators.py)
 
-This case replicates the discovery of novel negative regulators of NK-cell function in Acute Myeloid Leukemia (AML) — one of STELLA's key reported findings. The script directs STELLA to autonomously:
-1. Nominate candidate genes from 19 immunological gene families (butyrophilins, GPCRs, KLR niche, SLAM, CD300, LAIR, Siglec, CEACAM, lncRNAs, etc.)
-2. Score each candidate with parallel PubMed + web queries using a composite metric:
-   - **S_lit** — literature novelty (fewer publications = higher novelty)
-   - **S_mech** — mechanistic evidence (ITIM/inhibitory/cAMP)
-   - **S_expr** — NK cell expression evidence
-   - **S_aml** — AML/myeloid context evidence
-3. Rank and return the top 40 candidates as structured JSON
+Reproduces the NK-cell/AML target-discovery case from the paper (Fig. 3a-c). As in the paper, the run is initiated by a single prompt and nothing else:
 
-**Run it:**
+> *Identify novel, previously unreported negative regulators of NK-cell function in the context of AML.*
+
+No candidate gene families, exclusion lists, scoring formulas or output schema are supplied. STELLA selects tools from the Tool Ocean, builds the candidate pool, searches the literature and ranks candidates on its own.
 
 ```bash
-# From the STELLA root directory
 python cases/nk_aml_negative_regulators.py
 ```
 
-Output is saved to `cases/output/nk_aml_negative_regulators.csv` and `.txt`. The run completes in ~5–10 minutes.
+The full agent output is saved to `cases/output/nk_aml_negative_regulators_raw.txt`. The exact gene list can vary between runs (LLM stochasticity, literature index freshness, evolving templates and tools).
 
-**Expected results**: An example output is provided in [`cases/output/nk_aml_negative_regulators_example.csv`](cases/output/nk_aml_negative_regulators_example.csv). The exact gene list may vary across runs due to LLM stochasticity and literature index freshness, but the biological gene families and ranking criteria are consistent. Across repeated runs, most of the top-40 genes overlap with the example output, and key discoveries such as **BTN3A1** consistently rank in the top positions.
-
-| Field | Description |
-|-------|-------------|
-| `rank` | Composite-score ranking (1 = highest priority) |
-| `gene_symbol` | HGNC gene symbol |
-| `novelty_status` | `novel` (S_lit ≥ 2) or `reported` |
-| `mechanism_category` | Gene family / inhibitory mechanism class |
-| `composite_score` | Sum of S_lit + S_mech + S_expr + S_aml (max 10) |
-| `rationale` | 2–3 sentence mechanistic summary |
-| `pubmed_result_summary` | Evidence from PubMed search |
-
-### Enzyme Engineering: Strictosidine Synthase Round 2 Optimization
+### Enzyme Engineering: Strictosidine Synthase Optimization
 
 **Script**: [`cases/strictosidine_synthase_round2.py`](cases/strictosidine_synthase_round2.py)
 
-This case demonstrates STELLA's ability to drive iterative enzyme engineering using experimental feedback. Starting from Round 1 HPLC screening data for Strictosidine Synthase (P68175, Catharanthus roseus), STELLA performs:
+Reproduces the multi-round directed-evolution case from the paper (Fig. 4) for *Rauvolfia serpentina* strictosidine synthase (RsSTR, UniProt P68175). The task prompt is the one reported in the paper:
 
-1. **ESM re-scoring calibrated on Round 1 data** — using confirmed hits (M276R) and dead mutations (V176R/K, G210V/T/L/A, H307R) as anchors to score untested substitutions
-2. **FoldX stability filtering** — discarding variants with ΔΔG > 1.5 kcal/mol
-3. **Prioritized candidate selection** 
+> *Optimize the catalytic activity of strictosidine synthase (UniProt ID: P68175) for its natural reaction involving tryptamine and secologanin.*
+
+For Round 2 the only additional input is the Round 1 wet-lab HPLC measurements, which STELLA uses as experimental feedback (fine-tuning its ESM2 activity predictor). No hot-spot hints, mandatory variants or position exclusions are supplied.
 
 ```bash
 python cases/strictosidine_synthase_round2.py
 ```
 
-Output is saved to `cases/output/strictosidine_synthase_round2.csv` and `.txt`. The run completes in ~10–15 minutes.
-
-**Ground truth recovery**: The ground truth Round 2 variants are stored in [`cases/output/strictosidine_synthase_round2.csv`](cases/output/strictosidine_synthase_round2.csv), covering all 5 experimentally tested variants including both active hits and a confirmed dead mutation:
-
-| Variant | Avg HPLC Area | vs WT | Experimental Outcome |
-|---------|--------------|-------|----------------------|
-| M276L | ~480 | +2.1× | Best hit |
-| V176F | ~334 | +1.5× | Hit |
-| E306S | ~56 | −75% | Reduced |
-| E306T | ~83 | −64% | Reduced |
-| G210S | 0 | Dead | Dead |
-
-STELLA proposes all 5 variants, with M276L ranked #1. Notably, **V176F** is recovered despite all other V176 substitutions failing in Round 1 — demonstrating STELLA's ability to reason about sidechain volume constraints rather than applying blanket position-level exclusion. **G210S** is included as an exploratory candidate (the sole untested G210 substitution) and correctly predicted as high-risk; its confirmed dead outcome validates the G210 dead-zone constraint identified from Round 1.
-
-| Field | Description |
-|-------|-------------|
-| `rank` | Predicted improvement ranking (1 = highest priority) |
-| `mutation` | Single-point variant (e.g. M276L) |
-| `category` | `Priority-A/B/C` (mandatory scan) or `safe`/`exploratory` |
-| `esm_score` | ESM log-likelihood ratio calibrated on Round 1 anchors |
-| `ddg_foldx` | Estimated FoldX ΔΔG (kcal/mol); variants > 1.5 discarded |
-| `rationale` | Mechanistic rationale linking Round 1 insight to prediction |
-| `mutagenesis_primers` | QuikChange forward primer for site-directed mutagenesis |
+The full agent output is saved to `cases/output/strictosidine_synthase_round2_raw.txt`. Exact variants can vary between runs.
 
 ## Citation
 
@@ -335,7 +295,7 @@ If you find our work useful, please consider citing our paper:
 ## Related Projects
 
 - **[LabOS](https://github.com/zaixizhang/LabOS)** — The AI-XR co-scientist that builds upon STELLA for wet-lab integration
-- **[stella-agent.com](https://stella-agent.com/)** — Online web version of STELLA
+- **[stella-agent.app](https://stella-agent.app/)** — Online web version of STELLA
 
 ## License
 

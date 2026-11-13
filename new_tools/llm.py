@@ -39,6 +39,7 @@ class LLMChat:
             "o1-mini": {"model": "openai/o1-mini", "temperature": None, "supports_json": False},
             
             # Anthropic models via OpenRouter
+            "claude-4-sonnet": {"model": "anthropic/claude-sonnet-4", "temperature": 0.0, "supports_json": True},
             "claude-3.5-sonnet": {"model": "anthropic/claude-3.5-sonnet", "temperature": 0.0, "supports_json": True},
             "claude-3-opus": {"model": "anthropic/claude-3-opus", "temperature": 0.0, "supports_json": True},
             "claude-3-haiku": {"model": "anthropic/claude-3-haiku", "temperature": 0.0, "supports_json": True},
@@ -56,10 +57,10 @@ class LLMChat:
             "qwen-2.5-72b": {"model": "qwen/qwen-2.5-72b-instruct", "temperature": 0.0, "supports_json": True},
 
             # Default fallback
-            "default": {"model": "google/gemini-3-flash-preview", "temperature": 0.0, "supports_json": True}
+            "default": {"model": "anthropic/claude-sonnet-4", "temperature": 0.0, "supports_json": True}
         }
     
-    def chat(self, request: str, model_name: str = "gemini-3-pro", 
+    def chat(self, request: str, model_name: str = "claude-4-sonnet", 
              temperature: Optional[float] = None, 
              json_mode: bool = False,
              max_tokens: Optional[int] = None,
@@ -156,7 +157,7 @@ class LLMChat:
         """Get list of available model names"""
         return list(self.model_configs.keys())
     
-    def simple_chat(self, request: str, model_name: str = "gemini-3-pro") -> str:
+    def simple_chat(self, request: str, model_name: str = "claude-4-sonnet") -> str:
         """
         Simple chat method that returns just the response content
         
@@ -172,7 +173,7 @@ class LLMChat:
             return f"Error: {result['error']}"
         return result["response"]
     
-    def json_chat(self, request: str, model_name: str = "gemini-3-pro") -> Dict[str, Any]:
+    def json_chat(self, request: str, model_name: str = "claude-4-sonnet") -> Dict[str, Any]:
         """
         Chat method that forces JSON response format
         
@@ -199,7 +200,7 @@ def get_llm_client(api_key: Optional[str] = None) -> LLMChat:
         _llm_instance = LLMChat(api_key=api_key)
     return _llm_instance
 
-def simple_llm_call(request: str, model_name: str = "gemini-3-pro") -> str:
+def simple_llm_call(request: str, model_name: str = "claude-4-sonnet") -> str:
     """
     Simple function for making LLM calls
     
@@ -213,7 +214,7 @@ def simple_llm_call(request: str, model_name: str = "gemini-3-pro") -> str:
     client = get_llm_client()
     return client.simple_chat(request, model_name)
 
-def json_llm_call(request: str, model_name: str = "gemini-3-pro") -> Dict[str, Any]:
+def json_llm_call(request: str, model_name: str = "claude-4-sonnet") -> Dict[str, Any]:
     """
     Function for making LLM calls with JSON response
     
