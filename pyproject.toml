@@ -81,7 +81,7 @@ py-modules = [
     "stella_ui_english",
     "start_stella_web",
 ]
-packages = ["new_tools", "stella"]
+packages = ["new_tools", "stella", "self_evolve"]
 
 [tool.setuptools.package-data]
 "*" = ["prompts/*.yaml", "asset/*", "py.typed"]

@@ -40,6 +40,7 @@ Ruofan Jin<sup>1</sup>, Mingyang Xu<sup>2</sup>, Fei Meng<sup>3,4</sup>, Guanche
 - [API Keys](#api-keys)
 - [Tool Creation Benchmark](#tool-creation-benchmark)
 - [Case Studies & Reproducibility](#case-studies--reproducibility)
+- [Parameter-Level Self-Evolution](#parameter-level-self-evolution)
 - [Citation](#citation)
 - [Related Projects](#related-projects)
 - [License](#license)
@@ -241,6 +242,48 @@ python score_results.py \
 See [`Tool_Creation_Benchmark/README.md`](Tool_Creation_Benchmark/README.md) for full documentation, hard-set instructions, and pre-computed results.
 
 ---
+
+## Parameter-Level Self-Evolution
+
+STELLA's template and tool evolution operates on its **context**: experience is
+stored as retrievable thinking templates and new tools, and must be re-retrieved on
+every run. The [`self_evolve/`](self_evolve/README.md) module adds the complementary
+mechanism — STELLA's own **verified** execution history is used to post-train an
+open-weight policy (Qwen, DeepSeek) with **SFT + GRPO**, so experience is written
+into **model parameters** and improves future tasks with no retrieval at inference.
+
+| Stage | Module | What it does |
+|-------|--------|--------------|
+| Log | `trajectory_logger.py` | capture full trajectories (model inputs/outputs, tool calls, observations) from the running agents |
+| Verify | `reward.py` | score each trajectory with an explicit verifier — the gate on all training data |
+| Build | `dataset_builder.py` | verified trajectories → SFT (step-level) + GRPO (task-level) sets, with best-of-*n* and decontamination |
+| SFT | `train_sft.py` | clone verified decisions into a LoRA policy |
+| GRPO | `train_grpo.py` | optimise against verifiable scientific outcomes |
+| Transfer | `transfer.py` | ScienceRSI: specialise domain experts → verify → transfer → reuse |
+| Gate | `evaluate.py`, `evolve.py` | held-out verifier-scored comparison; a round is promoted only if it improves |
+| Serve | `serve.py` | serve the evolved policy back into STELLA |
+
+Three properties are enforced in code: nothing is learned from an **unverified** run,
+the **held-out evaluation set is filtered out** of the training data, and a round is
+**promoted only if the held-out score improves** — otherwise the checkpoint is
+recorded and discarded.
+
+```bash
+pip install -r requirements-self-evolve.txt
+
+export STELLA_TRAJECTORY_LOGGING=1          # collect while running STELLA normally
+python stella_core.py
+
+python -m self_evolve.evolve --round 1 \
+    --base_model Qwen/Qwen3-8B \
+    --heldout    self_evolve_data/heldout_tasks.jsonl \
+    --references self_evolve_data/references.json
+```
+
+Each round writes a manifest (`round_<n>/round.json`) with the data it used, the
+checkpoints it produced, both evaluation reports and the promotion decision. The data
+pipeline runs without a GPU; `python self_evolve/tests/test_pipeline.py` covers it in
+69 checks. Full documentation: [`self_evolve/README.md`](self_evolve/README.md).
 
 ## Case Studies & Reproducibility
 

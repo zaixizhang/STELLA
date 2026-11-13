@@ -2179,7 +2179,50 @@ def initialize_stella(use_template=True, use_mem0=True, enable_tool_creation=Tru
             print(f"⚠️ Skill system initialization failed: {str(e)}")
             global_skill_manager = None
 
+    # Parameter-level self-evolution (optional; see self_evolve/README.md).
+    # Trajectory logging records what the agents did so it can later be
+    # distilled into model parameters; a served evolved policy replaces the
+    # backbone without changing anything else about STELLA.
+    setup_self_evolution()
+
     return manager_agent
+
+
+def setup_self_evolution(agents=None):
+    """Attach trajectory logging and, if configured, an evolved local policy.
+
+    Controlled entirely by environment variables so that default behaviour is
+    unchanged:
+
+    ``STELLA_TRAJECTORY_LOGGING=1``      log full trajectories (default: off here)
+    ``STELLA_LOCAL_POLICY_API_BASE=...`` serve-evolved policy endpoint to use
+    ``STELLA_LOCAL_POLICY_MODEL=...``    its served model name
+
+    Never raises: self-evolution is an add-on and must not break a run.
+    """
+    if agents is None:
+        agents = [a for a in (manager_agent, dev_agent, critic_agent) if a is not None]
+
+    if os.environ.get("STELLA_TRAJECTORY_LOGGING", "0") not in ("0", "false", "False"):
+        try:
+            from self_evolve.trajectory_logger import instrument
+            for agent in agents:
+                instrument(agent)
+            print(f"📝 Trajectory logging enabled for {len(agents)} agent(s)")
+        except Exception as e:
+            print(f"⚠️ Trajectory logging unavailable: {e}")
+
+    api_base = os.environ.get("STELLA_LOCAL_POLICY_API_BASE", "")
+    if api_base:
+        try:
+            from self_evolve.serve import attach_policy_to_agents
+            attach_policy_to_agents(
+                api_base,
+                os.environ.get("STELLA_LOCAL_POLICY_MODEL", "stella-evolved"),
+                agents=agents,
+            )
+        except Exception as e:
+            print(f"⚠️ Could not attach local evolved policy: {e}")
 
 if __name__ == "__main__":
     main()

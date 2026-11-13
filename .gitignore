@@ -54,3 +54,9 @@ docker_files/*.npz
 *.tmp
 *.bak
 stella_base64.tmp
+
+# Self-evolution run artefacts (trajectories, datasets, checkpoints).
+# Trajectories are evidence, not source: archive them with a release instead
+# of committing them.
+self_evolve_data/
+checkpoints/
