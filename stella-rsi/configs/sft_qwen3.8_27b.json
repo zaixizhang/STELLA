@@ -1,6 +1,6 @@
 {
-  "model": "Qwen/Qwen3.5-27B",
-  "revision": "fc05daec18b0a78c049392ed2e771dde82bdf654",
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "37561816e66b5b9153b1b64c10968c18c1e6f4a0",
   "load_in_4bit": true,
   "attn_implementation": "sdpa",
   "dataset": "../data/processed/sft_train.jsonl",

@@ -32,7 +32,7 @@ def validate_reference(verifier, reference):
 
 
 def parse_tool_call(block, reference):
-    """Accept JSON tool calls and Qwen3.5's function/parameter wire format.
+    """Accept JSON tool calls and Qwen3.5/3.8's function/parameter wire format.
 
     Parameter types come from the labelled reference: Qwen serializes string
     arguments without JSON quotes, including strings that look like numbers.

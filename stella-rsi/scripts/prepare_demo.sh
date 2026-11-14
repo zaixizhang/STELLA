@@ -6,5 +6,5 @@ python -m stella_rsi.data \
   --labels "$recipe_root/examples/labels.json" \
   --splits "$recipe_root/examples/splits.json" \
   --output-dir "$recipe_root/data/processed"
-python -m stella_rsi.train_sft --config "$recipe_root/configs/sft_qwen3.5_27b.json" --dry-run
-python -m stella_rsi.train_grpo --config "$recipe_root/configs/grpo_qwen3.5_27b.json" --dry-run
+python -m stella_rsi.train_sft --config "$recipe_root/configs/sft_qwen3.8_27b.json" --dry-run
+python -m stella_rsi.train_grpo --config "$recipe_root/configs/grpo_qwen3.8_27b.json" --dry-run

@@ -35,7 +35,7 @@ def load_policy(config, stage):
             bnb_4bit_compute_dtype=torch.bfloat16 if bf16 else torch.float32,
         )
         kwargs["device_map"] = {"": int(os.environ.get("LOCAL_RANK", "0"))}
-    # Transformers 5.14.1 maps Qwen3.5's composite qwen3_5 config to the
+    # Transformers 5.14.1 maps Qwen3.8's composite qwen3_5 config to the
     # text-only Qwen3_5ForCausalLM and converts language_model weight prefixes.
     model = AutoModelForCausalLM.from_pretrained(source, **kwargs)
     tokenizer_source = adapter if adapter else source

@@ -356,7 +356,7 @@ The full agent output is saved to `examples/cases/output/strictosidine_synthase_
 ## STELLA-RSI: Qwen SFT + GRPO
 
 [`stella-rsi/`](stella-rsi/README.md) provides an independently installable recipe
-for fine-tuning **Qwen/Qwen3.5-27B** from STELLA user interaction trajectories.
+for fine-tuning **Qwen/Qwen3.8-27B** from STELLA user interaction trajectories.
 It includes opt-in trajectory collection, explicit review labels, session-based
 train/validation/test splits, QLoRA SFT, GRPO that continues the SFT adapter,
 verifiable rewards for newly sampled responses, and adapter export.

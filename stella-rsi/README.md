@@ -2,7 +2,7 @@
 
 Fine-tune an open Qwen policy from **STELLA user interaction trajectories**:
 reviewed assistant decisions → **SFT** → **GRPO** on newly generated responses.
-The default is [`Qwen/Qwen3.5-27B`](https://huggingface.co/Qwen/Qwen3.5-27B),
+The default is [`Qwen/Qwen3.8-27B`](https://huggingface.co/Qwen/Qwen3.8-27B),
 with a pinned model revision in both recipes. This folder is an independently
 installable package inside the STELLA repository.
 
@@ -17,7 +17,7 @@ or trained checkpoints in this repository.
 
 ```text
 stella-rsi/
-├── configs/                 # Pinned Qwen3.5-27B SFT and GRPO recipes
+├── configs/                 # Pinned Qwen3.8-27B SFT and GRPO recipes
 ├── examples/                # Synthetic trajectories, labels, splits, collector
 ├── scripts/                 # Demo validation and sequential training
 ├── src/stella_rsi/
@@ -62,7 +62,7 @@ python -m pip install -e './stella-rsi[train,qlora,test]'
 
 Training dependencies pin Transformers 5.14.1, TRL 1.18.0, PEFT 0.20.0,
 Accelerate 1.14.0, and Datasets 4.8.4. The pinned Transformers loader extracts
-`Qwen3_5ForCausalLM` from Qwen3.5's composite checkpoint; vision weights are not
+`Qwen3_5ForCausalLM` from Qwen3.8's composite checkpoint; vision weights are not
 trained or exported. The default recipe uses 4-bit NF4 QLoRA and BF16 compute.
 Use a supported CUDA GPU with BF16 support. Memory use depends on prompt lengths,
 completion lengths, and generation batch size; a full 27B hardware run has not
@@ -137,7 +137,7 @@ approved for SFT.
 | `numeric` | Number, or `{"value":21,"atol":0,"rtol":0.01}` | Last numeric value within tolerance |
 | `tool_call` | `{"name":"mean","arguments":{"values":[2,4,6]}}` | Exactly one matching function call and arguments |
 
-The tool verifier supports Qwen3.5's `<function=...>` / `<parameter=...>` format
+The tool verifier supports Qwen3.8's `<function=...>` / `<parameter=...>` format
 and JSON tool calls. No generated code or tool call is executed by a verifier.
 Text rewards ignore `<think>...</think>` blocks. The default generation prompt
 disables thinking, while SFT preserves reasoning if the reviewed target contains
@@ -183,8 +183,8 @@ CLI path overrides resolve relative to the current working directory.
 
 ```bash
 accelerate config
-python -m stella_rsi.train_sft --config stella-rsi/configs/sft_qwen3.5_27b.json --dry-run
-python -m stella_rsi.train_grpo --config stella-rsi/configs/grpo_qwen3.5_27b.json --dry-run
+python -m stella_rsi.train_sft --config stella-rsi/configs/sft_qwen3.8_27b.json --dry-run
+python -m stella_rsi.train_grpo --config stella-rsi/configs/grpo_qwen3.8_27b.json --dry-run
 bash stella-rsi/scripts/train.sh
 ```
 
@@ -199,9 +199,9 @@ The stages can also run separately:
 
 ```bash
 accelerate launch -m stella_rsi.train_sft \
-  --config stella-rsi/configs/sft_qwen3.5_27b.json
+  --config stella-rsi/configs/sft_qwen3.8_27b.json
 accelerate launch -m stella_rsi.train_grpo \
-  --config stella-rsi/configs/grpo_qwen3.5_27b.json \
+  --config stella-rsi/configs/grpo_qwen3.8_27b.json \
   --adapter stella-rsi/outputs/sft
 ```
 
@@ -254,7 +254,8 @@ STELLA_RSI_TRAINING_TEST=1 python -m pytest stella-rsi/tests -q
 
 Tests cover session splits, preserved context, explicit review labels, tool-call
 reward parsing, recorder behavior, config paths, and adapter continuation. The
-optional integration test uses tiny local GPT-2 and Qwen3.5 models to verify
+optional integration test uses tiny local GPT-2 models and the `qwen3_5`
+architecture shared by Qwen3.5/3.8 to verify
 composite-to-text weight loading, SFT updates, exact adapter restoration, a GRPO
 optimizer update, and merged-model export. Its synthetic reward tests optimizer
 mechanics only. It is not evidence of 27B GPU performance or scientific task
@@ -262,4 +263,4 @@ accuracy.
 
 API references: [TRL SFT](https://huggingface.co/docs/trl/v1.18.0/en/sft_trainer),
 [TRL GRPO](https://huggingface.co/docs/trl/v1.18.0/en/grpo_trainer), and the
-[Qwen3.5-27B model card](https://huggingface.co/Qwen/Qwen3.5-27B).
+[Qwen3.8-27B model card](https://huggingface.co/Qwen/Qwen3.8-27B).
