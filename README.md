@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="asset/stella_logo.png" width="200"/>
+<img src="stella/resources/assets/stella_logo.png" width="200"/>
 
 # STELLA
 
@@ -35,6 +35,7 @@ Ruofan Jin<sup>1</sup>, Mingyang Xu<sup>2</sup>, Fei Meng<sup>3,4</sup>, Guanche
 - [Demo Video](#demo-video)
 - [Key Results](#key-results)
 - [Quick Start](#quick-start)
+- [Repository Layout](#repository-layout)
 - [Installation](#installation)
 - [Resource Download](#resource-download--setup)
 - [API Keys](#api-keys)
@@ -47,7 +48,7 @@ Ruofan Jin<sup>1</sup>, Mingyang Xu<sup>2</sup>, Fei Meng<sup>3,4</sup>, Guanche
 
 ## Overview
 
-<img src="asset/stella_illustration.png" width="800"/>
+<img src="docs/assets/stella_illustration.png" width="800"/>
 
 *Overview of the STELLA framework. The framework consists of four main components: a manager agent, a dev agent, a critic agent, and a tool ocean. The template system provides structured workflows learned from successful runs.*
 
@@ -60,7 +61,7 @@ Ruofan Jin<sup>1</sup>, Mingyang Xu<sup>2</sup>, Fei Meng<sup>3,4</sup>, Guanche
 | **Tool Ocean** | 60+ predefined and self-evolving tools for literature search, databases, virtual screening |
 | **Template System** | Retrieves, applies, and auto-creates structured workflow skills from successful runs |
 
-All four agents use **Claude 4 Sonnet** (`anthropic/claude-sonnet-4`) by default, as reported in the paper. Models are configurable via [OpenRouter](https://openrouter.ai/) — edit the model variables in `stella_core.py` to switch between Claude, GPT, Gemini, and other providers.
+All four agents use **Claude 4 Sonnet** (`anthropic/claude-sonnet-4`) by default, as reported in the paper. Models are configurable via [OpenRouter](https://openrouter.ai/) — edit the model variables in `stella/core.py` to switch between Claude, GPT, Gemini, and other providers.
 
 
 
@@ -69,13 +70,13 @@ All four agents use **Claude 4 Sonnet** (`anthropic/claude-sonnet-4`) by default
 
 ## Demo Video
 
-[![Watch the demo](asset/video_image.png)](https://drive.google.com/file/d/1a6PoJWZMMix8zyccWVOZxU47NKhABO_W/view?usp=sharing)
+[![Watch the demo](docs/assets/video_image.png)](https://drive.google.com/file/d/1a6PoJWZMMix8zyccWVOZxU47NKhABO_W/view?usp=sharing)
 
 *Click the thumbnail above to watch the STELLA demonstration video on Google Drive.*
 
 ## Key Results
 
-<img src="asset/Stella_results.png" width="800"/>
+<img src="docs/assets/Stella_results.png" width="800"/>
 
 Key achievements:
 - Best performance on built tool creation benchmark and public benchmark (LabBench, HLE)
@@ -100,13 +101,13 @@ A pre-built Docker image package (including ablation variants) is available on [
 # Clone and install
 git clone https://github.com/zaixizhang/STELLA.git
 cd STELLA
-pip install -r requirements.txt
+pip install -e .
 
 # Configure API key
 echo "OPENROUTER_API_KEY=your_key_here" > .env
 
 # Launch web UI
-python stella_core.py
+python -m stella
 ```
 
 Open http://localhost:7860 in your browser. A public Gradio link is also generated automatically.
@@ -115,16 +116,16 @@ Open http://localhost:7860 in your browser. A public Gradio link is also generat
 
 | Mode | Command | Description |
 |------|---------|-------------|
-| **Web UI** | `python stella_core.py` | Full Gradio interface with skill retrieval (recommended) |
-| **No Skills** | `python stella_core.py --no_template` | Disable skill/template retrieval |
-| **Tool Creation** | `python stella_core.py --enable_tool_creation` | Enable dynamic tool creation agent |
-| **Custom Port** | `python stella_core.py --port 8080` | Run on a different port |
-| **Web Launcher** | `python start_stella_web.py` | Alternative launcher with preset config |
+| **Web UI** | `python -m stella` | Full Gradio interface with skill retrieval (recommended) |
+| **No Skills** | `python -m stella --no_template` | Disable skill/template retrieval |
+| **Tool Creation** | `python -m stella --enable_tool_creation` | Enable dynamic tool creation agent |
+| **Custom Port** | `python -m stella --port 8080` | Run on a different port |
+| **Web Launcher** | `python -m stella.ui.launcher` | Alternative launcher with preset config |
 
 ### Programmatic Usage
 
 ```python
-from stella_core import initialize_stella
+from stella.core import initialize_stella
 
 manager_agent = initialize_stella(
     use_template=True,
@@ -132,6 +133,35 @@ manager_agent = initialize_stella(
 )
 result = manager_agent.run("What genes are associated with breast cancer resistance?")
 ```
+
+## Repository Layout
+
+```text
+STELLA/
+├── stella/                    # Installable application package
+│   ├── core.py                # Agent orchestration
+│   ├── ui/                    # Gradio interface and launcher
+│   ├── skills/                # Workflow storage, retrieval and learning
+│   ├── tools/                 # Predefined tools, biomedical tools and governance
+│   ├── self_evolve/           # Trajectories, verification, training and serving
+│   └── resources/             # Bundled logo, prompts, skill templates and tool manifests
+├── benchmarks/tool_creation/  # Simple/hard benchmark runners and results
+├── examples/cases/            # Paper case-study scripts
+├── tests/                     # Offline regression tests
+├── docs/                      # Guides and README images
+├── docker/                    # Docker image instructions
+├── requirements/              # Optional training dependencies
+└── data/                      # Writable skills, generated tools and run database
+```
+
+Standard project files (`README.md`, `LICENSE`, `pyproject.toml`, `requirements.txt`,
+`MANIFEST.in`, and `Dockerfile`) remain at the root.
+
+Use `python -m stella` (or the installed `stella` command) to launch the app.
+Python imports now use the `stella` namespace, for example
+`from stella.core import initialize_stella`. See the
+[migration and development guide](docs/development.md) for old-to-new paths,
+runtime data locations, and validation commands.
 
 ## Installation
 
@@ -149,12 +179,12 @@ conda activate stella
 conda install -c conda-forge numpy pandas scikit-learn matplotlib seaborn -y
 
 # Install remaining dependencies via pip
-pip install -r requirements.txt
+pip install -e .
 ```
 
 ### Option 2: Using pip only
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 
 ### Option 3: Using Docker
@@ -167,7 +197,7 @@ A pre-built Docker image package is available. See [`docker/README.md`](docker/R
 pip install biopython rdkit-pypi
 
 # For MCP tools integration
-pip install mcp uvx
+pip install mcp uv
 ```
 
 ## Resource Download & Setup
@@ -210,7 +240,7 @@ echo "SERPAPI_API_KEY=your_serpapi_key_here" >> .env
 
 ## Tool Creation Benchmark
 
-The **Tool Creation Benchmark** evaluates biomedical AI agents across 117 tasks organized into two difficulty tiers. All benchmark files are in the [`Tool_Creation_Benchmark/`](Tool_Creation_Benchmark/) directory.
+The **Tool Creation Benchmark** evaluates biomedical AI agents across 117 tasks organized into two difficulty tiers. All benchmark files are in the [`benchmarks/tool_creation/`](benchmarks/tool_creation/) directory.
 
 | Set | Categories | Tasks | Evaluation |
 |-----|-----------|-------|------------|
@@ -220,10 +250,10 @@ The **Tool Creation Benchmark** evaluates biomedical AI agents across 117 tasks 
 ### Quick Start
 
 ```bash
-cd Tool_Creation_Benchmark/simple_set
+cd benchmarks/tool_creation/simple_set
 
 # Install dependencies
-pip install requests
+pip install requests pandas
 
 # Set your API key
 export OPENROUTER_API_KEY=<your_key>
@@ -239,7 +269,7 @@ python score_results.py \
   --out_dir outputs/scored
 ```
 
-See [`Tool_Creation_Benchmark/README.md`](Tool_Creation_Benchmark/README.md) for full documentation, hard-set instructions, and pre-computed results.
+See [`benchmarks/tool_creation/README.md`](benchmarks/tool_creation/README.md) for full documentation, hard-set instructions, and pre-computed results.
 
 ---
 
@@ -247,7 +277,7 @@ See [`Tool_Creation_Benchmark/README.md`](Tool_Creation_Benchmark/README.md) for
 
 STELLA's template and tool evolution operates on its **context**: experience is
 stored as retrievable thinking templates and new tools, and must be re-retrieved on
-every run. The [`self_evolve/`](self_evolve/README.md) module adds the complementary
+every run. The [`stella/self_evolve/`](docs/self_evolution.md) module adds the complementary
 mechanism — STELLA's own **verified** execution history is used to post-train an
 open-weight policy (Qwen, DeepSeek) with **SFT + GRPO**, so experience is written
 into **model parameters** and improves future tasks with no retrieval at inference.
@@ -269,12 +299,12 @@ the **held-out evaluation set is filtered out** of the training data, and a roun
 recorded and discarded.
 
 ```bash
-pip install -r requirements-self-evolve.txt
+pip install -r requirements/self-evolve.txt
 
 export STELLA_TRAJECTORY_LOGGING=1          # collect while running STELLA normally
-python stella_core.py
+python -m stella
 
-python -m self_evolve.evolve --round 1 \
+python -m stella.self_evolve.evolve --round 1 \
     --base_model Qwen/Qwen3-8B \
     --heldout    self_evolve_data/heldout_tasks.jsonl \
     --references self_evolve_data/references.json
@@ -282,16 +312,16 @@ python -m self_evolve.evolve --round 1 \
 
 Each round writes a manifest (`round_<n>/round.json`) with the data it used, the
 checkpoints it produced, both evaluation reports and the promotion decision. The data
-pipeline runs without a GPU; `python self_evolve/tests/test_pipeline.py` covers it in
-69 checks. Full documentation: [`self_evolve/README.md`](self_evolve/README.md).
+pipeline runs without a GPU; `python -m tests.self_evolve.test_pipeline` covers it in
+69 checks. Full documentation: [`docs/self_evolution.md`](docs/self_evolution.md).
 
 ## Case Studies & Reproducibility
 
-The `cases/` directory contains end-to-end scripts that demonstrate STELLA's autonomous discovery capabilities. Each case study is self-contained and can be reproduced with a single command.
+The `examples/cases/` directory contains end-to-end scripts that demonstrate STELLA's autonomous discovery capabilities. Each case study is self-contained and can be reproduced with a single command.
 
 ### NK-AML Negative Regulator Discovery
 
-**Script**: [`cases/nk_aml_negative_regulators.py`](cases/nk_aml_negative_regulators.py)
+**Script**: [`examples/cases/nk_aml_negative_regulators.py`](examples/cases/nk_aml_negative_regulators.py)
 
 Reproduces the NK-cell/AML target-discovery case from the paper (Fig. 3a-c). As in the paper, the run is initiated by a single prompt and nothing else:
 
@@ -300,14 +330,14 @@ Reproduces the NK-cell/AML target-discovery case from the paper (Fig. 3a-c). As 
 No candidate gene families, exclusion lists, scoring formulas or output schema are supplied. STELLA selects tools from the Tool Ocean, builds the candidate pool, searches the literature and ranks candidates on its own.
 
 ```bash
-python cases/nk_aml_negative_regulators.py
+python examples/cases/nk_aml_negative_regulators.py
 ```
 
-The full agent output is saved to `cases/output/nk_aml_negative_regulators_raw.txt`. The exact gene list can vary between runs (LLM stochasticity, literature index freshness, evolving templates and tools).
+The full agent output is saved to `examples/cases/output/nk_aml_negative_regulators_raw.txt`. The exact gene list can vary between runs (LLM stochasticity, literature index freshness, evolving templates and tools).
 
 ### Enzyme Engineering: Strictosidine Synthase Optimization
 
-**Script**: [`cases/strictosidine_synthase_round2.py`](cases/strictosidine_synthase_round2.py)
+**Script**: [`examples/cases/strictosidine_synthase_round2.py`](examples/cases/strictosidine_synthase_round2.py)
 
 Reproduces the multi-round directed-evolution case from the paper (Fig. 4) for *Rauvolfia serpentina* strictosidine synthase (RsSTR, UniProt P68175). The task prompt is the one reported in the paper:
 
@@ -316,10 +346,10 @@ Reproduces the multi-round directed-evolution case from the paper (Fig. 4) for *
 For Round 2 the only additional input is the Round 1 wet-lab HPLC measurements, which STELLA uses as experimental feedback (fine-tuning its ESM2 activity predictor). No hot-spot hints, mandatory variants or position exclusions are supplied.
 
 ```bash
-python cases/strictosidine_synthase_round2.py
+python examples/cases/strictosidine_synthase_round2.py
 ```
 
-The full agent output is saved to `cases/output/strictosidine_synthase_round2_raw.txt`. Exact variants can vary between runs.
+The full agent output is saved to `examples/cases/output/strictosidine_synthase_round2_raw.txt`. Exact variants can vary between runs.
 
 ## Citation
 

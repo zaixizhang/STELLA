@@ -18,6 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application source
 COPY . .
+RUN pip install --no-cache-dir --no-deps .
 
 # Expose Gradio default port
 EXPOSE 7860
@@ -27,4 +28,4 @@ ENV PYTHONUNBUFFERED=1
 ENV GRADIO_SERVER_NAME=0.0.0.0
 ENV GRADIO_SERVER_PORT=7860
 
-CMD ["python", "start_stella_web.py"]
+CMD ["python", "-m", "stella.ui.launcher"]

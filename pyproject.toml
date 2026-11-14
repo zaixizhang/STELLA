@@ -43,7 +43,7 @@ dependencies = [
     "beautifulsoup4>=4.12.0",
     "googlesearch-python>=1.2.0",
     "PyPDF2>=3.0.0",
-    "gradio>=4.0.0",
+    "gradio>=4.44,<6",
     "ipython>=8.14.0",
     "mcp>=0.1.0",
     "threadpoolctl>=3.2.0",
@@ -69,19 +69,17 @@ Repository = "https://github.com/zaixizhang/STELLA"
 "Bug Tracker" = "https://github.com/zaixizhang/STELLA/issues"
 
 [project.scripts]
-stella-web = "start_stella_web:main"
-stella = "stella_core:main"
+stella-web = "stella.ui.launcher:main"
+stella = "stella.cli:main"
 
-[tool.setuptools]
-py-modules = [
-    "stella_core",
-    "memory_manager",
-    "Knowledge_base",
-    "predefined_tools",
-    "stella_ui_english",
-    "start_stella_web",
-]
-packages = ["new_tools", "stella", "self_evolve"]
+[tool.setuptools.packages.find]
+include = ["stella*"]
+namespaces = false
 
 [tool.setuptools.package-data]
-"*" = ["prompts/*.yaml", "asset/*", "py.typed"]
+stella = ["resources/assets/*.png", "resources/prompts/*.yaml", "resources/skills/prebuilt/*.yaml", "resources/tool_manifests/*.yaml"]
+"stella.tools.biomedical" = ["risk_db/*.txt"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

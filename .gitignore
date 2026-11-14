@@ -40,7 +40,13 @@ agent_outputs/
 work/
 runs/
 cache/
-data/skill_runs.db
+data/*
+!data/.gitkeep
+!data/skills/
+data/skills/*
+!data/skills/auto_generated/
+data/skills/auto_generated/*
+!data/skills/auto_generated/.gitkeep
 
 # Gradio
 .gradio/
@@ -60,3 +66,7 @@ stella_base64.tmp
 # of committing them.
 self_evolve_data/
 checkpoints/
+
+# Local test and case-study outputs
+.pytest_cache/
+examples/cases/output/

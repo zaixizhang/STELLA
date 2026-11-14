@@ -96,4 +96,19 @@ Practical mapping (image + agent ID):
 
 ## Running the benchmark
 
-This Docker package provides the images only. To run tasks, please use the benchmark instructions in [`Tool_Creation_Benchmark/README.md`](../Tool_Creation_Benchmark/README.md).
+This Docker package provides the images only. To run tasks, please use the benchmark instructions in [`benchmarks/tool_creation/README.md`](../benchmarks/tool_creation/README.md).
+
+## Build from the current source
+
+Run these commands from the repository root:
+
+```bash
+docker build -t stella:local .
+docker run --rm -p 7860:7860 --env-file .env \
+  -v "$PWD/data:/app/data" stella:local
+```
+
+The Dockerfile and build context remain at the repository root, matching the
+existing release workflow. The image starts
+`python -m stella.ui.launcher`; bundled resources are installed with the package.
+The exported images described above retain their original internal layout.

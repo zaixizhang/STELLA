@@ -1,0 +1,211 @@
+# Tool Creation Benchmark
+
+This benchmark evaluates biomedical AI agents across two difficulty tiers:
+
+| Set | Tasks | Evaluation |
+|-----|-------|------------|
+| **Simple Set** | 99 tasks, 308 MCQs — protocol/design/computation and database/web retrieval | Objective multiple-choice questions |
+| **Hard Set** | 18 tasks (8 ProteinGym + 10 TDC/Polaris) | Metric-based predictions graded against task-specific leaderboards |
+
+---
+
+## Benchmark Structure
+
+```
+benchmarks/tool_creation/
+├── simple_set/          # Protocol/design/computation + database/web retrieval (MCQ-based)
+│   ├── tasks.csv        # Unified task definitions (99 tasks)
+│   ├── mcq.csv          # MCQ answer-key table (308 questions)
+│   ├── run_benchmark.py # Main benchmark runner
+│   ├── score_results.py # Scoring script
+│   └── config_example.json
+└── hard_set/            # Biology-oriented ML tasks
+    ├── task_ids.csv          # 18 evaluated tasks
+    ├── run_benchmark.py      # Full-panel runner (STELLA + baselines)
+    ├── run_openrouter_batch.py  # OpenRouter/baseline runner
+    ├── summarize_eval.py     # Aggregation and leaderboard-percentile script
+    └── results/              # Pre-computed summary tables
+```
+
+---
+
+## Simple Set
+
+### Overview
+
+The Simple Set contains 99 tasks spanning two task types:
+
+- **Protocol, design, and computational analysis** (52 tasks, 167 MCQs).
+  Representative tasks: PCR primer design, restriction digest planning, molecular cloning, bioinformatics workflow reasoning.
+
+- **Database and information retrieval** (47 tasks, 141 MCQs).
+  Representative tasks: KEGG pathway extraction, DGIdb interaction summaries, GEPIA2 gene pages, structured web retrieval.
+
+Each task is paired with 2–4 objective MCQs derived from verified reference outputs and source materials. Scores are binary (correct = 1, incorrect = 0), aggregated as mean accuracy per task and then per model.
+
+### Prerequisites
+
+```bash
+# Python 3.10+
+pip install requests pandas
+
+# Set API keys
+export OPENROUTER_API_KEY=<your_openrouter_api_key>
+
+# To run STELLA, point to the external benchmark adapter directory
+# It must contain run_one_task.py from the original reproduction package.
+export STELLA_DEV_DIR=/path/to/STELLA_dev
+
+# To run Biomni, point to the Biomni repo
+export BIOMNI_REPO=/path/to/Biomni
+```
+
+### Running the Benchmark
+
+```bash
+cd benchmarks/tool_creation/simple_set
+
+# Run with the example config (edit models/run_id as needed)
+python run_benchmark.py --config config_example.json
+```
+
+The STELLA and Biomni benchmark adapters (`run_one_task.py` and
+`run_biomni_one_task.py`) come from the original reproduction package and are
+not bundled here. OpenRouter models can run without these adapters.
+
+The runner executes each task sequentially. For each task it runs STELLA (if selected), Biomni (if selected), and OpenRouter-backed models concurrently. Results are appended to `outputs/result.csv`.
+
+**Config fields:**
+
+| Field | Description |
+|-------|-------------|
+| `task_csv` | Path to task definitions CSV |
+| `mcq_csv` | Path to MCQ answer-key CSV |
+| `out_csv` | Output CSV path |
+| `run_id` | Unique identifier for this run |
+| `models` | List of models to evaluate (`STELLA`, `Biomni`, `GPT4o`, `DeepSeek`, `Gemini`, `Grok`, `o3`, `ClaudeOpus`) |
+| `repeats` | Number of independent runs per task (default 3) |
+| `max_workers` | Parallel workers for OpenRouter models |
+| `resume_no_dupes` | Skip already-completed task/model/repeat combos |
+
+### Scoring a Run
+
+```bash
+python score_results.py \
+  --run_id <run_id> \
+  --result_csv outputs/result.csv \
+  --ground_truth_csv mcq.csv \
+  --out_dir outputs/scored
+```
+
+This produces:
+- `outputs/scored/score_answers_scored.csv` — question-level strict/lenient correctness
+- `outputs/scored/score_summary.csv` — per-model strict and lenient accuracy with standard deviation
+
+### Scoring Protocol
+
+- **Strict**: invalid/missing outputs count as 0.
+- **Lenient**: invalid/missing outputs are excluded from the denominator.
+- Task score = mean MCQ accuracy across all questions for that task.
+- Model score = mean task score across all tasks.
+- Each task-model pair is run 3 times; mean ± SD are reported.
+
+---
+
+## Hard Set
+
+### Overview
+
+18 biology-oriented machine-learning tasks evaluated with objective task-specific graders and leaderboard-normalized percentiles:
+
+- **8 ProteinGym tasks** — deep mutational scanning / protein engineering (e.g., `SPIKE_SARS2_Starr_2020_binding`, `BRCA1_HUMAN_Findlay_2018`)
+- **10 TDC / Polaris tasks** — ADMET and drug-discovery properties (e.g., `tdcommons-bbb-martins`, `tdcommons-caco2-wang`)
+
+Tasks run end-to-end in a standardized CPU-only `biomlbench` container with an 8-hour per-task limit. Every task-model pair uses six independent attempts under the same budget, and every model is scored with the same best-three-run mean. The reported metric is `leaderboard_percentile` (higher = better):
+
+- **Non-penalized**: mean over valid/gradable runs only.
+- **Penalized**: missing/invalid runs assigned percentile 0.
+
+### Prerequisites
+
+- Docker with the `biomlbench` image
+- `biomlbench` CLI installed and tasks prepared (`biomlbench prepare <task_id>`)
+- API keys in `env/reviewer_api_keys.env` (see the `env/` directory in the original repro package)
+
+### Running the Benchmark
+
+**STELLA full panel:**
+```bash
+cd benchmarks/tool_creation/hard_set
+python run_benchmark.py \
+  --bioml-config <bioml_config.json> \
+  --openrouter-config <openrouter_config.json> \
+  --repeats 6 \
+  --out-dir outputs/stella_run
+```
+
+**OpenRouter / baseline models:**
+```bash
+python run_openrouter_batch.py \
+  --config <openrouter_config.json>
+```
+
+**Summarize results:**
+```bash
+python summarize_eval.py \
+  --results-root outputs/official_batch \
+  --manifest-dir manifests/ \
+  --output-dir results/ \
+  --top-k 3 \
+  --expected-observations 6
+```
+
+### Results
+
+The `results/` directory contains two benchmark tables:
+
+| File | Description |
+|------|-------------|
+| `task_model_results.csv` | Per-task, per-model scores using a uniform best-three-of-six aggregation rule |
+| `model_summary.csv` | Per-model leaderboard and completion summary |
+
+
+---
+
+## Key Results
+
+### Simple Set (strict accuracy)
+
+| Model | Protocol/Design | Database Retrieval | Overall |
+|-------|----------------|--------------------|---------|
+| STELLA | 0.9132 | **0.8735** | **0.9082** |
+| Biomni | **0.9341** | 0.8333 | 0.9033 |
+| o3 | 0.9311 | 0.7870 | 0.8919 |
+| GPT-5 | 0.8953 | 0.8156 | 0.8693 |
+| ClaudeSonnet4 | 0.8408 | 0.7600 | 0.8029 |
+
+Results reported as mean over 3 independent runs.
+
+### Hard Set (penalized avg. leaderboard percentile)
+
+| Model | Valid Tasks | Avg Leaderboard %ile (penalized) |
+|-------|------------|----------------------------------|
+| STELLA | 18/18 | **42.87** |
+| GPT-5 | 12/18 | 12.96 |
+| ClaudeSonnet4 | 6/18 | 5.56 |
+
+---
+
+## Citation
+
+If you use this benchmark, please cite:
+
+```bibtex
+@article{jin2025stella,
+  title={STELLA: Towards a Biomedical World Model with Self-Evolving Multimodal Agents},
+  author={Jin, Ruofan and Xu, Mingyang and Meng, Fei and Wan, Guancheng and Cai, Qingran and Jiang, Yize and Han, Jin and Chen, Yuanyuan and Lu, Wanqing and Wang, Mengyang and Lan, Zhiqian and Jiang, Yuxuan and Liu, Junhong and Wang, Dongyao and Cong, Le and Zhang, Zaixi},
+  journal={bioRxiv},
+  year={2025},
+  doi={10.1101/2025.07.01.662467}
+}
+```

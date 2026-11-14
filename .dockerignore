@@ -34,3 +34,13 @@ coverage.xml
 *.swp
 *.swo
 *~
+
+# Writable state and build artifacts
+data/
+self_evolve_data/
+checkpoints/
+examples/cases/output/
+build/
+dist/
+*.egg-info/
+.pytest_cache/

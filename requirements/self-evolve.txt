@@ -1,0 +1,25 @@
+# Parameter-level self-evolution (self_evolve/) — optional extras.
+#
+# The data pipeline (trajectory logging, verification, dataset building) needs
+# nothing beyond the base requirements. These are only needed to train and
+# serve an evolved policy.
+#
+#   pip install -r requirements.txt -r requirements/self-evolve.txt
+#
+# Tested with torch 2.11 + CUDA 12.8 on a single H100 80GB (8B policy, LoRA).
+
+# Post-training
+torch>=2.4.0
+transformers>=4.45.0
+trl>=0.12.0            # SFTTrainer (prompt/completion, completion-only loss), GRPOTrainer
+peft>=0.13.0           # LoRA adapters and weighted adapter merge (ScienceRSI transfer)
+accelerate>=1.0.0
+datasets>=3.0.0
+
+# Rollout generation and serving. vLLM is optional: any OpenAI-compatible
+# server works with stella.self_evolve.serve.attach_policy_to_agents.
+vllm>=0.6.0
+
+# Optional: memory-efficient attention and 4-bit loading for larger policies
+# flash-attn>=2.6.0
+# bitsandbytes>=0.44.0
