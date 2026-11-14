@@ -1,0 +1,32 @@
+{
+  "model": "Qwen/Qwen3.5-27B",
+  "revision": "fc05daec18b0a78c049392ed2e771dde82bdf654",
+  "load_in_4bit": true,
+  "attn_implementation": "sdpa",
+  "dataset": "../data/processed/sft_train.jsonl",
+  "eval_dataset": "../data/processed/sft_validation.jsonl",
+  "output_dir": "../outputs/sft",
+  "lora_r": 32,
+  "lora_alpha": 64,
+  "lora_dropout": 0.05,
+  "target_modules": "all-linear",
+  "max_length": 4096,
+  "training": {
+    "num_train_epochs": 2,
+    "learning_rate": 0.0001,
+    "per_device_train_batch_size": 1,
+    "gradient_accumulation_steps": 16,
+    "bf16": true,
+    "gradient_checkpointing": true,
+    "gradient_checkpointing_kwargs": {
+      "use_reentrant": false
+    },
+    "warmup_ratio": 0.03,
+    "logging_steps": 5,
+    "save_strategy": "epoch",
+    "eval_strategy": "epoch",
+    "per_device_eval_batch_size": 1,
+    "save_total_limit": 2,
+    "seed": 42
+  }
+}

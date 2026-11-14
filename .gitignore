@@ -1,6 +1,7 @@
 # Environment variables with API keys
 .env
 .env.backup
+.venv-rsi/
 
 # Python cache
 __pycache__/

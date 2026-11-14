@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stella-rsi"
+version = "0.1.0"
+description = "SFT and GRPO of Qwen policies from STELLA user interaction trajectories"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+dependencies = []
+
+[project.optional-dependencies]
+train = [
+  "torch>=2.6", "transformers==5.14.1", "trl==1.18.0",
+  "peft==0.20.0", "accelerate==1.14.0", "datasets==4.8.4",
+]
+qlora = ["bitsandbytes>=0.49,<1"]
+test = ["pytest>=8"]
+
+[project.scripts]
+stella-rsi-prepare = "stella_rsi.data:main"
+stella-rsi-sft = "stella_rsi.train_sft:main"
+stella-rsi-grpo = "stella_rsi.train_grpo:main"
+stella-rsi-merge = "stella_rsi.merge:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

@@ -1,0 +1,84 @@
+{
+  "mean-turns": {
+    "approved_decisions": [
+      2,
+      4,
+      6
+    ],
+    "grpo_targets": [
+      {
+        "decision_index": 2,
+        "verifier": "tool_call",
+        "reference": {
+          "name": "mean",
+          "arguments": {
+            "values": [
+              2,
+              4,
+              6
+            ]
+          }
+        }
+      },
+      {
+        "decision_index": 4,
+        "verifier": "numeric",
+        "reference": {
+          "value": 4,
+          "atol": 0,
+          "rtol": 0
+        }
+      },
+      {
+        "decision_index": 6,
+        "verifier": "numeric",
+        "reference": 12
+      }
+    ]
+  },
+  "units": {
+    "approved_decisions": [
+      1
+    ],
+    "grpo_targets": [
+      {
+        "decision_index": 1,
+        "verifier": "numeric",
+        "reference": 2000
+      }
+    ]
+  },
+  "wrong-attempt": {
+    "grpo_targets": [
+      {
+        "decision_index": 1,
+        "verifier": "numeric",
+        "reference": 21
+      }
+    ]
+  },
+  "validation": {
+    "approved_decisions": [
+      1
+    ],
+    "grpo_targets": [
+      {
+        "decision_index": 1,
+        "verifier": "numeric",
+        "reference": 6
+      }
+    ]
+  },
+  "test": {
+    "approved_decisions": [
+      1
+    ],
+    "grpo_targets": [
+      {
+        "decision_index": 1,
+        "verifier": "numeric",
+        "reference": 3000
+      }
+    ]
+  }
+}

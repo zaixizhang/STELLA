@@ -81,5 +81,5 @@ stella = ["resources/assets/*.png", "resources/prompts/*.yaml", "resources/skill
 "stella.tools.biomedical" = ["risk_db/*.txt"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["."]
+testpaths = ["tests", "stella-rsi/tests"]
+pythonpath = [".", "stella-rsi/src"]

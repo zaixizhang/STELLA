@@ -42,6 +42,7 @@ Ruofan Jin<sup>1</sup>, Mingyang Xu<sup>2</sup>, Fei Meng<sup>3,4</sup>, Guanche
 - [Tool Creation Benchmark](#tool-creation-benchmark)
 - [Case Studies & Reproducibility](#case-studies--reproducibility)
 - [Parameter-Level Self-Evolution](#parameter-level-self-evolution)
+- [STELLA-RSI: Qwen SFT + GRPO](#stella-rsi-qwen-sft--grpo)
 - [Citation](#citation)
 - [Related Projects](#related-projects)
 - [License](#license)
@@ -147,6 +148,7 @@ STELLA/
 │   └── resources/             # Bundled logo, prompts, skill templates and tool manifests
 ├── benchmarks/tool_creation/  # Simple/hard benchmark runners and results
 ├── examples/cases/            # Paper case-study scripts
+├── stella-rsi/                # Qwen SFT + GRPO from user interaction trajectories
 ├── tests/                     # Offline regression tests
 ├── docs/                      # Guides and README images
 ├── docker/                    # Docker image instructions
@@ -350,6 +352,19 @@ python examples/cases/strictosidine_synthase_round2.py
 ```
 
 The full agent output is saved to `examples/cases/output/strictosidine_synthase_round2_raw.txt`. Exact variants can vary between runs.
+
+## STELLA-RSI: Qwen SFT + GRPO
+
+[`stella-rsi/`](stella-rsi/README.md) provides an independently installable recipe
+for fine-tuning **Qwen/Qwen3.5-27B** from STELLA user interaction trajectories.
+It includes opt-in trajectory collection, explicit review labels, session-based
+train/validation/test splits, QLoRA SFT, GRPO that continues the SFT adapter,
+verifiable rewards for newly sampled responses, and adapter export.
+
+GRPO optimizes the next response or tool call given recorded context; it does
+not execute live tools. The examples are synthetic fixtures. See the
+[STELLA-RSI README](stella-rsi/README.md) for installation, data schemas, training
+commands, and the scope of validation.
 
 ## Citation
 

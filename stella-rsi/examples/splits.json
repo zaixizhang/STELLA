@@ -1,0 +1,8 @@
+{
+  "validation": [
+    "validation-mean"
+  ],
+  "test": [
+    "test-units"
+  ]
+}

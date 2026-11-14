@@ -7,3 +7,9 @@ recursive-include docker Dockerfile *.md
 recursive-include examples *.py
 recursive-include benchmarks *.py *.md *.csv *.json
 recursive-include tests *.py
+include stella-rsi/README.md stella-rsi/LICENSE stella-rsi/pyproject.toml stella-rsi/MANIFEST.in stella-rsi/.gitignore
+recursive-include stella-rsi/src *.py
+recursive-include stella-rsi/configs *.json
+recursive-include stella-rsi/examples *.py *.json *.jsonl
+recursive-include stella-rsi/scripts *.sh
+recursive-include stella-rsi/tests *.py

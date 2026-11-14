@@ -1,0 +1,32 @@
+{
+  "model": "Qwen/Qwen3.5-27B",
+  "revision": "fc05daec18b0a78c049392ed2e771dde82bdf654",
+  "load_in_4bit": true,
+  "attn_implementation": "sdpa",
+  "dataset": "../data/processed/grpo_train.jsonl",
+  "adapter": "../outputs/sft",
+  "output_dir": "../outputs/grpo",
+  "max_prompt_length": 3072,
+  "training": {
+    "num_train_epochs": 1,
+    "learning_rate": 5e-06,
+    "per_device_train_batch_size": 1,
+    "gradient_accumulation_steps": 8,
+    "num_generations": 4,
+    "max_completion_length": 1024,
+    "temperature": 0.8,
+    "top_p": 0.95,
+    "beta": 0.0,
+    "loss_type": "grpo",
+    "scale_rewards": "group",
+    "bf16": true,
+    "gradient_checkpointing": true,
+    "gradient_checkpointing_kwargs": {
+      "use_reentrant": false
+    },
+    "logging_steps": 1,
+    "save_strategy": "epoch",
+    "save_total_limit": 2,
+    "seed": 42
+  }
+}

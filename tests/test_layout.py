@@ -93,6 +93,7 @@ def test_cli_help_without_api_key(tmp_path):
 
 def test_local_documentation_links():
     paths = [ROOT / "README.md", *ROOT.glob("docs/*.md"),
+             ROOT / "stella-rsi/README.md",
              ROOT / "docker/README.md", ROOT / "benchmarks/tool_creation/README.md"]
     for path in paths:
         text = path.read_text()
